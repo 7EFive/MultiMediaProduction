@@ -28,14 +28,14 @@ public class Playermovment : MonoBehaviour
 
     private void Start()
     {
-      RB = GetComponent<Rigidbody2D>();
+        RB = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
     // Update is called once per frame
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
-        animator.SetFloat("Speed", Mathf.Abs(horizontal));
+        //animator.SetFloat("Speed", Mathf.Abs(horizontal));
 
         Flip();
 
