@@ -14,14 +14,17 @@ public class Playermovment : MonoBehaviour
     bool onGround = false;
 
     Animator animator;
+    Rigidbody2D RB;
 
 
-    [SerializeField]
-    private Rigidbody2D RB;
-    [SerializeField]
-    private Transform groundCheck;
-    [SerializeField]
-    private LayerMask groundlayer;
+    //[SerializeField]
+    //private Rigidbody2D RB;
+    // <summary>
+    //[SerializeField]
+    // </summary>
+    //private Transform groundCheck;
+    //[SerializeField]
+    //private LayerMask groundlayer;
 
     private void Start()
     {
