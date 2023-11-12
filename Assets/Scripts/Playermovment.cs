@@ -11,6 +11,7 @@ public class Playermovment : MonoBehaviour
     public float jumpHight;
     private bool facingRight = true;
 
+    bool fall = false;
     bool onGround = false;
 
     Animator animator;
@@ -52,9 +53,19 @@ public class Playermovment : MonoBehaviour
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
+            fall = true;
+            animator.SetBool("Fall",  !fall);
+
         }
 
-        
+        //if (!Input.GetButtonUp("Jump") && RB.velocity.y > 0f || !Input.GetButtonUp("Jump") && !onGround)
+        //{
+        //    fall = true;
+        //    animator.SetBool("Fall",  fall);
+        //}
+
+
+
 
     }
 
@@ -78,7 +89,11 @@ public class Playermovment : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         onGround = true;
+        fall = false;
+        animator.SetBool("Fall", !fall);
         animator.SetBool("IsJumping", !onGround);
+        
+        
     }
 
 
