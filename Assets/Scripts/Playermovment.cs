@@ -14,8 +14,17 @@ public class Playermovment : MonoBehaviour
     bool fall = false;
     bool onGround = false;
 
-    Animator animator;
+   
+    public Animator animator;
     Rigidbody2D RB;
+
+    public static Playermovment instance;
+    public bool isAttacking = false;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
 
     //[SerializeField]
@@ -38,6 +47,7 @@ public class Playermovment : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         //animator.SetFloat("Speed", Mathf.Abs(horizontal));
 
+        Attack();
         Flip();
 
         if (Input.GetButtonDown("Jump") && onGround)
@@ -109,5 +119,13 @@ public class Playermovment : MonoBehaviour
         }
 
     }
+    void Attack()
+    {
+        if (Input.GetKeyDown(KeyCode.X) && !isAttacking)
+        {
+            isAttacking = true;
+        }
+    }
+
 
 }
