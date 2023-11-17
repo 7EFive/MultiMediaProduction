@@ -13,6 +13,7 @@ public class Playermovment : MonoBehaviour
 
     private float horizontal;
     private bool facingRight = true;
+    private float walk;
 
 
     //private bool canDash;
@@ -55,39 +56,31 @@ public class Playermovment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
         horizontal = Input.GetAxisRaw("Horizontal");
 
         Falling();
         Attack();
         Flip();
 
+
+
         if (Input.GetButtonDown("Jump") && onGround)
         {
-            
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
             onGround = false;
             animator.SetBool("IsJumping", !onGround);
-            
-
         }
-        
-
-
-
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
-            
-
         }
       
     }
 
     private void FixedUpdate()
     {
-        RB.velocity = new Vector2(horizontal * speed, RB.velocity.y);
+        
+        RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
         animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
         animator.SetFloat("yVelocity", (RB.velocity.y));
     }
@@ -134,6 +127,16 @@ public class Playermovment : MonoBehaviour
         {
             isAttacking = true;
 
+        }
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
+            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
+            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3"))
+        {
+            walk = speed / 10f;
+        }
+        else
+        {
+            walk = speed;
         }
     }
 
