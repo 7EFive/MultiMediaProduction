@@ -8,7 +8,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public GameObject player;
-    public bool isChasing;
+    public Playermovment Player;
+    public bool isChasing = false;
     public float chaseDistance;
     public float speed;
     private float walk = 8f;
@@ -30,46 +31,73 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         Vector3 scale = transform.localScale;
- 
-        if (isChasing)
+
+        if (isChasing==true)
         {
-            if(player.transform.position.x > transform.position.x)
+            //Player on right side
+            if (player.transform.position.x > transform.position.x )
             {
+                //Debug.Log("Player ditected on right side");
                 scale.x = Mathf.Abs(scale.x);
-                transform.Translate(walk * Time.deltaTime*speed, 0, 0);
-                //RidgedBody2D.velocity = new Vector2(transform.position.x * -speed,0f);
-                //transform.position += Vector3.left * walk * speed* Time.deltaTime;
+                if (player.transform.position.x - 7 >= transform.position.x)
+                {
+                    //Debug.Log("Moving to the right side");
+                    transform.Translate(walk * Time.deltaTime * speed, 0, 0);
+                }
+                else
+                {
+                    transform.Translate(0, 0, 0);
+                }
+
             }
+
+            //Player on left side
             else if (player.transform.position.x < transform.position.x)
             {
+                //Debug.Log("Player ditected on left side");
                 scale.x = Mathf.Abs(scale.x) * -1;
-                transform.Translate(walk * Time.deltaTime * -1*speed, 0, 0);
-
-                //RidgedBody2D.velocity = new Vector2(transform.position.x * speed, 0f);
-                //transform.position += Vector3.right * walk* speed * Time.deltaTime;
-
+                if (player.transform.position.x + 7 <= transform.position.x)
+                {
+                    //Debug.Log("Moving to the left side");
+                    transform.Translate(walk * Time.deltaTime * -1 * speed, 0, 0);
+                }
+                else
+                {
+                    transform.Translate(0, 0, 0);
+                }
             }
-            else
-            {
-                transform.Translate(0, 0, 0);
-            }
-            transform.localScale=scale;
-            
+            transform.localScale = scale;
         }
         else
         {
-            if(Vector2.Distance(transform.position, player.transform.position) < chaseDistance)
+            if (Vector2.Distance(transform.position, player.transform.position) < chaseDistance)
             {
                 isChasing = true;
-               //animator.SetBool("seePlayer", isChasing);
-            }else
+                //animator.SetBool("seePlayer", isChasing);
+            }
+            else
             {
                 isChasing = false;
                 //animator.SetBool("seePlayer", !isChasing);
             }
-        }
 
+        }
     }
-  
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag== "Player")
+        {
+            Player.KBCounter = Player.KBTotalTime;
+            if(collision.transform.position.x <= transform.position.x)
+            {
+                Player.KfromRight = true;
+            }
+            if (collision.transform.position.x >= transform.position.x)
+            {
+                Player.KfromRight = false;
+            }
+        }
+    }
+
 
 }

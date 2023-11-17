@@ -13,16 +13,16 @@ public class IdleBehaviour : StateMachineBehaviour
     // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (Playermovment.instance.isAttacking)
+        if (DealDamage.instance.isAttacking)
         {
-            Playermovment.instance.animator.Play("Attack_1");
+            DealDamage.instance.animator.Play("Attack_1");
         }
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Playermovment.instance.isAttacking = false;
+        DealDamage.instance.isAttacking = false;
     }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine

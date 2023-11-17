@@ -13,16 +13,16 @@ public class T3B : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (Playermovment.instance.isAttacking)
+        if (DealDamage.instance.isAttacking)
         {
-            Playermovment.instance.animator.Play("Attack_3");
+            DealDamage.instance.animator.Play("Attack_3");
         }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Playermovment.instance.isAttacking = false;
+        DealDamage.instance.isAttacking = false;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

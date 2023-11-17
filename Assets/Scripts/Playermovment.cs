@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Playermovment : MonoBehaviour
 {
@@ -13,7 +14,8 @@ public class Playermovment : MonoBehaviour
 
     private float horizontal;
     private bool facingRight = true;
-    private float walk;
+    public float walk;
+
 
 
     //private bool canDash;
@@ -29,13 +31,15 @@ public class Playermovment : MonoBehaviour
     public Animator animator;
     Rigidbody2D RB;
 
-    public static Playermovment instance;
+    //public static Playermovment instance;
     public bool isAttacking = false;
+    public bool KfromRight;
 
-    private void Awake()
-    {
-        instance = this;
-    }
+    public float KBForce;
+    public float KBCounter;
+    public float KBTotalTime;
+
+    
 
 
     //[SerializeField]
@@ -59,7 +63,7 @@ public class Playermovment : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
 
         Falling();
-        Attack();
+        //Attack();
         Flip();
 
 
@@ -74,15 +78,41 @@ public class Playermovment : MonoBehaviour
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
         }
-      
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3"))
+        {
+            walk = speed / 10f;
+        }
+        else
+        {
+            walk = speed;
+        }
+
     }
 
     private void FixedUpdate()
     {
-        
-        RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
-        animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
-        animator.SetFloat("yVelocity", (RB.velocity.y));
+        if (KBCounter <= 0)
+        {
+            RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
+            animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
+            animator.SetFloat("yVelocity", (RB.velocity.y));
+        }
+        else
+        {
+            if (KfromRight == true)
+            {
+                RB.velocity = new Vector2(-KBForce, KBForce);
+            }
+            if (KfromRight == false)
+            {
+                RB.velocity = new Vector2(KBForce, KBForce);
+            }
+
+            KBCounter -= Time.deltaTime;
+        }
+            
     }
 
     
@@ -121,23 +151,6 @@ public class Playermovment : MonoBehaviour
             animator.SetBool("Fall", fall);
         }
     }
-    void Attack()
-    {
-        if (Input.GetKeyDown(KeyCode.X) && !isAttacking)
-        {
-            isAttacking = true;
-
-        }
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
-            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
-            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3"))
-        {
-            walk = speed / 10f;
-        }
-        else
-        {
-            walk = speed;
-        }
-    }
+    
 
 }

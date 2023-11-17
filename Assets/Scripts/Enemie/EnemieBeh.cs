@@ -24,13 +24,14 @@ public class EnemieBeh : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        Debug.Log("STRIKED ENEMY");
 
         animator.SetTrigger("Hurt"); 
 
         if (currentHealth <= 0)
         {
             Die();
-
+            
             
         }
     }
@@ -38,15 +39,16 @@ public class EnemieBeh : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Abomination commited die!");
+        //Debug.Log("Abomination commited die!");
 
         animator.SetBool("isDead", true);
 
         GetComponent<BoxCollider2D>().enabled = false;
-        GetComponent<Rigidbody2D>().simulated = false;
         GetComponent<Enemy>().speed = 0;
-        GetComponent<Enemy>().isChasing = false;
+        this.en.chaseDistance = 0;
+        this.en.isChasing = false;
 
+        Debug.Log("ENEMY DIED");
         this.enabled = false;
 
     }
