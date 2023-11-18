@@ -15,7 +15,7 @@ public class DealDamage : MonoBehaviour
     public bool isAttacking = false;
 
     public int attackDamage;
-    public float attackRate=20f;
+    public float attackRate=25f;
     float nextAttackTime = 0f;
     
 
@@ -30,10 +30,10 @@ public class DealDamage : MonoBehaviour
         if (Time.time>= nextAttackTime)
         {
             //Debug.Log(nextAttackTime);
-            if ((Input.GetKeyDown(KeyCode.X) && isAttacking == false))
+            if (Input.GetKeyDown(KeyCode.X) && isAttacking == false && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3"))
             {
                 doDamage();
-                //Debug.Log("TOOK A SWING");
+                Debug.Log("TOOK A SWING");
                 isAttacking = true;
                 nextAttackTime = Time.time + 0.5f / attackRate;
                 //Debug.Log(nextAttackTime + Time.time);
@@ -48,7 +48,7 @@ public class DealDamage : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             enemy.GetComponent<EnemieBeh>().TakeDamage(attackDamage);
-            Debug.Log(enemy.name + " was damaged by you.");
+            //Debug.Log(enemy.name + " was damaged by you.");
         }
     }
     void OnDrawGizmosSelected()

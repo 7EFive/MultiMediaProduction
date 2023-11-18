@@ -163,7 +163,7 @@ MonoBehaviour:
   chaseDistance: 10
   speed: 0.5
   animator: {fileID: 111247349}
-  rb2d: {fileID: 0}
+  rb2d: {fileID: 111247352}
 --- !u!95 &111247349
 Animator:
   serializedVersion: 5
@@ -2521,7 +2521,7 @@ MonoBehaviour:
   attackPoint: {fileID: 1318125160}
   attackRange: 2
   isAttacking: 0
-  attackDamage: 25
+  attackDamage: 20
   attackRate: 2
 --- !u!1 &1219376349
 GameObject:

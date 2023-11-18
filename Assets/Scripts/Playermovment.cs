@@ -32,7 +32,9 @@ public class Playermovment : MonoBehaviour
     Rigidbody2D RB;
 
     //public static Playermovment instance;
+    [HideInInspector]
     public bool isAttacking = false;
+    [HideInInspector]
     public bool KfromRight;
 
     public float KBForce;
