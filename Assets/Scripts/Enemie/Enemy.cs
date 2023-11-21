@@ -83,21 +83,7 @@ public class Enemy : MonoBehaviour
 
         }
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag== "Player")
-        {
-            Player.KBCounter = Player.KBTotalTime;
-            if(collision.transform.position.x <= transform.position.x)
-            {
-                Player.KfromRight = true;
-            }
-            if (collision.transform.position.x >= transform.position.x)
-            {
-                Player.KfromRight = false;
-            }
-        }
-    }
+   
 
 
 }
