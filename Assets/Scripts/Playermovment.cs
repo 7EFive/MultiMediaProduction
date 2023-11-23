@@ -9,6 +9,7 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class Playermovment : MonoBehaviour
 {
+    [Header("Basic Stat Settings")]
     public float jumpHight;
     public float speed;
 
@@ -16,9 +17,11 @@ public class Playermovment : MonoBehaviour
     private bool facingRight = true;
     public float walk;
 
+    [Header("Colliders settings| Default")]
     public Vector2 defaultColliederOffset;
     public Vector2 defaultColliederSize;
 
+    [Header("Colliders settings| Dash")]
     public Vector2 dashColliederOffset;
     public Vector2 dashColliederSize;
 
@@ -35,7 +38,7 @@ public class Playermovment : MonoBehaviour
     bool fall = false;
     bool onGround = false;
 
-   
+    [Header("Referenced Attributes")]
     public Animator animator;
     Rigidbody2D RB;
     public BoxCollider2D c;
@@ -108,15 +111,17 @@ public class Playermovment : MonoBehaviour
         }
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3"))
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
+           (animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end")))
         {
-            walk = speed / 10f;
+            walk = speed / 20f;
         }
         else
         {
             walk = speed;
         }
-        if((Input.GetKeyDown(KeyCode.C)|| isHeadHitting) && canDash)
+        
+        if (Input.GetKeyDown(KeyCode.C) && canDash)
         {
             StartCoroutine(Dash());
         }

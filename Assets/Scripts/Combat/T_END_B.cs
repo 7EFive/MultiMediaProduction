@@ -17,12 +17,14 @@ public class T_END_B : StateMachineBehaviour
         {
             DealDamage.instance.animator.Play("Attack_1");
         }
+        
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         DealDamage.instance.isAttacking = false;
+        DealDamage.instance.animator.SetBool("isAttacking", DealDamage.instance.isAttacking);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
