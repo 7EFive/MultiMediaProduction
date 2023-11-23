@@ -99,7 +99,7 @@ public class Playermovment : MonoBehaviour
 
 
 
-        if (Input.GetButtonDown("Jump") && onGround)
+        if (Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround)
         {
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
             onGround = false;
