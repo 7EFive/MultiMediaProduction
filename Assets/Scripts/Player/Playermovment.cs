@@ -92,7 +92,7 @@ public class Playermovment : MonoBehaviour
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
-           (animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end")))
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end"))
         {
             walk = speed / 20f;
         }
@@ -116,7 +116,7 @@ public class Playermovment : MonoBehaviour
         {
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
-            animator.SetFloat("yVelocity", (RB.velocity.y));
+            animator.SetFloat("yVelocity", RB.velocity.y);
         }
         
     }
@@ -144,7 +144,7 @@ public class Playermovment : MonoBehaviour
 
     private void Falling()
     {
-        if ((RB.velocity.y < 0))
+        if (RB.velocity.y < -1)
         {
             fall = true;
             animator.SetBool("Fall", fall);
