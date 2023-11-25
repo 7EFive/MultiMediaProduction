@@ -1,21 +1,19 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
+using UnityEngine.U2D;
 
 public class Playermovment : MonoBehaviour
 {
     [Header("Basic Stat Settings")]
     public float jumpHight;
     public float speed;
+    private float walk;
 
     private float horizontal;
     private bool facingRight = true;
-    public float walk;
+    public Color defaultColor;
+    public Color gameOver;
 
     [Header("Colliders settings| Default")]
     public Vector2 defaultColliederOffset;
@@ -25,18 +23,11 @@ public class Playermovment : MonoBehaviour
     public Vector2 dashColliederOffset;
     public Vector2 dashColliederSize;
 
-
-
-    
-
-    //private bool canDash;
-    //private bool isDashing;
-    //private float dashPow = 10f;
-    //private float dashTime = 0.2f; 
-
-
     bool fall = false;
     bool onGround = false;
+
+    [HideInInspector]
+    public bool isFinished;
 
     [Header("Referenced Attributes")]
     public Animator animator;
@@ -45,38 +36,29 @@ public class Playermovment : MonoBehaviour
     public Transform headCheck;
     public float headCheckLenght;
     public LayerMask groundMask;
+    private SpriteRenderer sprite;
 
-    //public static Playermovment instance;
-    [HideInInspector]
-    public bool isAttacking = false;
+    [Header("Knockback")]
+    public Transform center;
+    public float KnockbackForce;
+    public bool kbd= false ;
+    public float kbDuration;
+    public Color kb_color;
 
-    
+
 
     [Header("Dashing")]
     private bool isDashing=false;
     private bool canDash=true;
-    private float dashPower= 24f;
-    private float dashDuration = 0.25f;
-    private float dashCooldown = 0.75f;
-
-   
-
-
-
-    //[SerializeField]
-    //private Rigidbody2D RB;
-    // <summary>
-    //[SerializeField]
-    // </summary>
-    //private Transform groundCheck;
-    //[SerializeField]
-    //private LayerMask groundlayer;
-
+    public float dashPower= 24f;
+    public float dashDuration = 0.25f;
+    public float dashCooldown = 0.75f;
     private void Start()
     {
         RB = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         c = GetComponent<BoxCollider2D>();
+        sprite = GetComponent<SpriteRenderer>();
 
         c.size = defaultColliederSize;
         c.offset = defaultColliederOffset;
@@ -85,19 +67,17 @@ public class Playermovment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (isDashing)
         {
             return;
         }
-        bool isHeadHitting = collAbov();
 
+        bool isHeadHitting = collAbov();
         horizontal = Input.GetAxisRaw("Horizontal");
 
         Falling();
-        //Attack();
         Flip();
-
-
 
         if (Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround)
         {
@@ -120,16 +100,10 @@ public class Playermovment : MonoBehaviour
         {
             walk = speed;
         }
-        
         if (Input.GetKeyDown(KeyCode.C) && canDash)
         {
             StartCoroutine(Dash());
         }
-        
-
-        
-
-
     }
 
     private void FixedUpdate()
@@ -138,9 +112,13 @@ public class Playermovment : MonoBehaviour
         {
             return;
         }
-        RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
-        animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
-        animator.SetFloat("yVelocity", (RB.velocity.y));
+        if (!kbd)
+        {
+            RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
+            animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
+            animator.SetFloat("yVelocity", (RB.velocity.y));
+        }
+        
     }
     
 
@@ -151,8 +129,6 @@ public class Playermovment : MonoBehaviour
         fall = false;
         animator.SetBool("Fall", fall);
         animator.SetBool("IsJumping", !onGround);
-        
-        
     }
 
     private void Flip() 
@@ -164,7 +140,6 @@ public class Playermovment : MonoBehaviour
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
-
     }
 
     private void Falling()
@@ -184,7 +159,6 @@ public class Playermovment : MonoBehaviour
     private IEnumerator Dash()
     {
         bool isHeadHitting = collAbov();
-        float dashD;
         //Debug.Log("DASHING");
         canDash = false;
         isDashing = true;
@@ -193,38 +167,17 @@ public class Playermovment : MonoBehaviour
         float defaultGravity = RB.gravityScale;
         RB.gravityScale = 0f;
         RB.velocity = new Vector2(transform.localScale.x * dashPower * (speed / 2), 0f);
-        //trail maybe
         animator.SetBool("isDashing", isDashing);
 
-        
-        if (isHeadHitting)
-        {
-            Debug.Log("SOMTHING IS ABOVE");
-            dashD = dashDuration * 1.5f;
-            yield return new WaitForSeconds(dashD);
-            RB.gravityScale = defaultGravity;
-            isDashing = false;
-            animator.SetBool("isDashing", isDashing);
-            c.size = defaultColliederSize;
-            c.offset = defaultColliederOffset;
+        yield return new WaitForSeconds(dashDuration);
+        RB.gravityScale = defaultGravity;
+        isDashing = false;
+        animator.SetBool("isDashing", isDashing);
+        c.size = defaultColliederSize;
+        c.offset = defaultColliederOffset;
 
-            yield return new WaitForSeconds(dashCooldown);
-            canDash = true;
-        }
-        else
-        {
-            dashD = dashDuration;
-            yield return new WaitForSeconds(dashD);
-            RB.gravityScale = defaultGravity;
-            isDashing = false;
-            animator.SetBool("isDashing", isDashing);
-            c.size = defaultColliederSize;
-            c.offset = defaultColliederOffset;
-
-            yield return new WaitForSeconds(dashCooldown);
-            canDash = true;
-        }
-        
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
     bool collAbov()
     {
@@ -242,6 +195,37 @@ public class Playermovment : MonoBehaviour
 
         Gizmos.DrawLine(from, to);
     }
+    public void Knockback(Transform t)
+    {
+        var dir = center.position - t.position;
+        //Debug.Log(dir);
+        kbd = true;
+        RB.velocity = dir.normalized * KnockbackForce;
+        sprite.color = kb_color;
+        //animator.SetBool("Hit", true);
+        StartCoroutine(Unknockback());
+    }
+    private IEnumerator Unknockback()
+    {
+        yield return new WaitForSeconds(kbDuration);
+        kbd = false;
+        deadOrAlive();
+        //animator.SetBool("Hit", false);
+    }
+
+    private void deadOrAlive()
+    {
+        if (isFinished)
+        {
+            sprite.color = gameOver;
+            GetComponent<Playermovment>().enabled = false;
+        }
+        else
+        {
+            sprite.color = defaultColor;
+        }
+    }
+
 
 
 }

@@ -14,13 +14,14 @@ public class Enemy : MonoBehaviour
     public float speed;
     private float walk = 8f;
     public Animator animator;
-    //private bool lookRight = true;
-    public Rigidbody2D rb2d;
+
+
+
+    public float maxDistance; 
 
 
     private void Start()
     {
-
         //RidgedBody2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         //animator.SetFloat("Speed", speed);
@@ -39,7 +40,7 @@ public class Enemy : MonoBehaviour
             {
                 //Debug.Log("Player ditected on right side");
                 scale.x = Mathf.Abs(scale.x);
-                if (player.transform.position.x - 7 >= transform.position.x)
+                if (player.transform.position.x - maxDistance >= transform.position.x)
                 {
                     //Debug.Log("Moving to the right side");
                     transform.Translate(walk * Time.deltaTime * speed, 0, 0);
@@ -56,7 +57,7 @@ public class Enemy : MonoBehaviour
             {
                 //Debug.Log("Player ditected on left side");
                 scale.x = Mathf.Abs(scale.x) * -1;
-                if (player.transform.position.x + 7 <= transform.position.x)
+                if (player.transform.position.x + maxDistance <= transform.position.x)
                 {
                     //Debug.Log("Moving to the left side");
                     transform.Translate(walk * Time.deltaTime * -1 * speed, 0, 0);

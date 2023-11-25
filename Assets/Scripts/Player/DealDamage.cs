@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using UnityEditor.Experimental.RestService;
 using UnityEngine;
 
 public class DealDamage : MonoBehaviour
@@ -16,7 +12,7 @@ public class DealDamage : MonoBehaviour
 
     public int attackDamage;
     public float attackRate=25f;
-    float nextAttackTime = 0f;
+    float nextAttackTime;
     
 
 
@@ -39,7 +35,6 @@ public class DealDamage : MonoBehaviour
                 //Debug.Log(nextAttackTime + Time.time);
             }
         }
-        
     }
     void doDamage()
     {
