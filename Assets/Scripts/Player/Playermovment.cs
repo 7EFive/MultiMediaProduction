@@ -73,7 +73,6 @@ public class Playermovment : MonoBehaviour
             return;
         }
 
-        bool isHeadHitting = collAbov();
         horizontal = Input.GetAxisRaw("Horizontal");
 
         Falling();
@@ -158,7 +157,6 @@ public class Playermovment : MonoBehaviour
 
     private IEnumerator Dash()
     {
-        bool isHeadHitting = collAbov();
         //Debug.Log("DASHING");
         canDash = false;
         isDashing = true;
@@ -179,22 +177,7 @@ public class Playermovment : MonoBehaviour
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
     }
-    bool collAbov()
-    {
-        
-        bool hit = Physics2D.Raycast(headCheck.position, Vector2.up, headCheckLenght, groundMask);
-
-        return hit;
-    }
-    private void OnDrawGizmos()
-    {
-        if (headCheck == null) return;
-
-        Vector2 from = headCheck.position;
-        Vector2 to = new Vector2(headCheck.position.x, headCheck.position.y + headCheckLenght);
-
-        Gizmos.DrawLine(from, to);
-    }
+    
     public void Knockback(Transform t)
     {
         var dir = center.position - t.position;
