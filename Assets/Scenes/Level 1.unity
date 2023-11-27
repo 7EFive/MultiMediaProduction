@@ -158,13 +158,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f8584548d148643a24544ec44839c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1091180149}
-  Player: {fileID: 1091180150}
   isChasing: 0
   chaseDistance: 10
   speed: 0.5
-  animator: {fileID: 111247349}
   maxDistance: 3
+  kbd: 0
+  kbDuration: 1
+  dead: 0
+  player: {fileID: 1091180149}
+  Player: {fileID: 1091180150}
+  animator: {fileID: 111247349}
 --- !u!95 &111247349
 Animator:
   serializedVersion: 5
@@ -3981,13 +3984,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f8584548d148643a24544ec44839c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1091180149}
-  Player: {fileID: 0}
   isChasing: 0
   chaseDistance: 100
   speed: 0.5
-  animator: {fileID: 1349032444}
   maxDistance: 0
+  kbd: 0
+  kbDuration: 0
+  dead: 0
+  player: {fileID: 1091180149}
+  Player: {fileID: 0}
+  animator: {fileID: 1349032444}
 --- !u!1 &1358775152
 GameObject:
   m_ObjectHideFlags: 0

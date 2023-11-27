@@ -4,28 +4,34 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEditor.Tilemaps;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject player;
-    public Playermovment Player;
+    [Header("Basic Stats")]
     public bool isChasing = false;
     public float chaseDistance;
     public float speed;
     private float walk = 8f;
+    public float maxDistance;
+
+    [Header("Knockback")]
+    public bool kbd = false;
+    public float kbDuration;
+
+    [Header("Living Status")]
+    Rigidbody2D rb;
+    public bool dead=false;
+
+    [Header("Referecne Objects")]
+    public GameObject player;
+    public Playermovment Player;
     public Animator animator;
-
-
-
-    public float maxDistance; 
-
 
     private void Start()
     {
-        //RidgedBody2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        //animator.SetFloat("Speed", speed);
-        //animator.SetFloat("Speed", speed);
+        rb = GetComponent<Rigidbody2D>();
     }
 
 
@@ -33,7 +39,7 @@ public class Enemy : MonoBehaviour
     {
         Vector3 scale = transform.localScale;
 
-        if (isChasing==true)
+        if (isChasing && !kbd)
         {
             //Player on right side
             if (player.transform.position.x > transform.position.x )
@@ -83,8 +89,25 @@ public class Enemy : MonoBehaviour
             }
 
         }
+        
     }
-   
+    public void Knockback(Transform t)
+    {
+       
+        kbd = true;
+        StartCoroutine(Unknockback());
+    }
+    private IEnumerator Unknockback()
+    {
+        yield return new WaitForSeconds(kbDuration);
+        kbd = false;
+        if (dead)
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+        }
+        //animator.SetBool("Hit", false);
+    }
+
 
 
 }

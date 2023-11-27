@@ -39,12 +39,15 @@ public class DealDamage : MonoBehaviour
     void doDamage()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+        
 
         foreach (Collider2D enemy in hitEnemies)
         {
             enemy.GetComponent<EnemieBeh>().TakeDamage(attackDamage);
+            enemy.GetComponent<Enemy>().Knockback(transform);
             //Debug.Log(enemy.name + " was damaged by you.");
         }
+        
     }
     void OnDrawGizmosSelected()
     {
