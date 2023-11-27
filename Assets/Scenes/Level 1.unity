@@ -161,8 +161,9 @@ MonoBehaviour:
   isChasing: 0
   chaseDistance: 10
   speed: 0.5
-  maxDistance: 3
+  maxDistance: 3.5
   kbd: 0
+  kbForce: 10
   kbDuration: 1
   dead: 0
   player: {fileID: 1091180149}
@@ -294,11 +295,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 111247347}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
-  m_Mass: 50
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 5
@@ -2190,7 +2191,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.83, y: 7.0300484, z: -9.956985}
+  m_LocalPosition: {x: 45.72, y: 8.030052, z: -9.956985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3389,6 +3390,7 @@ MonoBehaviour:
   dashColliederOffset: {x: 1.147752, y: -3.17171}
   dashColliederSize: {x: 9.368362, y: 5.402809}
   isFinished: 0
+  older: 0
   animator: {fileID: 1091180155}
   c: {fileID: 1091180151}
   headCheck: {fileID: 1675574259}
@@ -3399,7 +3401,7 @@ MonoBehaviour:
   center: {fileID: 2054002840}
   KnockbackForce: 8
   kbd: 0
-  kbDuration: 0.6
+  kbDuration: 0.3
   kb_color: {r: 1, g: 0.47058824, b: 0.47058824, a: 255}
   dashPower: 24
   dashDuration: 0.25
@@ -3537,7 +3539,7 @@ Transform:
   m_GameObject: {fileID: 1091180149}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.83, y: 7.030048, z: 0.043014545}
+  m_LocalPosition: {x: 45.72, y: 8.030052, z: 0.043014545}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3636,10 +3638,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1091180155}
-  sprite: {fileID: 0}
   maxHealth: 100
   currentHealth: 100
   knockBack: {fileID: 2054002840}
+  player: {fileID: 1091180150}
 --- !u!1 &1219376349
 GameObject:
   m_ObjectHideFlags: 0
@@ -3989,6 +3991,7 @@ MonoBehaviour:
   speed: 0.5
   maxDistance: 0
   kbd: 0
+  kbForce: 0
   kbDuration: 0
   dead: 0
   player: {fileID: 1091180149}
@@ -5859,11 +5862,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7933302781885591242, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 27.83
+      value: 45.72
       objectReference: {fileID: 0}
     - target: {fileID: 7933302781885591242, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.0300484
+      value: 8.030052
       objectReference: {fileID: 0}
     - target: {fileID: 7933302781885591242, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_LocalPosition.z

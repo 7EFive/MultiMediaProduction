@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemieBeh : MonoBehaviour
+public class EnemieHealth : MonoBehaviour
 {
     public Animator animator;
 
@@ -43,12 +43,13 @@ public class EnemieBeh : MonoBehaviour
 
         animator.SetBool("isDead", true);
         this.en.dead = true;
+        transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         GetComponent<BoxCollider2D>().enabled = false;
         this.en.chaseDistance = 0;
         this.en.isChasing = false;
 
         Debug.Log("ENEMY DIED");
-        this.enabled = false;
+        //this.enabled = false;
 
     }
 }

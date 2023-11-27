@@ -1,18 +1,21 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerHealth : MonoBehaviour
 {
     public Animator animator;
-    public SpriteRenderer sprite;
+
 
     public int maxHealth = 100;
     public int currentHealth = 100;
+    
 
     public Transform knockBack;
+    
 
-    Enemy en;
     Rigidbody2D rb;
-
+    public Playermovment player;
     
 
 
@@ -20,8 +23,8 @@ public class PlayerHealth : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
+        player = GetComponent<Playermovment>();
     }
 
     // Update is called once per frame
@@ -30,11 +33,27 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth -= damage;
 
+       
         if (currentHealth <= 0)
         {
             Die();
         }
+        Age();
+       
+
     }
+    public void Age()
+    {
+        if (currentHealth <= (maxHealth / 2))
+        {
+            player.older = true;
+        }
+        else
+        {
+            player.older = false;
+        }
+    }
+
 
 
     void Die()
@@ -50,4 +69,6 @@ public class PlayerHealth : MonoBehaviour
         
         Debug.Log("Game Over");
     }
+
+
 }

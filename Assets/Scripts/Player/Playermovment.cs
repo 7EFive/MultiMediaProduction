@@ -28,6 +28,7 @@ public class Playermovment : MonoBehaviour
 
     [HideInInspector]
     public bool isFinished;
+    public bool older=false;
 
     [Header("Referenced Attributes")]
     public Animator animator;
@@ -44,8 +45,6 @@ public class Playermovment : MonoBehaviour
     public bool kbd= false ;
     public float kbDuration;
     public Color kb_color;
-
-
 
     [Header("Dashing")]
     private bool isDashing=false;
@@ -74,11 +73,10 @@ public class Playermovment : MonoBehaviour
         }
 
         horizontal = Input.GetAxisRaw("Horizontal");
-
         Falling();
         Flip();
 
-        if (Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround)
+        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older)
         {
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
             onGround = false;
@@ -95,14 +93,21 @@ public class Playermovment : MonoBehaviour
         {
             walk = speed / 20f;
         }
-        else
+        else if(older)
         {
+            animator.SetBool("Old", true);
+            walk = speed / 2f;
+        } else
+        {
+            animator.SetBool("Old", false);
             walk = speed;
         }
-        if (Input.GetKeyDown(KeyCode.C) && canDash)
+        if (Input.GetKeyDown(KeyCode.C) && canDash && !older)
         {
             StartCoroutine(Dash());
         }
+        
+        
     }
 
     private void FixedUpdate()
@@ -117,11 +122,8 @@ public class Playermovment : MonoBehaviour
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
-        
     }
     
-
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         onGround = true;
@@ -146,7 +148,7 @@ public class Playermovment : MonoBehaviour
         if (RB.velocity.y < -1)
         {
             fall = true;
-            animator.SetBool("Fall", fall);
+            animator.SetBool("Fall", !fall);
         }
         else
         {
@@ -154,6 +156,7 @@ public class Playermovment : MonoBehaviour
             animator.SetBool("Fall", fall);
         }
     }
+   
 
     private IEnumerator Dash()
     {
@@ -181,8 +184,16 @@ public class Playermovment : MonoBehaviour
     public void Knockback(Transform t)
     {
         var dir = center.position - t.position;
-        //Debug.Log(dir);
+        Debug.Log(dir);
         kbd = true;
+        if (dir.x > 0)
+        {
+            RB.velocity = new Vector2(KnockbackForce, 2);
+        }
+        else
+        {
+            RB.velocity = new Vector2(-KnockbackForce, 2);
+        }
         RB.velocity = dir.normalized * KnockbackForce;
         sprite.color = kb_color;
         //animator.SetBool("Hit", true);

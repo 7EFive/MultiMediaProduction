@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Knockback")]
     public bool kbd = false;
+    public float kbForce;
     public float kbDuration;
 
     [Header("Living Status")]
@@ -93,18 +94,29 @@ public class Enemy : MonoBehaviour
     }
     public void Knockback(Transform t)
     {
-       
+        if (dead)
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+        }
+
         kbd = true;
+        //this.transform.Translate(walk * Time.deltaTSime * -1 * speed, 0, 0);
+
+        if (player.transform.position.x - maxDistance >= transform.position.x)
+        {
+            rb.velocity = new Vector2(-kbForce, 2);
+        }
+        else
+        {
+            rb.velocity = new Vector2(kbForce, 2);
+        }
+        
         StartCoroutine(Unknockback());
     }
     private IEnumerator Unknockback()
     {
         yield return new WaitForSeconds(kbDuration);
         kbd = false;
-        if (dead)
-        {
-            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
-        }
         //animator.SetBool("Hit", false);
     }
 

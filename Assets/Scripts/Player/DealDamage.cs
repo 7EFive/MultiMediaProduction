@@ -43,7 +43,7 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemieBeh>().TakeDamage(attackDamage);
+            enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
             enemy.GetComponent<Enemy>().Knockback(transform);
             //Debug.Log(enemy.name + " was damaged by you.");
         }
