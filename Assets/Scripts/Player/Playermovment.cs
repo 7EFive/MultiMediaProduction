@@ -41,7 +41,8 @@ public class Playermovment : MonoBehaviour
 
     [Header("Knockback")]
     public Transform center;
-    public float KnockbackForce;
+    public float KnockbackForceX;
+    public float KnockbackForceY;
     public bool kbd= false ;
     public float kbDuration;
     public Color kb_color;
@@ -62,7 +63,9 @@ public class Playermovment : MonoBehaviour
         c.size = defaultColliederSize;
         c.offset = defaultColliederOffset;
     }
-    
+
+   
+
     // Update is called once per frame
     void Update()
     {
@@ -92,6 +95,7 @@ public class Playermovment : MonoBehaviour
            animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end"))
         {
             walk = speed / 20f;
+            canDash = false;
         }
         else if(older)
         {
@@ -99,6 +103,7 @@ public class Playermovment : MonoBehaviour
             walk = speed / 2f;
         } else
         {
+            canDash = true;
             animator.SetBool("Old", false);
             walk = speed;
         }
@@ -161,8 +166,6 @@ public class Playermovment : MonoBehaviour
     private IEnumerator Dash()
     {
         //Debug.Log("DASHING");
-        canDash = false;
-        isDashing = true;
         c.size = dashColliederSize;
         c.offset = dashColliederOffset;
         float defaultGravity = RB.gravityScale;
@@ -184,17 +187,17 @@ public class Playermovment : MonoBehaviour
     public void Knockback(Transform t)
     {
         var dir = center.position - t.position;
-        Debug.Log(dir);
+        //Debug.Log(dir);
         kbd = true;
         if (dir.x > 0)
         {
-            RB.velocity = new Vector2(KnockbackForce, 2);
+            RB.velocity = new Vector2(KnockbackForceX, KnockbackForceY);
         }
         else
         {
-            RB.velocity = new Vector2(-KnockbackForce, 2);
+            RB.velocity = new Vector2(-KnockbackForceX, KnockbackForceY);
         }
-        RB.velocity = dir.normalized * KnockbackForce;
+        //RB.velocity = dir.normalized * KnockbackForceX;
         sprite.color = kb_color;
         //animator.SetBool("Hit", true);
         StartCoroutine(Unknockback());

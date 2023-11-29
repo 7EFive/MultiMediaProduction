@@ -17,8 +17,15 @@ public class Enemy : MonoBehaviour
 
     [Header("Knockback")]
     public bool kbd = false;
-    public float kbForce;
+    public float kbForceX;
+    public float kbForceY;
     public float kbDuration;
+
+    [Header("Dash Attack")]
+    public bool isDashing = false;
+    public float dashPower;
+    public float dashDuration;
+    public float dashCooldown;
 
     [Header("Living Status")]
     Rigidbody2D rb;
@@ -50,11 +57,17 @@ public class Enemy : MonoBehaviour
                 if (player.transform.position.x - maxDistance >= transform.position.x)
                 {
                     //Debug.Log("Moving to the right side");
-                    transform.Translate(walk * Time.deltaTime * speed, 0, 0);
+                    rb.velocity = new Vector2(walk*speed, 0);
+                    //transform.Translate(walk * Time.deltaTime * speed, 0, 0);
                 }
                 else
                 {
-                    transform.Translate(0, 0, 0);
+                    if (!isDashing)
+                    {
+                        StartCoroutine(Dash());
+                    }
+                    //rb.velocity = new Vector2(0, 0);
+                    //transform.Translate(0, 0, 0);
                 }
 
             }
@@ -67,11 +80,18 @@ public class Enemy : MonoBehaviour
                 if (player.transform.position.x + maxDistance <= transform.position.x)
                 {
                     //Debug.Log("Moving to the left side");
-                    transform.Translate(walk * Time.deltaTime * -1 * speed, 0, 0);
+                    rb.velocity = new Vector2(walk*-speed, 0);
+                    //transform.Translate(walk * Time.deltaTime * -1 * speed, 0, 0);
                 }
                 else
                 {
-                    transform.Translate(0, 0, 0);
+                    if (!isDashing)
+                    {
+                        
+                        StartCoroutine(Dash());
+                    }
+                    //rb.velocity = new Vector2(0, 0);
+                    //transform.Translate(0, 0, 0);
                 }
             }
             transform.localScale = scale;
@@ -104,11 +124,11 @@ public class Enemy : MonoBehaviour
 
         if (player.transform.position.x - maxDistance >= transform.position.x)
         {
-            rb.velocity = new Vector2(-kbForce, 2);
+            rb.velocity = new Vector2(-kbForceX, kbForceY);
         }
         else
         {
-            rb.velocity = new Vector2(kbForce, 2);
+            rb.velocity = new Vector2(kbForceX, kbForceY);
         }
         
         StartCoroutine(Unknockback());
@@ -119,6 +139,23 @@ public class Enemy : MonoBehaviour
         kbd = false;
         //animator.SetBool("Hit", false);
     }
+    private IEnumerator Dash()
+    {
+        isDashing = true;
+        //Debug.Log("DASHING");
+        //float defaultGravity = rb.gravityScale;
+        //rb.gravityScale = 0f;
+        rb.velocity = new Vector2(transform.localScale.x * dashPower, 0f);
+        //animator.SetBool("isDashing", isDashing);
+
+        yield return new WaitForSeconds(dashDuration);
+        //rb.gravityScale = defaultGravity;
+        //animator.SetBool("isDashing", isDashing);
+
+        yield return new WaitForSeconds(dashCooldown);
+        isDashing = false;
+    }
+
 
 
 

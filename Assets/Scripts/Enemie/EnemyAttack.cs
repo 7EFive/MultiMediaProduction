@@ -59,6 +59,7 @@ public class EnemyAttack : MonoBehaviour
 
                 player.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
                 Debug.Log("Enemy landed a hit");
+                playerKB.Knockback(transform);
             }
             attackSpeed = Time.time + attackCooldown;
         }

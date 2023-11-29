@@ -161,10 +161,15 @@ MonoBehaviour:
   isChasing: 0
   chaseDistance: 10
   speed: 0.5
-  maxDistance: 3.5
+  maxDistance: 7
   kbd: 0
-  kbForce: 10
+  kbForceX: 5
+  kbForceY: 2
   kbDuration: 1
+  isDashing: 0
+  dashPower: 30
+  dashDuration: 0.25
+  dashCooldown: 1
   dead: 0
   player: {fileID: 1091180149}
   Player: {fileID: 1091180150}
@@ -361,8 +366,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   attackPoint: {fileID: 111247353}
-  attackRange: 5
-  attackDamage: 20
+  attackRange: 3
+  attackDamage: 28
   attackCooldown: 0.5
 --- !u!1 &150931238
 GameObject:
@@ -3399,7 +3404,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   center: {fileID: 2054002840}
-  KnockbackForce: 8
+  KnockbackForceX: 8
+  KnockbackForceY: 5
   kbd: 0
   kbDuration: 0.3
   kb_color: {r: 1, g: 0.47058824, b: 0.47058824, a: 255}
@@ -3991,8 +3997,13 @@ MonoBehaviour:
   speed: 0.5
   maxDistance: 0
   kbd: 0
-  kbForce: 0
+  kbForceX: 0
+  kbForceY: 0
   kbDuration: 0
+  isDashing: 0
+  dashPower: 24
+  dashDuration: 0.25
+  dashCooldown: 0.75
   dead: 0
   player: {fileID: 1091180149}
   Player: {fileID: 0}
@@ -5859,6 +5870,14 @@ PrefabInstance:
     - target: {fileID: 2311591092245993251, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_Name
       value: Virtual Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041085965596769926, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
+      propertyPath: m_ScreenY
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4041085965596769926, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
+      propertyPath: m_DeadZoneHeight
+      value: 0.16
       objectReference: {fileID: 0}
     - target: {fileID: 7933302781885591242, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_LocalPosition.x
