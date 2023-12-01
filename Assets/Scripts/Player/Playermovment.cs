@@ -25,6 +25,7 @@ public class Playermovment : MonoBehaviour
 
     bool fall = false;
     bool onGround = false;
+    bool charging=false;
 
     [HideInInspector]
     public bool isFinished;
@@ -101,6 +102,11 @@ public class Playermovment : MonoBehaviour
         {
             animator.SetBool("Old", true);
             walk = speed / 2f;
+            if (onGround)
+            {
+                Charging();
+            }
+            
         } else
         {
             canDash = true;
@@ -111,8 +117,10 @@ public class Playermovment : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
-        
-        
+       
+
+
+
     }
 
     private void FixedUpdate()
@@ -121,7 +129,7 @@ public class Playermovment : MonoBehaviour
         {
             return;
         }
-        if (!kbd)
+        if (!kbd && !charging)
         {
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
@@ -165,6 +173,8 @@ public class Playermovment : MonoBehaviour
 
     private IEnumerator Dash()
     {
+        canDash = false;
+        isDashing = true;
         //Debug.Log("DASHING");
         c.size = dashColliederSize;
         c.offset = dashColliederOffset;
@@ -223,7 +233,24 @@ public class Playermovment : MonoBehaviour
         }
     }
 
+    
 
+    void Charging()
+    {
+        if (Input.GetKeyDown(KeyCode.V) )
+        {
+            charging =true;
+            walk = 0f;
+            animator.SetBool("Charge", true);
+        }
+        else if (Input.GetKeyUp(KeyCode.V))
+        {
+            charging =false;
+            walk = speed / 2f;
+            animator.SetBool("Charge", false);
+        }
+    }
+     
 
 }
 

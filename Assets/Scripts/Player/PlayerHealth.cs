@@ -32,8 +32,10 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        animator.SetTrigger("Hurt");
+        animator.SetTrigger("Old_Hurt");
 
-       
+
         if (currentHealth <= 0)
         {
             Die();
