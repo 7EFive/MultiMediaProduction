@@ -53,7 +53,7 @@ public class PlayerMain : MonoBehaviour
     private float KBF_y;
 
     [Header("Dashing")]
-    private bool isDashing=false;
+    public bool isDashing=false;
     public bool canDash=true;
     public float dashPower;
     public float dashDuration;
@@ -96,7 +96,7 @@ public class PlayerMain : MonoBehaviour
         }
         
 
-        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround))
+        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !swing.isAttacking)
         {
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
             onGround = false;
@@ -163,7 +163,11 @@ public class PlayerMain : MonoBehaviour
         if ((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end"))
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end")
+           ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2")
+           ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3"))
            || swing.isAttacking && onGround)
         {
             walk = speed / 50f;
@@ -192,12 +196,12 @@ public class PlayerMain : MonoBehaviour
         {
             //Debug.Log("Falling");
             fall = true;
-            onGround = false;
+            //onGround = false;
             animator.SetBool("Fall", fall);
         }
         else
         {
-            onGround = true;
+            //onGround = true;
             fall = false;
             animator.SetBool("Fall", fall);
         }
