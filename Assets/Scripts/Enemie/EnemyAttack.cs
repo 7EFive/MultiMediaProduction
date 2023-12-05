@@ -17,8 +17,8 @@ public class EnemyAttack : MonoBehaviour
 
     
     // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
         //if (Time.time > attackSpeed)
         //{
         //    doDamage();
@@ -27,7 +27,7 @@ public class EnemyAttack : MonoBehaviour
         //}
         
 
-    }
+    //}
     //void doDamage()
     //{
         
@@ -50,7 +50,7 @@ public class EnemyAttack : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D other)
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
-        var playerKB = other.collider.GetComponent<Playermovment>();
+        //var playerKB = other.collider.GetComponent<PlayerMain>();
 
         if (Time.time > attackSpeed)
         {
@@ -59,14 +59,19 @@ public class EnemyAttack : MonoBehaviour
 
                 player.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
                 Debug.Log("Enemy landed a hit");
-                playerKB.Knockback(transform);
+                //if (playerKB != null)
+                //{
+                //    playerKB.Knockback(transform);
+                //}
+                //playerKB.Knockback(transform);
+                attackSpeed = Time.time + attackCooldown;
             }
-            attackSpeed = Time.time + attackCooldown;
+            //attackSpeed = Time.time + attackCooldown;
         }
-        if (playerKB != null)
-        {
-            playerKB.Knockback(transform);
-        }
+        //if (playerKB != null)
+        //{
+        //    playerKB.Knockback(transform);
+        //}
         
 
     }

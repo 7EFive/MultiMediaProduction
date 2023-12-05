@@ -11,10 +11,16 @@ public class DealDamage : MonoBehaviour
     public bool isAttacking = false;
 
     public int attackDamage;
-    public float attackRate=25f;
-    float nextAttackTime;
-    
+    public float attackRate;
+    public float nextAttackTime;
 
+    public PlayerMain kb;
+
+    private void Start()
+    {
+        kb=GetComponent<PlayerMain>();
+        
+    }
 
     private void Awake()
     {
@@ -23,7 +29,8 @@ public class DealDamage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time>= nextAttackTime)
+        
+        if (Time.time>= nextAttackTime && !kb.kbd)
         {
             //Debug.Log(nextAttackTime);
             if (Input.GetKeyDown(KeyCode.X) && isAttacking == false && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3"))
@@ -31,10 +38,12 @@ public class DealDamage : MonoBehaviour
                 doDamage();
                 Debug.Log("TOOK A SWING");
                 isAttacking = true;
-                nextAttackTime = Time.time + 0.5f / attackRate;
-                //Debug.Log(nextAttackTime + Time.time);
+                nextAttackTime = Time.time + attackRate;
             }
         }
+        //if (Input.GetKeyDown(KeyCode.X)){
+            //Debug.Log(nextAttackTime + Time.time);
+        //}
     }
     void doDamage()
     {

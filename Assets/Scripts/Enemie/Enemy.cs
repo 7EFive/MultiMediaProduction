@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Referecne Objects")]
     public GameObject player;
-    public Playermovment Player;
+    public PlayerMain Player;
     public Animator animator;
 
     private void Start()
@@ -85,7 +85,7 @@ public class Enemy : MonoBehaviour
                 }
                 else
                 {
-                    if (!isDashing)
+                    if (!isDashing && !kbd)
                     {
                         
                         StartCoroutine(Dash());

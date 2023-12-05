@@ -23,7 +23,7 @@ public class T_END_B : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         DealDamage.instance.isAttacking = false;
-        DealDamage.instance.animator.SetBool("isAttacking", DealDamage.instance.isAttacking);
+        //DealDamage.instance.animator.SetBool("isAttacking", DealDamage.instance.isAttacking);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

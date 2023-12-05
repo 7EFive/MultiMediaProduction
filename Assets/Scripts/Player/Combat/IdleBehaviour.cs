@@ -17,6 +17,7 @@ public class IdleBehaviour : StateMachineBehaviour
         {
             DealDamage.instance.animator.Play("Attack_1");
         }
+        
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
