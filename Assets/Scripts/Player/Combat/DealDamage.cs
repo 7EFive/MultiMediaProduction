@@ -9,17 +9,22 @@ public class DealDamage : MonoBehaviour
     public float attackRange;
     public static DealDamage instance;
     public bool isAttacking = false;
+    public bool canAttackingInAir = true;
     public bool isAttackingInAir = false;
+    public bool enterMidAirAttack = false;
 
     public int attackDamage;
     public float attackRate;
     public float nextAttackTime;
 
     public PlayerMain kb;
+    public PlayerHealth charge;
+    
 
     private void Start()
     {
         kb=GetComponent<PlayerMain>();
+        charge = GetComponent<PlayerHealth>();
     }
 
     private void Awake()
@@ -29,34 +34,50 @@ public class DealDamage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
-        if (Time.time>= nextAttackTime && !kb.kbd)
+        if (!kb.onGround)
+        {
+            isAttacking = false;
+        }
+
+        if (Time.time>= nextAttackTime && !kb.kbd && !isAttacking)
         {
             //Debug.Log(nextAttackTime);
-            if (Input.GetKeyDown(KeyCode.X) && !isAttacking && kb.onGround &&!kb.isDashing)
+            if (Input.GetKeyDown(KeyCode.X) && kb.onGround &&!kb.isDashing )
             {
                 doDamage();
-                Debug.Log("TOOK A SWING");
+                //Debug.Log("TOOK A SWING");
                 isAttacking = true;
-                nextAttackTime = Time.time + attackRate;
+                nextAttackTime = Time.time + attackRate * 1.15f;
+
             }
-            else if(Input.GetKeyDown(KeyCode.X) && !isAttackingInAir && !kb.onGround)
+            else if(Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
+            {
+                enterMidAirAttack = true;
+                animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
+                canAttackingInAir = false;
+}
+            if (!canAttackingInAir && !isAttackingInAir && enterMidAirAttack)
             {
                 isAttackingInAir = true;
                 animator.SetBool("MidAirSlash", isAttackingInAir);
-                doDamageB();
-                nextAttackTime = Time.time + attackRate*1.2f;
-                //doDamage();
-                //doDamage();
-                //aR = attackRange * 1.6f;
-
+                enterMidAirAttack = false;
             }
-            
+            if(!enterMidAirAttack && isAttackingInAir)
+            {
+
+                isAttackingInAir = false;
+                Debug.Log("TOOK A SWING MID AIR");
+                doDamageB();
+            }
+
         }
 
         if (kb.onGround)
         {
+            enterMidAirAttack = false;
             isAttackingInAir = false;
+            canAttackingInAir = true;
+            animator.SetBool("MidAirSlash_enter",enterMidAirAttack);
             animator.SetBool("MidAirSlash", isAttackingInAir);
         }
         
@@ -76,6 +97,7 @@ public class DealDamage : MonoBehaviour
         {
             enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
             enemy.GetComponent<Enemy>().Knockback(transform);
+            charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
             //Debug.Log(enemy.name + " was damaged by you.");
         }
         
@@ -88,8 +110,9 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
+            enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage/2);
             enemy.GetComponent<Enemy>().Knockback(transform);
+            charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);
             //Debug.Log(enemy.name + " was damaged by you.");
         }
 

@@ -1,10 +1,5 @@
-using JetBrains.Annotations;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEditor.Tilemaps;
 using UnityEngine;
-using UnityEngine.U2D;
 
 public class Enemy : MonoBehaviour
 {
@@ -22,7 +17,8 @@ public class Enemy : MonoBehaviour
     public float kbDuration;
 
     [Header("Dash Attack")]
-    public bool isDashing = false;
+    public bool canDash;
+    bool isDashing = false;
     public float dashPower;
     public float dashDuration;
     public float dashCooldown;
@@ -62,7 +58,7 @@ public class Enemy : MonoBehaviour
                 }
                 else
                 {
-                    if (!isDashing)
+                    if (!isDashing && !kbd && canDash)
                     {
                         StartCoroutine(Dash());
                     }
@@ -85,7 +81,7 @@ public class Enemy : MonoBehaviour
                 }
                 else
                 {
-                    if (!isDashing && !kbd)
+                    if (!isDashing && !kbd && canDash)
                     {
                         
                         StartCoroutine(Dash());

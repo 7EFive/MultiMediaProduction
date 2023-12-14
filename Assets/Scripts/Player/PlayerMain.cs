@@ -13,18 +13,24 @@ public class PlayerMain : MonoBehaviour
     private bool facingRight = true;
     public Color defaultColor;
     public Color gameOver;
+    public bool stayOnGround;
 
     [Header("Colliders settings| Default")]
     public Vector2 defaultColliederOffset;
     public Vector2 defaultColliederSize;
+
+    [Header("Colliders settings| Old Form")]
+    public Vector2 oldFormColliederOffset;
+    public Vector2 oldFormColliederSize;
 
     [Header("Colliders settings| Dash")]
     public Vector2 dashColliederOffset;
     public Vector2 dashColliederSize;
 
     public bool fall = false;
-    public bool onGround = false;
+    public bool onGround = true;
     public bool charging=false;
+    public bool ult_press = false;
 
     [HideInInspector]
     public bool isFinished=false;
@@ -58,6 +64,7 @@ public class PlayerMain : MonoBehaviour
     public float dashPower;
     public float dashDuration;
     public float dashCooldown;
+    
     private void Start()
     {
         RB = GetComponent<Rigidbody2D>();
@@ -81,10 +88,10 @@ public class PlayerMain : MonoBehaviour
             return;
         }
         Falling();
-        AttackCheakc();
+        AttackCheak();
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if(charging || isFinished)
+        if(charging || isFinished )
         {if (facingRight)
                 facingRight = true;
             else
@@ -96,10 +103,11 @@ public class PlayerMain : MonoBehaviour
         }
         
 
-        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !swing.isAttacking)
+        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !stayOnGround)
         {
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
             onGround = false;
+            //animator.SetBool("Grounded", onGround);
             animator.SetBool("IsJumping", !onGround);
         }
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
@@ -109,10 +117,11 @@ public class PlayerMain : MonoBehaviour
         
         Old();
         
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older && !swing.isAttacking)
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older &&  !ult_press && !stayOnGround)
         {
             StartCoroutine(Dash());
         }
+
     }
 
     private void FixedUpdate()
@@ -132,10 +141,12 @@ public class PlayerMain : MonoBehaviour
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
-        if(charging || (health.isParrying && !pkbd))
-        {
+        if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.cDJA && (!kbd || !pkbd)))
+        { 
             RB.velocity = new Vector2(0, 0);
         }
+
+        
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
@@ -144,8 +155,9 @@ public class PlayerMain : MonoBehaviour
         fall = false;
         animator.SetBool("Fall", fall);
         animator.SetBool("IsJumping", !onGround);
+        animator.SetBool("Hurt", false);
 
-        if(onGround && isFinished)
+        if (onGround && isFinished)
         {
             animator.SetBool("GameOver", true);
             charging = false;
@@ -158,7 +170,7 @@ public class PlayerMain : MonoBehaviour
 
         }
     }
-    void AttackCheakc()
+    void AttackCheak()
     {
         if ((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
@@ -171,12 +183,15 @@ public class PlayerMain : MonoBehaviour
            || swing.isAttacking && onGround)
         {
             walk = speed / 50f;
-        }
+            stayOnGround = true;
+}
         else
         {
             walk = speed;
+            stayOnGround = false;
         }
     }
+    
 
     void Flip() 
     {
@@ -238,20 +253,12 @@ public class PlayerMain : MonoBehaviour
     {
         var dir = center.position - t.position;
         //Debug.Log(dir);
-        if (!health.isParrying)
-        {
-            kbd = true;
-            KBF_x = KnockbackForceX;
-            KBF_y = KnockbackForceX;
-            sprite.color = kb_color;
-        }
-        else
-        {
-            pkbd = true;
-            KBF_y = 0;
-            sprite.color = defaultColor;
-            Debug.Log("gets parry KB");
-        }
+        kbd = true;
+        pkbd = false;
+        KBF_x = KnockbackForceX;
+        KBF_y = KnockbackForceX;
+        sprite.color = kb_color;
+
         if (dir.x > 0)
         {
             RB.velocity = new Vector2(KBF_x, KBF_y);
@@ -260,42 +267,61 @@ public class PlayerMain : MonoBehaviour
         {
             RB.velocity = new Vector2(-KBF_x, KBF_y);
         }
+        StartCoroutine(Unknockback(kbDuration));
+    }
+    public void KnockbackP(Transform t)
+    {
+        var dir = center.position - t.position;
+        //Debug.Log(dir);
 
-        if (pkbd)
+        kbd = false;
+        pkbd = true;
+        KBF_y = 0;
+        sprite.color = defaultColor;
+        Debug.Log("gets parry KB");
+        if (dir.x > 0)
         {
-            StartCoroutine(Unknockback(kbDuration/2f));
+            RB.velocity = new Vector2(KBF_x, KBF_y);
         }
         else
         {
-            StartCoroutine(Unknockback(kbDuration));
+            RB.velocity = new Vector2(-KBF_x, KBF_y);
         }
+        StartCoroutine(Unknockback(kbDuration));
+
+ 
     }
     private IEnumerator Unknockback(float kbDur)
     {
-        
         yield return new WaitForSeconds(kbDur);
         kbd = false;
+        health.isParrying = false;
+        health.canParry = true;
         pkbd = false;
         sprite.color = defaultColor;
-        
     }
 
 
     public void Old()
     {
+        if (onGround)
+        {
+            Charging();
+        }
         if (older)
         {
+            c.size= oldFormColliederSize;
+            c.offset= oldFormColliederOffset;
             GetComponent<DealDamage>().enabled = false;
             animator.SetBool("Old", older);
 
             
-            if (onGround)
-            {
-                Charging();
-            }
+            
         }
         else
         {
+            c.size = defaultColliederSize;
+            c.offset = defaultColliederOffset;
             animator.SetBool("Old", older);
             GetComponent<DealDamage>().enabled = true;
 
@@ -305,18 +331,21 @@ public class PlayerMain : MonoBehaviour
     //Charging Health, Time Stop or slow down
     public void Charging()
     {
-        if (!health.punished)
+        if (Input.GetKeyDown(KeyCode.V) && older && !health.punished)
         {
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                charging = true;
-                animator.SetBool("Charge", true);
-            }
-            else if (Input.GetKeyUp(KeyCode.V) || !older)
-            {
-                charging = false;
-                animator.SetBool("Charge", false);
-            }
+            charging = true;
+            animator.SetBool("Charge", true);
+
+        }
+        if (Input.GetKeyUp(KeyCode.V) && older)
+        {
+            charging = false;
+            animator.SetBool("Charge", false);
+        }
+        if (Input.GetKeyDown(KeyCode.V) && !older && !isDashing)
+        {
+            Debug.Log("Should try to charge");
+            ult_press = true;
         }
         
     }

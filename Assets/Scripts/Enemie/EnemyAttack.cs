@@ -58,7 +58,7 @@ public class EnemyAttack : MonoBehaviour
             {
 
                 player.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
-                Debug.Log("Enemy landed a hit");
+                Debug.Log("Enemy is collieding with player");
                 //if (playerKB != null)
                 //{
                 //    playerKB.Knockback(transform);

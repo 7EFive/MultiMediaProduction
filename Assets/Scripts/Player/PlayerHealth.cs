@@ -1,23 +1,22 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UI;
+using UnityEngine.U2D;
 
 public class PlayerHealth : MonoBehaviour
 {
     public Animator animator;
 
-
+    public LayerMask enemy;
     public int maxHealth;
-    [HideInInspector]
     public int currentHealth;
     double regDamage;
     public float parry;
-    private bool canParry=true;
+    public bool canParry=true;
     public bool isParrying=false;
     public float parryDur;
     public float parryCD;
+    public bool ulti_start = false;
+    public bool main_ulti = false;
 
     [HideInInspector]
     public float charge=0f;
@@ -30,17 +29,26 @@ public class PlayerHealth : MonoBehaviour
     public float punishmentTime;
     [HideInInspector]
     public bool punished = false;
-
-
-
-    public Transform knockBack;
+    public bool cDJ = false;
+    public bool cDJA = false;
+    public bool cDJA_end;
 
     //Rigidbody2D rb;
     public DealDamage swing;
     public PlayerMain player;
+    public static PlayerHealth instance;
+
+    public GameObject watch;
+
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
 
     // Start is called before the first frame update
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -53,20 +61,48 @@ public class PlayerHealth : MonoBehaviour
     {
         if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)
         {
+            canParry = false;
             StartCoroutine(Parry());
             Debug.Log("tryed to parry...");
         }
         Age();
         if(Time.time > regDamage)
         {
-            if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished)
+            if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
             {
-                chargeLimit += Time.deltaTime * speedC * 2;
                 charge += Time.deltaTime * speedC;
+                chargeLimit += Time.deltaTime * speedC * 2;
             }
+            
+        }
+        if (player.ult_press && player.onGround)
+        {
+            if ((charge >= maxCharg) && !player.older && !cDJ)
+            {
+                cDJ = true;
+                cDJA = true;
+                player.charging = false;
+                Instantiate(watch, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                player.charging = false;
+            }
+
         }
         
-        if (charge >= maxCharg)
+        if (charge > maxCharg && !player.older)
+        {
+            charge -= Time.deltaTime * speedC / 2;
+            
+            if(charge > (maxCharg * 1.25f))
+            {
+                charge = maxCharg * 1.25f;
+            }
+        }
+
+
+        if (charge >= maxCharg && player.older)
         {
             Debug.Log("isFully charged");
             charge = 0;
@@ -80,29 +116,48 @@ public class PlayerHealth : MonoBehaviour
             Age();
             swing.nextAttackTime = Time.time + swing.attackRate;
         }
-        if (chargeLimit >= chargeLimitMax)
+        if (chargeLimit > chargeLimitMax)
         {
-            //chargeLimit -= Time.deltaTime * speedC / 5;
             player.charging = false;
             animator.SetBool("Charge", player.charging);
             TakeDamage(punishment);
-            //regDamage = Time.time + punishmentTime;
             punished = true;
-            
+        }
+        if (charge <= 0)
+        {
+            charge = 0;
         }
         if (!player.charging && chargeLimit > 0)
         {
             chargeLimit -= Time.deltaTime * speedC / 5;
         }
-        if (punished && chargeLimit < 1)
+        if (punished)
         {
-            punished = false;
-            //Debug.Log("UNPUNISHED");
+            if (chargeLimit < 1 && player.older)
+            {
+                punished = false;
+                //Debug.Log("UNPUNISHED");
+            }
         }
+        if (cDJ)
+        {
+            if (charge !=0 && !player.older)
+            {
+                charge -= Time.deltaTime * speedC/2;
+            }
+            else
+            {
+                cDJ = false;
+                charge = 0;
+                chargeLimit = 0;
+                if (watch != null)
+                {
 
-
-
-    }
+                    Destroy(watch);
+                }
+            }
+        }
+ }
 
     
 
@@ -114,38 +169,29 @@ public class PlayerHealth : MonoBehaviour
             {
                 charge += parry;
                 Debug.Log("Succsesfull Parry");
+                player.KnockbackP(transform);
                 regDamage = Time.time + 0.5;
-                
             }
             else
             {
-                currentHealth -= damage;
-                animator.SetTrigger("Hurt");
-                animator.SetTrigger("Old_Hurt");
-                regDamage = Time.time + 0.5;
                 
-                //if (GetComponent<PlayerMain>().isFinished)
-                //{
-                //    Debug.Log("For Some fucking reason the player still takes Damage");
-                //}
+                currentHealth -= damage;
+                animator.SetBool("Hurt", true);
+                if (player != null)
+                {
+                    player.Knockback(transform);
+                }
+                regDamage = Time.time + 0.5;
             }
-            if (player != null)
-            {
-                player.Knockback(transform);
-            }
+            
         }
         
-
-
 
         if (currentHealth <= 0)
         {
             Die();
             currentHealth = 0;
         }
-        
-       
-
     }
     private IEnumerator Parry()
     {
@@ -153,7 +199,6 @@ public class PlayerHealth : MonoBehaviour
         isParrying = true;
         animator.SetBool("Parry", isParrying);
         
-
         yield return new WaitForSeconds(parryDur);
         isParrying = false;
         animator.SetBool("Parry", isParrying);
@@ -170,9 +215,19 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
+            
             player.older = false;
             player.Old();
         }
+    }
+    public void ChargeReg(float x) 
+    {
+        if (Time.time > regDamage || !cDJ)
+        {
+          charge += x;
+          regDamage = Time.time + 0.2;
+        }
+            
     }
 
 
@@ -180,7 +235,6 @@ public class PlayerHealth : MonoBehaviour
     {
         GetComponent<DealDamage>().enabled = false;
         GetComponent<PlayerMain>().isFinished = true;
-        
         Debug.Log("Game Over");
     }
 

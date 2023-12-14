@@ -17,6 +17,11 @@ public class IdleBehaviour : StateMachineBehaviour
         {
             DealDamage.instance.animator.Play("Attack_1");
         }
+        if (PlayerHealth.instance.cDJA)
+        {
+            Debug.Log("ANIMATE");
+            PlayerHealth.instance.animator.Play("charging_start");
+        }
         
     }
 
@@ -24,6 +29,7 @@ public class IdleBehaviour : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         DealDamage.instance.isAttacking = false;
+        PlayerHealth.instance.cDJA_end = true;
     }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine

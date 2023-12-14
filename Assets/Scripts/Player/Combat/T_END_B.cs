@@ -15,6 +15,7 @@ public class T_END_B : StateMachineBehaviour
     {
         if (DealDamage.instance.isAttacking)
         {
+            DealDamage.instance.nextAttackTime = Time.time + DealDamage.instance.attackRate*2f;
             DealDamage.instance.animator.Play("Attack_1");
         }
     }
