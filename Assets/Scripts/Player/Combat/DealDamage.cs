@@ -42,7 +42,7 @@ public class DealDamage : MonoBehaviour
         if (Time.time>= nextAttackTime && !kb.kbd && !isAttacking)
         {
             //Debug.Log(nextAttackTime);
-            if (Input.GetKeyDown(KeyCode.X) && kb.onGround &&!kb.isDashing )
+            if (Input.GetKeyDown(KeyCode.X) && kb.onGround )
             {
                 doDamage();
                 //Debug.Log("TOOK A SWING");

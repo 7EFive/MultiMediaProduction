@@ -23,28 +23,11 @@ public class SystemInformation : MonoBehaviour
 
     void Update()
     {
-        if (hp.cDJ)
-        {
-            SpawnObject();
-        }
-        else
-        {
-            DespawnObject(objectToSpawn);
-        }
         int chgLmt = (int)hp.chargeLimit;
         int chgLmtMax = (int)hp.chargeLimitMax;
         int chg = (int)hp.charge;
         int chargMax = (int)hp.maxCharg;
         String.text = "Charging: |" + chg.ToString() + "/" + chargMax + "|\ncharging_limit: |_" + chgLmt.ToString()+ "/" + chgLmtMax+ "_|\nHealth: [" + hp.currentHealth.ToString() + "/" + hp.maxHealth.ToString()+"]";
     }
-    void SpawnObject()
-    {
-        GameObject newObject = Instantiate(objectToSpawn, playerTransform.position, Quaternion.identity);
-    }
-    void DespawnObject(GameObject objectToDespawn)
-    {
-        
-    }
-
 
 }

@@ -12648,7 +12648,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -12673,7 +12673,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 62.4, y: -2.2999399, z: -9.956985}
+  m_LocalPosition: {x: 62.4, y: -2.2999396, z: -9.956985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14102,7 +14102,7 @@ MonoBehaviour:
   kbDuration: 0.5
   kb_color: {r: 1, g: 0.47058824, b: 0.47058824, a: 255}
   isDashing: 0
-  canDash: 0
+  canDash: 1
   dashPower: 24
   dashDuration: 0.25
   dashCooldown: 0.5
@@ -16737,7 +16737,7 @@ PrefabInstance:
       objectReference: {fileID: 1091180154}
     - target: {fileID: 189511334029440629, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_Lens.OrthographicSize
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2311591092245993251, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_Name
@@ -16757,7 +16757,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7933302781885591242, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.2999399
+      value: -2.2999396
       objectReference: {fileID: 0}
     - target: {fileID: 7933302781885591242, guid: e92bdf78cd73c1c499461a794e654fc5, type: 3}
       propertyPath: m_LocalPosition.z

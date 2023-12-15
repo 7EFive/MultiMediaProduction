@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMain : MonoBehaviour
@@ -72,7 +73,6 @@ public class PlayerMain : MonoBehaviour
         c = GetComponent<BoxCollider2D>();
         sprite = GetComponent<SpriteRenderer>();
         swing = GetComponent<DealDamage>();
-
         c.size = defaultColliederSize;
         c.offset = defaultColliederOffset;
     }
@@ -117,7 +117,7 @@ public class PlayerMain : MonoBehaviour
         
         Old();
         
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older &&  !ult_press && !stayOnGround)
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older)
         {
             StartCoroutine(Dash());
         }
@@ -320,8 +320,6 @@ public class PlayerMain : MonoBehaviour
         }
         else
         {
-            c.size = defaultColliederSize;
-            c.offset = defaultColliederOffset;
             animator.SetBool("Old", older);
             GetComponent<DealDamage>().enabled = true;
 

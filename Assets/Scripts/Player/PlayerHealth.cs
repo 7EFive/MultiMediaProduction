@@ -19,7 +19,7 @@ public class PlayerHealth : MonoBehaviour
     public bool main_ulti = false;
 
     [HideInInspector]
-    public float charge=0f;
+    public float charge = 0f;
     float speedC= 10f;
     public float maxCharg;
     [HideInInspector]
@@ -54,6 +54,7 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
         player = GetComponent<PlayerMain>();
         swing = GetComponent<DealDamage>();
+        watch.SetActive(false);
     }
 
     // Update is called once per frame
@@ -79,14 +80,15 @@ public class PlayerHealth : MonoBehaviour
         {
             if ((charge >= maxCharg) && !player.older && !cDJ)
             {
+                watch.transform.position = new Vector2(transform.position.x, transform.position.y);
                 cDJ = true;
                 cDJA = true;
                 player.charging = false;
-                Instantiate(watch, transform.position, Quaternion.identity);
+                watch.SetActive(true);
             }
             else
             {
-                player.charging = false;
+                player.ult_press = false;
             }
 
         }
@@ -147,14 +149,11 @@ public class PlayerHealth : MonoBehaviour
             }
             else
             {
+                watch.SetActive(false);
+                player.ult_press = false;
                 cDJ = false;
                 charge = 0;
                 chargeLimit = 0;
-                if (watch != null)
-                {
-
-                    Destroy(watch);
-                }
             }
         }
  }
