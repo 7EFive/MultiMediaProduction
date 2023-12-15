@@ -26,10 +26,10 @@ public class Spawn_watch : MonoBehaviour
     void Update()
     {
 
-        if (stats.cDJ)
+        if (stats.coolDown_Ult)
         {
             
-            if (stats.cDJA)
+            if (stats.coolDown_ult_first_anim)
             {
                 
                 rise = true;
@@ -40,7 +40,7 @@ public class Spawn_watch : MonoBehaviour
                 
                 animte.SetBool("rise", rise);
             }
-            if (stats.cDJA_end)
+            if (stats.coolDown_ult_last_anim)
             {
                 spin = true;
                 animte.SetBool("spin", rise);

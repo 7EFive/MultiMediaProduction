@@ -160,13 +160,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isChasing: 0
   chaseDistance: 10
-  speed: 0
+  speed: 0.5
   maxDistance: 7
   kbd: 0
   kbForceX: 3
   kbForceY: 2
   kbDuration: 1
-  canDash: 0
+  canDash: 1
   dashPower: 30
   dashDuration: 0.6
   dashCooldown: 1
@@ -13720,7 +13720,7 @@ Transform:
   m_GameObject: {fileID: 1002100032}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 63.577503, y: -8.59, z: 0.04301454}
+  m_LocalPosition: {x: 63.577503, y: -8.93, z: 0.04301454}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13787,7 +13787,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2014957933
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 50dde1f9d6be5064e97abb32939f5560, type: 3}
   m_Color: {r: 0.22527587, g: 0.23175505, b: 0.26415092, a: 1}
   m_FlipX: 0
@@ -14330,7 +14330,7 @@ MonoBehaviour:
   attackRate: 0.3
   nextAttackTime: 0
   kb: {fileID: 1091180150}
-  charge: {fileID: 0}
+  charge: {fileID: 1091180159}
 --- !u!114 &1091180159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14355,7 +14355,6 @@ MonoBehaviour:
   parryDur: 0.5
   parryCD: 1
   ulti_start: 0
-  main_ulti: 0
   charge: 0
   maxCharg: 100
   chargeLimit: 0
@@ -14363,9 +14362,10 @@ MonoBehaviour:
   punishment: 10
   punishmentTime: 15
   punished: 0
-  cDJ: 0
-  cDJA: 0
-  cDJA_end: 0
+  coolDown_Ult: 0
+  coolDown_ult_first_anim: 0
+  coolDown_ult_last_anim: 0
+  timeFrezze: 0
   swing: {fileID: 1091180158}
   player: {fileID: 1091180150}
   watch: {fileID: 1002100032}

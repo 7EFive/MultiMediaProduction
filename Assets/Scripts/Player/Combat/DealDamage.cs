@@ -34,35 +34,41 @@ public class DealDamage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!kb.onGround)
-        {
-            isAttacking = false;
-        }
+        //Attack
+        Attack();
 
-        if (Time.time>= nextAttackTime && !kb.kbd && !isAttacking)
+        //animationReset
+        animationReset();
+
+        
+    }
+
+    void Attack()
+    {
+        if (Time.time >= nextAttackTime && !kb.kbd && !isAttacking)
         {
             //Debug.Log(nextAttackTime);
-            if (Input.GetKeyDown(KeyCode.X) && kb.onGround )
+            if (Input.GetKeyDown(KeyCode.X) && kb.onGround)
             {
                 doDamage();
                 //Debug.Log("TOOK A SWING");
                 isAttacking = true;
-                nextAttackTime = Time.time + attackRate * 1.15f;
+                nextAttackTime = Time.time + attackRate * 1.05f;
 
             }
-            else if(Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
+            else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
             {
                 enterMidAirAttack = true;
                 animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
                 canAttackingInAir = false;
-}
+            }
             if (!canAttackingInAir && !isAttackingInAir && enterMidAirAttack)
             {
                 isAttackingInAir = true;
                 animator.SetBool("MidAirSlash", isAttackingInAir);
                 enterMidAirAttack = false;
             }
-            if(!enterMidAirAttack && isAttackingInAir)
+            if (!enterMidAirAttack && isAttackingInAir)
             {
 
                 isAttackingInAir = false;
@@ -71,20 +77,6 @@ public class DealDamage : MonoBehaviour
             }
 
         }
-
-        if (kb.onGround)
-        {
-            enterMidAirAttack = false;
-            isAttackingInAir = false;
-            canAttackingInAir = true;
-            animator.SetBool("MidAirSlash_enter",enterMidAirAttack);
-            animator.SetBool("MidAirSlash", isAttackingInAir);
-        }
-        
-
-        //if (Input.GetKeyDown(KeyCode.X)){
-            //Debug.Log(nextAttackTime + Time.time);
-        //}
     }
    
     void doDamage()
@@ -97,7 +89,10 @@ public class DealDamage : MonoBehaviour
         {
             enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
             enemy.GetComponent<Enemy>().Knockback(transform);
-            charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
+            if (!charge.timeFrezze)
+            {
+                charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
+            }
             //Debug.Log(enemy.name + " was damaged by you.");
         }
         
@@ -112,10 +107,28 @@ public class DealDamage : MonoBehaviour
         {
             enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage/2);
             enemy.GetComponent<Enemy>().Knockback(transform);
-            charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);
+            if (!charge.timeFrezze)
+            {
+                charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);
+            }
             //Debug.Log(enemy.name + " was damaged by you.");
         }
 
+    }
+    void animationReset()
+    {
+        // if (!kb.onGround)
+        //{
+        //    isAttacking = false;
+        //}
+        if (kb.onGround)
+        {
+            enterMidAirAttack = false;
+            isAttackingInAir = false;
+            canAttackingInAir = true;
+            animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
+            animator.SetBool("MidAirSlash", isAttackingInAir);
+        }
     }
     void OnDrawGizmosSelected()
     {

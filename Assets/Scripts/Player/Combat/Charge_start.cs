@@ -1,6 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Charge_end : StateMachineBehaviour
+public class Charge_start : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -9,16 +11,18 @@ public class Charge_end : StateMachineBehaviour
     //}
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-        
-    //}
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (PlayerHealth.instance.coolDown_ult_last_anim)
+        {
+            PlayerHealth.instance.animator.Play("charging_main");
+        }
+    }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        PlayerHealth.instance.coolDown_ult_last_anim = false;
-        PlayerHealth.instance.coolDown_ult_first_anim = false;
+        PlayerHealth.instance.coolDown_ult_last_anim = true;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

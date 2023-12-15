@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Enemy : MonoBehaviour
 {
@@ -30,30 +31,44 @@ public class Enemy : MonoBehaviour
     [Header("Referecne Objects")]
     public GameObject player;
     public PlayerMain Player;
+    PlayerHealth stop;
     public Animator animator;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        stop = player.GetComponent<PlayerHealth>();
+
     }
 
 
     void Update()
     {
+        if (!stop.timeFrezze)
+        {
+            
+            //Movment
+            Movment();
+            
+        }
+        
+        
+    }
+    void Movment()
+    {
         Vector3 scale = transform.localScale;
-
         if (isChasing && !kbd)
         {
             //Player on right side
-            if (player.transform.position.x > transform.position.x )
+            if (player.transform.position.x > transform.position.x)
             {
                 //Debug.Log("Player ditected on right side");
                 scale.x = Mathf.Abs(scale.x);
                 if (player.transform.position.x - maxDistance >= transform.position.x)
                 {
                     //Debug.Log("Moving to the right side");
-                    rb.velocity = new Vector2(walk*speed, 0);
+                    rb.velocity = new Vector2(walk * speed, 0);
                     //transform.Translate(walk * Time.deltaTime * speed, 0, 0);
                 }
                 else
@@ -62,6 +77,7 @@ public class Enemy : MonoBehaviour
                     {
                         StartCoroutine(Dash());
                     }
+
                     //rb.velocity = new Vector2(0, 0);
                     //transform.Translate(0, 0, 0);
                 }
@@ -76,14 +92,14 @@ public class Enemy : MonoBehaviour
                 if (player.transform.position.x + maxDistance <= transform.position.x)
                 {
                     //Debug.Log("Moving to the left side");
-                    rb.velocity = new Vector2(walk*-speed, 0);
+                    rb.velocity = new Vector2(walk * -speed, 0);
                     //transform.Translate(walk * Time.deltaTime * -1 * speed, 0, 0);
                 }
                 else
                 {
                     if (!isDashing && !kbd && canDash)
                     {
-                        
+
                         StartCoroutine(Dash());
                     }
                     //rb.velocity = new Vector2(0, 0);
@@ -106,7 +122,6 @@ public class Enemy : MonoBehaviour
             }
 
         }
-        
     }
     public void Knockback(Transform t)
     {

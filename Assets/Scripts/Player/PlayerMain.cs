@@ -82,7 +82,7 @@ public class PlayerMain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //Return value of is Dashing
         if (isDashing)
         {
             return;
@@ -90,6 +90,7 @@ public class PlayerMain : MonoBehaviour
         Falling();
         AttackCheak();
         horizontal = Input.GetAxisRaw("Horizontal");
+        //Flip sprite 
 
         if(charging || isFinished )
         {if (facingRight)
@@ -101,20 +102,11 @@ public class PlayerMain : MonoBehaviour
         {
             Flip();
         }
-        
 
-        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !stayOnGround)
-        {
-            RB.velocity = new Vector2(RB.velocity.x, jumpHight);
-            onGround = false;
-            //animator.SetBool("Grounded", onGround);
-            animator.SetBool("IsJumping", !onGround);
-        }
-        if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
-        {
-            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
-        }
-        
+        //Jumping
+        Jumping();
+
+
         Old();
         
         if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older)
@@ -130,18 +122,24 @@ public class PlayerMain : MonoBehaviour
         {
             return;
         }
+
+        //regular playermovment
         if (!kbd && !pkbd && !charging)
         {
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
+
+        //old playermovment
         if(!kbd && !pkbd && older){
             RB.velocity = new Vector2(horizontal * walk/2, RB.velocity.y);
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
-        if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.cDJA && (!kbd || !pkbd)))
+
+        //No movment stats
+        if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
         { 
             RB.velocity = new Vector2(0, 0);
         }
@@ -170,21 +168,33 @@ public class PlayerMain : MonoBehaviour
 
         }
     }
+    void Jumping()
+    {
+        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !stayOnGround)
+        {
+            RB.velocity = new Vector2(RB.velocity.x, jumpHight);
+            onGround = false;
+            //animator.SetBool("Grounded", onGround);
+            animator.SetBool("IsJumping", !onGround);
+        }
+        if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
+        {
+            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
+        }
+    }
     void AttackCheak()
     {
         if ((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end")
-           ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2")
-           ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3"))
-           || swing.isAttacking && onGround)
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3"))|| 
+           swing.isAttacking && onGround)
         {
             walk = speed / 50f;
             stayOnGround = true;
-}
+        }
         else
         {
             walk = speed;
@@ -314,9 +324,6 @@ public class PlayerMain : MonoBehaviour
             c.offset= oldFormColliederOffset;
             GetComponent<DealDamage>().enabled = false;
             animator.SetBool("Old", older);
-
-            
-            
         }
         else
         {

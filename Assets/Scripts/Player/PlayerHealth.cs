@@ -16,7 +16,6 @@ public class PlayerHealth : MonoBehaviour
     public float parryDur;
     public float parryCD;
     public bool ulti_start = false;
-    public bool main_ulti = false;
 
     [HideInInspector]
     public float charge = 0f;
@@ -29,9 +28,10 @@ public class PlayerHealth : MonoBehaviour
     public float punishmentTime;
     [HideInInspector]
     public bool punished = false;
-    public bool cDJ = false;
-    public bool cDJA = false;
-    public bool cDJA_end;
+    public bool coolDown_Ult = false;
+    public bool coolDown_ult_first_anim = false;
+    public bool coolDown_ult_last_anim=false;
+    public bool timeFrezze = false;
 
     //Rigidbody2D rb;
     public DealDamage swing;
@@ -60,102 +60,19 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        //Parrying
         if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)
         {
             canParry = false;
+
+            //IEnumarator to Parry
             StartCoroutine(Parry());
             Debug.Log("tryed to parry...");
         }
+
         Age();
-        if(Time.time > regDamage)
-        {
-            if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
-            {
-                charge += Time.deltaTime * speedC;
-                chargeLimit += Time.deltaTime * speedC * 2;
-            }
-            
-        }
-        if (player.ult_press && player.onGround)
-        {
-            if ((charge >= maxCharg) && !player.older && !cDJ)
-            {
-                watch.transform.position = new Vector2(transform.position.x, transform.position.y);
-                cDJ = true;
-                cDJA = true;
-                player.charging = false;
-                watch.SetActive(true);
-            }
-            else
-            {
-                player.ult_press = false;
-            }
-
-        }
-        
-        if (charge > maxCharg && !player.older)
-        {
-            charge -= Time.deltaTime * speedC / 2;
-            
-            if(charge > (maxCharg * 1.25f))
-            {
-                charge = maxCharg * 1.25f;
-            }
-        }
-
-
-        if (charge >= maxCharg && player.older)
-        {
-            Debug.Log("isFully charged");
-            charge = 0;
-            currentHealth = maxHealth;
-            player.charging = false;
-            player.older = false;
-            isParrying = false;
-            animator.SetBool("Old", player.older);
-            animator.SetBool("Parry", isParrying);
-            animator.SetBool("Charge", player.charging);
-            Age();
-            swing.nextAttackTime = Time.time + swing.attackRate;
-        }
-        if (chargeLimit > chargeLimitMax)
-        {
-            player.charging = false;
-            animator.SetBool("Charge", player.charging);
-            TakeDamage(punishment);
-            punished = true;
-        }
-        if (charge <= 0)
-        {
-            charge = 0;
-        }
-        if (!player.charging && chargeLimit > 0)
-        {
-            chargeLimit -= Time.deltaTime * speedC / 5;
-        }
-        if (punished)
-        {
-            if (chargeLimit < 1 && player.older)
-            {
-                punished = false;
-                //Debug.Log("UNPUNISHED");
-            }
-        }
-        if (cDJ)
-        {
-            if (charge !=0 && !player.older)
-            {
-                charge -= Time.deltaTime * speedC/2;
-            }
-            else
-            {
-                watch.SetActive(false);
-                player.ult_press = false;
-                cDJ = false;
-                charge = 0;
-                chargeLimit = 0;
-            }
-        }
+        //Chargeing funstion young and old
+        chargingFunction();
  }
 
     
@@ -221,12 +138,109 @@ public class PlayerHealth : MonoBehaviour
     }
     public void ChargeReg(float x) 
     {
-        if (Time.time > regDamage || !cDJ)
+        if (Time.time > regDamage)
         {
-          charge += x;
-          regDamage = Time.time + 0.2;
+            charge += x;
+            regDamage = Time.time + 0.2;
         }
-            
+
+
+    }
+
+    public void chargingFunction()
+    {
+        if (Time.time > regDamage)
+        {
+            if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
+            {
+                charge += Time.deltaTime * speedC;
+                chargeLimit += Time.deltaTime * speedC * 2;
+            }
+
+        }
+        if (player.ult_press && player.onGround)
+        {
+            if ((charge >= maxCharg) && !player.older && !coolDown_Ult)
+            {
+                watch.transform.position = new Vector2(transform.position.x, transform.position.y);
+                coolDown_Ult = true;
+                coolDown_ult_first_anim = true;
+                player.charging = false;
+                watch.SetActive(true);
+            }
+            else
+            {
+                player.ult_press = false;
+            }
+
+        }
+
+        if (charge > maxCharg && !player.older)
+        {
+            charge -= Time.deltaTime * speedC / 2;
+
+            if (charge > (maxCharg * 1.25f))
+            {
+                charge = maxCharg * 1.25f;
+            }
+        }
+
+
+        if (charge >= maxCharg && player.older)
+        {
+            Debug.Log("isFully charged");
+            charge = 0;
+            currentHealth = maxHealth;
+            player.charging = false;
+            player.older = false;
+            isParrying = false;
+            animator.SetBool("Old", player.older);
+            animator.SetBool("Parry", isParrying);
+            animator.SetBool("Charge", player.charging);
+            Age();
+            swing.nextAttackTime = Time.time + swing.attackRate;
+        }
+        if (chargeLimit > chargeLimitMax)
+        {
+            player.charging = false;
+            animator.SetBool("Charge", player.charging);
+            TakeDamage(punishment);
+            punished = true;
+        }
+        if (charge <= 0)
+        {
+            charge = 0;
+        }
+        if (!player.charging && chargeLimit > 0)
+        {
+            chargeLimit -= Time.deltaTime * speedC / 5;
+        }
+        if (punished)
+        {
+            if (chargeLimit < 1 && player.older)
+            {
+                punished = false;
+                //Debug.Log("UNPUNISHED");
+            }
+        }
+        if (coolDown_Ult && !coolDown_ult_first_anim && !coolDown_ult_last_anim)
+        {
+            timeFrezze = true;
+        }
+        if (timeFrezze && charge != 0 && !player.older)
+        {
+            timeFrezze = true;
+            charge -= Time.deltaTime * speedC;
+        }
+        else if(timeFrezze && charge==0 && !player.older)
+        {
+            watch.SetActive(false);
+            player.ult_press = false;
+            coolDown_Ult = false;
+            charge = 0;
+            chargeLimit = 0;
+            timeFrezze = false;
+        }
     }
 
 
