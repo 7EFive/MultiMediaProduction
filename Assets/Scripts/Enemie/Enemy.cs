@@ -125,24 +125,24 @@ public class Enemy : MonoBehaviour
     }
     public void Knockback(Transform t)
     {
-        if (dead)
+        if (!stop.timeFrezze)
         {
-            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
-        }
+            if (dead)
+            {
+                rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+            }
+            kbd = true;
 
-        kbd = true;
-        //this.transform.Translate(walk * Time.deltaTSime * -1 * speed, 0, 0);
-
-        if (player.transform.position.x - maxDistance >= transform.position.x)
-        {
-            rb.velocity = new Vector2(-kbForceX, kbForceY);
+            if (player.transform.position.x - maxDistance >= transform.position.x)
+            {
+                rb.velocity = new Vector2(-kbForceX, kbForceY);
+            }
+            else
+            {
+                rb.velocity = new Vector2(kbForceX, kbForceY);
+            }
+            StartCoroutine(Unknockback());
         }
-        else
-        {
-            rb.velocity = new Vector2(kbForceX, kbForceY);
-        }
-        
-        StartCoroutine(Unknockback());
     }
     private IEnumerator Unknockback()
     {

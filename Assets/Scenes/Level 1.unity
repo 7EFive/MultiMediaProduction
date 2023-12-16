@@ -348,8 +348,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 111247349}
   en: {fileID: 111247348}
-  maxHealth: 500
-  currentHealth: 100
+  player: {fileID: 1091180149}
+  maxHealth: 250
+  currentHealth: 500
 --- !u!114 &111247355
 MonoBehaviour:
   m_ObjectHideFlags: 0

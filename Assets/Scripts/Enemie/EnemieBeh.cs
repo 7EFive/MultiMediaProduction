@@ -6,6 +6,10 @@ public class EnemieHealth : MonoBehaviour
 
     public Enemy en;
 
+    public GameObject player;
+    PlayerHealth time;
+    bool dead = false;
+
 
     public int maxHealth=100;
     public int currentHealth=100;
@@ -17,7 +21,16 @@ public class EnemieHealth : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+        time = player.GetComponent<PlayerHealth>();
 
+    }
+    void Update()
+    {
+        if (currentHealth <= 0 && !dead && !time.timeFrezze)
+        {
+            dead = true;
+            Die();
+        }
     }
     // Update is called once per frame
 
@@ -27,20 +40,13 @@ public class EnemieHealth : MonoBehaviour
         Debug.Log("STRIKED ENEMY");
 
         animator.SetTrigger("Hurt"); 
-
-        if (currentHealth <= 0)
-        {
-            Die();
-            
-            
-        }
     }
 
 
     void Die()
     {
         //Debug.Log("Abomination commited die!");
-
+        
         animator.SetBool("isDead", true);
         this.en.dead = true;
         transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
@@ -49,6 +55,7 @@ public class EnemieHealth : MonoBehaviour
         this.en.isChasing = false;
 
         Debug.Log("ENEMY DIED");
+
         //this.enabled = false;
 
     }

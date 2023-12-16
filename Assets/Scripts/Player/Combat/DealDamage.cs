@@ -68,7 +68,7 @@ public class DealDamage : MonoBehaviour
                 animator.SetBool("MidAirSlash", isAttackingInAir);
                 enterMidAirAttack = false;
             }
-            if (!enterMidAirAttack && isAttackingInAir)
+            if (isAttackingInAir && !enterMidAirAttack)
             {
 
                 isAttackingInAir = false;
