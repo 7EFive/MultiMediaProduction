@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
+//using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMain : MonoBehaviour
 {
+    [SerializeField] ParticleSystem walkParticles;
+    [SerializeField] ParticleSystem chargeParticles;
     [Header("Basic Stat Settings")]
     public float jumpHight;
     public float speed;
@@ -92,11 +94,15 @@ public class PlayerMain : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         //Flip sprite 
 
-        if(charging || isFinished )
-        {if (facingRight)
+        if(charging || isFinished ){ 
+            if (facingRight) {
                 facingRight = true;
-            else
+                
+            } 
+            else {
                 facingRight = false;
+            }
+                
         }
         else
         {
@@ -127,6 +133,9 @@ public class PlayerMain : MonoBehaviour
         if (!kbd && !pkbd && !charging)
         {
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
+            if(RB.velocity[1] != 0 && onGround) {
+                createWalkParticles();
+            }
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
@@ -138,7 +147,7 @@ public class PlayerMain : MonoBehaviour
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
 
-        //No movment stats
+        //No movement stats
         if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
         { 
             RB.velocity = new Vector2(0, 0);
@@ -339,6 +348,8 @@ public class PlayerMain : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V) && older && !health.punished)
         {
             charging = true;
+            createChargeParticles();
+            Debug.Log("createChargeParticles();");
             animator.SetBool("Charge", true);
 
         }
@@ -355,7 +366,12 @@ public class PlayerMain : MonoBehaviour
         
     }
 
-     
+    private void createWalkParticles() {
+        walkParticles.Play();
+    }
 
+    private void createChargeParticles() {
+        chargeParticles.Play();
+    }
+    
 }
-

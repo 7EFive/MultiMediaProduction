@@ -4,8 +4,8 @@ using UnityEngine.U2D;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [SerializeField] ParticleSystem chargeParticles;
     public Animator animator;
-
     public LayerMask enemy;
     public int maxHealth;
     public int currentHealth;
@@ -19,7 +19,7 @@ public class PlayerHealth : MonoBehaviour
 
     [HideInInspector]
     public float charge = 0f;
-    float speedC= 10f;
+    float speedCharging= 10f;
     public float maxCharg;
     [HideInInspector]
     public float chargeLimit;
@@ -60,6 +60,12 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+
+        var main = chargeParticles.main;
+        float removeOther = chargeLimit * chargeLimit * 0.00035f;
+        main.startColor = new Color(1.0f, 1.0f - removeOther, 1.0f - removeOther, 1f);
+        
+
         //Parrying
         if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)
         {
@@ -153,8 +159,10 @@ public class PlayerHealth : MonoBehaviour
         {
             if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
             {
-                charge += Time.deltaTime * speedC;
-                chargeLimit += Time.deltaTime * speedC * 2;
+                createChargeParticles();
+                Debug.Log("createChargeParticles();");
+                charge += Time.deltaTime * speedCharging;
+                chargeLimit += Time.deltaTime * speedCharging * 2;
             }
 
         }
@@ -177,7 +185,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (charge > maxCharg && !player.older)
         {
-            charge -= Time.deltaTime * speedC / 2;
+            charge -= Time.deltaTime * speedCharging / 2;
 
             if (charge > (maxCharg * 1.25f))
             {
@@ -213,7 +221,7 @@ public class PlayerHealth : MonoBehaviour
         }
         if (!player.charging && chargeLimit > 0)
         {
-            chargeLimit -= Time.deltaTime * speedC / 5;
+            chargeLimit -= Time.deltaTime * speedCharging / 5;
         }
         if (punished)
         {
@@ -230,7 +238,7 @@ public class PlayerHealth : MonoBehaviour
         if (timeFrezze && charge != 0 && !player.older)
         {
             timeFrezze = true;
-            charge -= Time.deltaTime * speedC;
+            charge -= Time.deltaTime * speedCharging;
         }
         else if(timeFrezze && charge==0 && !player.older)
         {
@@ -251,5 +259,7 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Game Over");
     }
 
-
+    private void createChargeParticles() {
+        chargeParticles.Play();
+    }
 }
