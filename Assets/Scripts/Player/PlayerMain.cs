@@ -43,8 +43,6 @@ public class PlayerMain : MonoBehaviour
     public Animator animator;
     Rigidbody2D RB;
     public BoxCollider2D c;
-    public Transform headCheck;
-    public float headCheckLenght;
     public LayerMask groundMask;
     private SpriteRenderer sprite;
     public DealDamage swing;
@@ -54,7 +52,9 @@ public class PlayerMain : MonoBehaviour
     public Transform center;
     public float KnockbackForceX;
     public float KnockbackForceY;
+    //bool for parry knock back
     public bool pkbd = false;
+    //bool for regular knock back;
     public bool kbd= false;
     public float kbDuration;
     public Color kb_color;
@@ -111,7 +111,10 @@ public class PlayerMain : MonoBehaviour
 
         //Jumping
         Jumping();
-
+        if (charging)
+        {
+            createChargeParticles();
+        }
 
         Old();
         

@@ -78,8 +78,13 @@ public class PlayerHealth : MonoBehaviour
 
         Age();
         //Chargeing funstion young and old
-        chargingFunction();
- }
+        chargingFunctionOlder();
+        chargingFunctionYounger();
+        if (charge < 0)
+        {
+            charge = 0;
+        }
+    }
 
     
 
@@ -152,20 +157,62 @@ public class PlayerHealth : MonoBehaviour
 
 
     }
-
-    public void chargingFunction()
+    //Charging in Old form
+    public void chargingFunctionOlder()
     {
-        if (Time.time > regDamage)
+        //Main charging function, charge and chargeLimit rises
+        if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
         {
-            if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
-            {
-                createChargeParticles();
-                Debug.Log("createChargeParticles();");
-                charge += Time.deltaTime * speedCharging;
-                chargeLimit += Time.deltaTime * speedCharging * 2;
-            }
-
+            createChargeParticles();
+            Debug.Log("createChargeParticles();");
+            charge += Time.deltaTime * speedCharging;
+            chargeLimit += Time.deltaTime * speedCharging * 2;
         }
+
+        //if Player stops charging, charging limit drops
+        if (!player.charging && chargeLimit > 0)
+        {
+            chargeLimit -= Time.deltaTime * speedCharging / 5;
+        }
+        //charge limit at max punishes the player
+        if (chargeLimit > chargeLimitMax)
+        {
+            player.charging = false;
+            animator.SetBool("Charge", player.charging);
+            TakeDamage(punishment);
+            punished = true;
+        }
+        //active on bool punished true
+        if (punished)
+        {
+            if (chargeLimit < 1 && player.older)
+            {
+                punished = false;
+                //Debug.Log("UNPUNISHED");
+            }
+        }
+        //transform back to young
+        if (charge >= maxCharg && player.older)
+        {
+            Debug.Log("isFully charged");
+            charge = 0;
+            currentHealth = maxHealth;
+            player.charging = false;
+            player.older = false;
+            isParrying = false;
+            animator.SetBool("Old", player.older);
+            animator.SetBool("Parry", isParrying);
+            animator.SetBool("Charge", player.charging);
+            Age();
+            swing.nextAttackTime = Time.time + swing.attackRate;
+        }
+        
+        
+       
+    }
+    void chargingFunctionYounger()
+    {
+        //ultimate button press on 100 or more charge
         if (player.ult_press && player.onGround)
         {
             if ((charge >= maxCharg) && !player.older && !coolDown_Ult)
@@ -182,7 +229,7 @@ public class PlayerHealth : MonoBehaviour
             }
 
         }
-
+        //charge overloading with max 125 charge value droping to 100
         if (charge > maxCharg && !player.older)
         {
             charge -= Time.deltaTime * speedCharging / 2;
@@ -193,54 +240,19 @@ public class PlayerHealth : MonoBehaviour
             }
         }
 
-
-        if (charge >= maxCharg && player.older)
-        {
-            Debug.Log("isFully charged");
-            charge = 0;
-            currentHealth = maxHealth;
-            player.charging = false;
-            player.older = false;
-            isParrying = false;
-            animator.SetBool("Old", player.older);
-            animator.SetBool("Parry", isParrying);
-            animator.SetBool("Charge", player.charging);
-            Age();
-            swing.nextAttackTime = Time.time + swing.attackRate;
-        }
-        if (chargeLimit > chargeLimitMax)
-        {
-            player.charging = false;
-            animator.SetBool("Charge", player.charging);
-            TakeDamage(punishment);
-            punished = true;
-        }
-        if (charge <= 0)
-        {
-            charge = 0;
-        }
-        if (!player.charging && chargeLimit > 0)
-        {
-            chargeLimit -= Time.deltaTime * speedCharging / 5;
-        }
-        if (punished)
-        {
-            if (chargeLimit < 1 && player.older)
-            {
-                punished = false;
-                //Debug.Log("UNPUNISHED");
-            }
-        }
+        // timeFrezze value for timeFrezze old
         if (coolDown_Ult && !coolDown_ult_first_anim && !coolDown_ult_last_anim)
         {
             timeFrezze = true;
         }
+        //charge droping after cloack spawn animation is done
         if (timeFrezze && charge != 0 && !player.older)
         {
             timeFrezze = true;
             charge -= Time.deltaTime * speedCharging;
         }
-        else if(timeFrezze && charge==0 && !player.older)
+        //end of ultimate ability at charge 0
+        else if (timeFrezze && charge == 0 && !player.older)
         {
             watch.SetActive(false);
             player.ult_press = false;
