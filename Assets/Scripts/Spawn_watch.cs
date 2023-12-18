@@ -2,29 +2,32 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Spawn_watch : MonoBehaviour
 {
     public GameObject player;
     PlayerHealth stats;
+    PlayerMain flip;
     public SpriteRenderer sprite;
     public Animator animte;
     public bool rise = false;
     public bool spin = false;
-    private Vector2 playerPosition;
+    Vector3 scale;
     // Start is called before the first frame update
     void Start()
     {
         stats = player.GetComponent<PlayerHealth>();
+        flip = player.GetComponent<PlayerMain>();
         sprite = GetComponent<SpriteRenderer>();
         animte = GetComponent<Animator>();
-        playerPosition = player.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        Flip();
 
         if (stats.coolDown_Ult)
         {
@@ -48,6 +51,23 @@ public class Spawn_watch : MonoBehaviour
             else
             {
                 animte.SetBool("spin", rise);
+            }
+        }
+    }
+    void Flip()
+    {
+        if (!stats.timeFrezze)
+        {
+            if (flip.facingRight)
+            {
+                //Debug.Log("Player ditected on right side");
+                transform.localScale = new Vector3(0.25f, transform.localScale.y, transform.localScale.z);
+                Debug.Log("Should face left");
+            }
+            else if (!flip.facingRight)
+            {
+                transform.localScale = new Vector3(-0.25f, transform.localScale.y, transform.localScale.z);
+                Debug.Log("Should face right");
             }
         }
         

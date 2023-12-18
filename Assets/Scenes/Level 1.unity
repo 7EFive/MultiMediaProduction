@@ -12689,7 +12689,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -12714,7 +12714,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 62.4, y: -0.49993992, z: -9.956985}
+  m_LocalPosition: {x: 62.4, y: -2.2999396, z: -9.956985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13761,7 +13761,7 @@ Transform:
   m_GameObject: {fileID: 1002100032}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 63.577503, y: -8.93, z: 0.04301454}
+  m_LocalPosition: {x: 65.22, y: -10.15, z: 0.04301454}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14113,6 +14113,7 @@ MonoBehaviour:
   chargeParticles: {fileID: 2090282604}
   jumpHight: 22
   speed: 10
+  facingRight: 1
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   gameOver: {r: 1, g: 1, b: 1, a: 1}
   stayOnGround: 0
@@ -14130,8 +14131,6 @@ MonoBehaviour:
   older: 0
   animator: {fileID: 1091180155}
   c: {fileID: 1091180151}
-  headCheck: {fileID: 1675574259}
-  headCheckLenght: 1.2
   groundMask:
     serializedVersion: 2
     m_Bits: 64
@@ -14371,7 +14370,7 @@ MonoBehaviour:
   canAttackingInAir: 1
   isAttackingInAir: 0
   enterMidAirAttack: 0
-  attackDamage: 20
+  attackDamage: 50
   attackRate: 0.3
   nextAttackTime: 0
   kb: {fileID: 1091180150}

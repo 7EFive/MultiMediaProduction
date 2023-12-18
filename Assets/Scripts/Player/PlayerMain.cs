@@ -13,7 +13,7 @@ public class PlayerMain : MonoBehaviour
     private float walk;
 
     private float horizontal;
-    private bool facingRight = true;
+    public bool facingRight = true;
     public Color defaultColor;
     public Color gameOver;
     public bool stayOnGround;
@@ -94,7 +94,7 @@ public class PlayerMain : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         //Flip sprite 
 
-        if(charging || isFinished ){ 
+        if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim)){ 
             if (facingRight) {
                 facingRight = true;
                 

@@ -21,6 +21,7 @@ public class IdleBehaviour : StateMachineBehaviour
         {
             Debug.Log("ANIMATE");
             PlayerHealth.instance.animator.Play("charging_start");
+            PlayerHealth.instance.coolDown_ult_last_anim = true;
         }
         
     }
@@ -29,7 +30,7 @@ public class IdleBehaviour : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         DealDamage.instance.isAttacking = false;
-        PlayerHealth.instance.coolDown_ult_last_anim = true;
+        
     }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine
