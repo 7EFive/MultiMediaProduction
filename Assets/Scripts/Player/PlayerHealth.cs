@@ -13,8 +13,8 @@ public class PlayerHealth : MonoBehaviour
     public float parry;
     public bool canParry=true;
     public bool isParrying=false;
-    public float parryDur;
-    public float parryCD;
+    public float parryDuration;
+    public float parryCoolDown;
     public bool ulti_start = false;
 
     [HideInInspector]
@@ -126,11 +126,11 @@ public class PlayerHealth : MonoBehaviour
         isParrying = true;
         animator.SetBool("Parry", isParrying);
         
-        yield return new WaitForSeconds(parryDur);
+        yield return new WaitForSeconds(parryDuration);
         isParrying = false;
         animator.SetBool("Parry", isParrying);
 
-        yield return new WaitForSeconds(parryCD);
+        yield return new WaitForSeconds(parryCoolDown);
         canParry = true;
     }
     public void Age()
@@ -165,14 +165,14 @@ public class PlayerHealth : MonoBehaviour
         {
             createChargeParticles();
             Debug.Log("createChargeParticles();");
-            charge += Time.deltaTime * speedCharging;
+            charge += Time.deltaTime * speedCharging * 3;
             chargeLimit += Time.deltaTime * speedCharging * 2;
         }
 
         //if Player stops charging, charging limit drops
         if (!player.charging && chargeLimit > 0)
         {
-            chargeLimit -= Time.deltaTime * speedCharging / 5;
+            chargeLimit -= Time.deltaTime * speedCharging / 3;
         }
         //charge limit at max punishes the player
         if (chargeLimit > chargeLimitMax)

@@ -94,7 +94,8 @@ public class PlayerMain : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         //Flip sprite 
 
-        if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim)){ 
+        if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim)){
+            createChargeParticles();
             if (facingRight) {
                 facingRight = true;
                 
@@ -152,7 +153,8 @@ public class PlayerMain : MonoBehaviour
 
         //No movement stats
         if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
-        { 
+        {
+            createChargeParticles();
             RB.velocity = new Vector2(0, 0);
         }
 
