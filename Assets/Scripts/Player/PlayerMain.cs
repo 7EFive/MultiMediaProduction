@@ -47,6 +47,7 @@ public class PlayerMain : MonoBehaviour
     private SpriteRenderer sprite;
     public DealDamage swing;
     public PlayerHealth health;
+    public static PlayerMain instance;
 
     [Header("Knockback")]
     public Transform center;
@@ -67,7 +68,11 @@ public class PlayerMain : MonoBehaviour
     public float dashPower;
     public float dashDuration;
     public float dashCooldown;
-    
+
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         RB = GetComponent<Rigidbody2D>();
@@ -112,14 +117,18 @@ public class PlayerMain : MonoBehaviour
 
         //Jumping
         Jumping();
-        if (charging)
-        {
-            createChargeParticles();
-        }
+       
 
         Old();
         
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older)
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older &&
+           !((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3")) ||
+           swing.isAttacking))
         {
             StartCoroutine(Dash());
         }

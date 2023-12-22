@@ -14430,7 +14430,7 @@ MonoBehaviour:
   swing: {fileID: 1091180158}
   health: {fileID: 1091180159}
   center: {fileID: 2054002840}
-  KnockbackForceX: 15
+  KnockbackForceX: 10
   KnockbackForceY: 12
   pkbd: 0
   kbd: 0
@@ -14690,8 +14690,8 @@ MonoBehaviour:
   parry: 25
   canParry: 1
   isParrying: 0
-  parryDuration: 0
-  parryCoolDown: 0
+  parryDuration: 0.5
+  parryCoolDown: 1
   ulti_start: 0
   charge: 0
   maxCharg: 100
