@@ -55,6 +55,7 @@ public class DealDamage : MonoBehaviour
                 isAttacking = true;
                 nextAttackTime = Time.time + attackRate * 1.05f;
 
+
             }
             else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
             {

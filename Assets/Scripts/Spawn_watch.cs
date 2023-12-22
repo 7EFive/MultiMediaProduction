@@ -1,8 +1,4 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
-using System.Transactions;
-using UnityEditor.PackageManager;
+
 using UnityEngine;
 
 public class Spawn_watch : MonoBehaviour
