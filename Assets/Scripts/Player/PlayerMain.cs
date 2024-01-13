@@ -11,6 +11,7 @@ public class PlayerMain : MonoBehaviour
     public float jumpHight;
     public float speed;
     private float walk;
+    //public bool interact;
 
     private float horizontal;
     public bool facingRight = true;
@@ -37,7 +38,7 @@ public class PlayerMain : MonoBehaviour
 
     [HideInInspector]
     public bool isFinished=false;
-    public bool older=false;
+    public bool older;
 
     [Header("Referenced Attributes")]
     public Animator animator;
@@ -132,7 +133,8 @@ public class PlayerMain : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
-
+        //Physics2D.IgnoreLayerCollision(7,8);
+        //Interact();
     }
 
     private void FixedUpdate()
@@ -163,12 +165,25 @@ public class PlayerMain : MonoBehaviour
         //No movement stats
         if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
         {
-            createChargeParticles();
+            //createChargeParticles();
             RB.velocity = new Vector2(0, 0);
         }
 
         
     }
+    /**public void Interact()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            interact = true;
+            //Debug.Log("Tryed to Interact");
+        }
+        else if (Input.GetKeyUp(KeyCode.E))
+        {
+            interact = false;
+        }
+    }
+    **/
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -177,6 +192,8 @@ public class PlayerMain : MonoBehaviour
         animator.SetBool("Fall", fall);
         animator.SetBool("IsJumping", !onGround);
         animator.SetBool("Hurt", false);
+        
+        
 
         if (onGround && isFinished)
         {
@@ -362,8 +379,7 @@ public class PlayerMain : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V) && older && !health.punished)
         {
             charging = true;
-            createChargeParticles();
-            Debug.Log("createChargeParticles();");
+            //createChargeParticles();
             animator.SetBool("Charge", true);
 
         }

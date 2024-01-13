@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     public float speed;
     private float walk = 8f;
     public float maxDistance;
+    public float canFlip;
 
     [Header("Knockback")]
     public bool kbd = false;
@@ -30,7 +31,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Referecne Objects")]
     public GameObject player;
-    public PlayerMain Player;
+    //public PlayerMain Player;
     PlayerHealth stop;
     public Animator animator;
 

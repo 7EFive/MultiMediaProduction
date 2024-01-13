@@ -5,10 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
+    public GameObject canvas;
+    LevelLoader fade;
 
     [SerializeField] GameObject menuPause;
     private static bool isPaused = false;
 
+    void Start()
+    {
+        fade = canvas.GetComponent<LevelLoader>();
+        
+    }
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape) && !isPaused) {
             pauseGame();
@@ -31,7 +38,8 @@ public class PauseMenu : MonoBehaviour
 
     public void goToMainMenu() {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Main Menu");
+        fade.BackToMenu();
+        //SceneManager.LoadScene("Main Menu");
     }
 
     public void test() {

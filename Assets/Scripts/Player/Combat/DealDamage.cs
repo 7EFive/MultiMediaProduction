@@ -89,6 +89,7 @@ public class DealDamage : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
+
             enemy.GetComponent<Enemy>().Knockback(transform);
             if (!charge.timeFrezze)
             {

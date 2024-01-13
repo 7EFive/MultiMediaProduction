@@ -12,7 +12,7 @@ public class EnemieHealth : MonoBehaviour
 
 
     public int maxHealth=100;
-    public int currentHealth=100;
+    int currentHealth;
 
 
 

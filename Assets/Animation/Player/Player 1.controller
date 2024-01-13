@@ -202,7 +202,7 @@ BlendTree:
     m_Motion: {fileID: 7400000, guid: ae2c0941fcabe944da71d49e284e5e8a, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 0.25
+    m_TimeScale: 0.3
     m_CycleOffset: 0
     m_DirectBlendParameter: xVelocity
     m_Mirror: 0
@@ -210,7 +210,7 @@ BlendTree:
     m_Motion: {fileID: 7400000, guid: 24e92569597bb14418b27d38400cec05, type: 2}
     m_Threshold: 0.5
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 0.25
+    m_TimeScale: 0.3
     m_CycleOffset: 0
     m_DirectBlendParameter: xVelocity
     m_Mirror: 0
@@ -608,7 +608,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player_old
+  m_Name: Old Movement
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

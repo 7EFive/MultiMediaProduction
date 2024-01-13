@@ -5,9 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class Buttons_Logic : MonoBehaviour
 {
+    public GameObject canvas;
+    LevelLoader fade;
 
+    void Start()
+    {
+        fade = canvas.GetComponent<LevelLoader>();
+    }
     public void startGame() {
-        SceneManager.LoadScene("Level 1");
+        fade.LoadNextLevel();
+        //SceneManager.LoadScene("Tutorial");
     }
     public void QuitGame() {
         Application.Quit();

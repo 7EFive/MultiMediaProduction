@@ -1,14 +1,17 @@
+using JetBrains.Annotations;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.U2D;
 
 public class PlayerHealth : MonoBehaviour
 {
+    public bool tutorial;
     [SerializeField] ParticleSystem chargeParticles;
     public Animator animator;
     public LayerMask enemy;
     public int maxHealth;
     public int currentHealth;
+    public int halfHealth;
     double regDamage;
     public float parry;
     public bool canParry=true;
@@ -16,6 +19,7 @@ public class PlayerHealth : MonoBehaviour
     public float parryDuration;
     public float parryCoolDown;
     public bool ulti_start = false;
+    bool noParticle = false;
 
     [HideInInspector]
     public float charge = 0f;
@@ -60,6 +64,12 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        halfHealth = maxHealth / 2;
+        if (tutorial)
+        {
+            //Physics2D.IgnoreLayerCollision(7,8);
+            currentHealth = halfHealth;
+        }
 
         var main = chargeParticles.main;
         float removeOther = chargeLimit * chargeLimit * 0.00035f;
@@ -70,7 +80,7 @@ public class PlayerHealth : MonoBehaviour
         if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)
         {
             canParry = false;
-
+            noParticle = true;
             //IEnumarator to Parry
             StartCoroutine(Parry());
             Debug.Log("tryed to parry...");
@@ -132,13 +142,15 @@ public class PlayerHealth : MonoBehaviour
 
         yield return new WaitForSeconds(parryCoolDown);
         canParry = true;
+        noParticle = false;
     }
     public void Age()
     {
-        if (currentHealth <= (maxHealth / 2))
+        if (halfHealth >= currentHealth)
         {
             player.older = true;
             player.Old();
+            //Debug.Log("should turn old");
         }
         else
         {
@@ -163,10 +175,15 @@ public class PlayerHealth : MonoBehaviour
         //Main charging function, charge and chargeLimit rises
         if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
         {
-            createChargeParticles();
-            Debug.Log("createChargeParticles();");
+            
             charge += Time.deltaTime * speedCharging * 3;
             chargeLimit += Time.deltaTime * speedCharging * 2;
+            if (!noParticle)
+            {
+                createChargeParticles();
+                Debug.Log("createChargeParticles();");
+            }
+            
         }
 
         //if Player stops charging, charging limit drops
@@ -196,6 +213,7 @@ public class PlayerHealth : MonoBehaviour
         {
             Debug.Log("isFully charged");
             charge = 0;
+            tutorial = false;
             currentHealth = maxHealth;
             player.charging = false;
             player.older = false;
