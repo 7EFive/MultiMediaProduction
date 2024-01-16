@@ -88,9 +88,15 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
+            if(enemy.GetComponent<EnemieHealth>() != null) {
+                enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
+            }
+        
+            if(enemy.GetComponent<Enemy>() != null) {
+                enemy.GetComponent<Enemy>().Knockback(transform);
+            }
+            
 
-            enemy.GetComponent<Enemy>().Knockback(transform);
             if (!charge.timeFrezze)
             {
                 charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
@@ -107,8 +113,14 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage/2);
-            enemy.GetComponent<Enemy>().Knockback(transform);
+            if(enemy.GetComponent<EnemieHealth>() != null){
+                enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage/2);
+            }
+
+            if(enemy.GetComponent<Enemy>() != null){
+                enemy.GetComponent<Enemy>().Knockback(transform);
+            }
+            
             if (!charge.timeFrezze)
             {
                 charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);

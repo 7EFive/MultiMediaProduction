@@ -109,7 +109,7 @@ public class PlayerHealth : MonoBehaviour
                 player.KnockbackP(transform);
                 regDamage = Time.time + 0.5;
             }
-            else
+            else if (damage > 0.5f)
             {
                 
                 currentHealth -= damage;
