@@ -2,21 +2,30 @@ using UnityEngine;
 
 public class DealDamage : MonoBehaviour
 {
+    //Reference values
     public Animator animator;
     public LayerMask enemyLayers;
     public Transform attackPoint;
 
+    // spherical range radius of attack
     public float attackRange;
+    // initializing DealDamage as instance for animator scripts
     public static DealDamage instance;
+    //bool for attacking
     public bool isAttacking = false;
+    //bool for attacking in Air and related to it
     public bool canAttackingInAir = true;
     public bool isAttackingInAir = false;
     public bool enterMidAirAttack = false;
-
+    
+    //initger for damage dealt by player
     public int attackDamage;
+    //cooldown after attacking
     public float attackRate;
+    //value that time.Delt or time.Time is supposed to pass for ending the cooldown
     public float nextAttackTime;
 
+    //References values for knockback and charge
     public PlayerMain kb;
     public PlayerHealth charge;
     
@@ -26,7 +35,7 @@ public class DealDamage : MonoBehaviour
         kb=GetComponent<PlayerMain>();
         charge = GetComponent<PlayerHealth>();
     }
-
+    // for animator script
     private void Awake()
     {
         instance = this;
@@ -42,21 +51,23 @@ public class DealDamage : MonoBehaviour
 
         
     }
-
+    // Main Combat method
     void Attack()
     {
+        //cheack if cooldown is still, if the players is knockbacked and if the palyer is Not attacking already
         if (Time.time >= nextAttackTime && !kb.kbd && !isAttacking)
         {
-            //Debug.Log(nextAttackTime);
+            //OnGround Combat
             if (Input.GetKeyDown(KeyCode.X) && kb.onGround)
             {
                 doDamage();
-                //Debug.Log("TOOK A SWING");
                 isAttacking = true;
+                //initialize cooldown of attacking
                 nextAttackTime = Time.time + attackRate * 1.05f;
 
 
             }
+            //MidAir Combat
             else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
             {
                 enterMidAirAttack = true;
@@ -80,6 +91,7 @@ public class DealDamage : MonoBehaviour
         }
     }
    
+    //OnGround damage area
     void doDamage()
     {
         
@@ -105,6 +117,7 @@ public class DealDamage : MonoBehaviour
         }
         
     }
+    //MidAir damage area
     void doDamageB()
     {
 
@@ -129,6 +142,7 @@ public class DealDamage : MonoBehaviour
         }
 
     }
+    //animation reset of MidAir Combat after landing
     void animationReset()
     {
         // if (!kb.onGround)
@@ -144,6 +158,7 @@ public class DealDamage : MonoBehaviour
             animator.SetBool("MidAirSlash", isAttackingInAir);
         }
     }
+    // drawing sphere at attack position in size of value attackRange
     void OnDrawGizmosSelected()
     {
         if (attackPoint == null)

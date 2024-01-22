@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerMain : MonoBehaviour
 {
+    // particles
     [SerializeField] ParticleSystem walkParticles;
     [SerializeField] ParticleSystem chargeParticles;
     [Header("Basic Stat Settings")]
@@ -13,12 +14,19 @@ public class PlayerMain : MonoBehaviour
     private float walk;
     //public bool interact;
 
+    //horizontal movment values
     private float horizontal;
     public bool facingRight = true;
     public Color defaultColor;
     public Color gameOver;
     public bool stayOnGround;
+    public bool fall = false;
+    public bool onGround = true;
+    // bool for chargin and ultimate press button
+    public bool charging = false;
+    public bool ult_press = false;
 
+    // collieders for diffrent states
     [Header("Colliders settings| Default")]
     public Vector2 defaultColliederOffset;
     public Vector2 defaultColliederSize;
@@ -31,13 +39,10 @@ public class PlayerMain : MonoBehaviour
     public Vector2 dashColliederOffset;
     public Vector2 dashColliederSize;
 
-    public bool fall = false;
-    public bool onGround = true;
-    public bool charging=false;
-    public bool ult_press = false;
-
     [HideInInspector]
+    // bool for dead state
     public bool isFinished=false;
+    // bool for weeker state
     public bool older;
 
     [Header("Referenced Attributes")]
@@ -54,9 +59,9 @@ public class PlayerMain : MonoBehaviour
     public Transform center;
     public float KnockbackForceX;
     public float KnockbackForceY;
-    //bool for parry knock back
+    //bool for parry knockback
     public bool pkbd = false;
-    //bool for regular knock back;
+    //bool for regular knockback;
     public bool kbd= false;
     public float kbDuration;
     public Color kb_color;
@@ -90,7 +95,7 @@ public class PlayerMain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Return value of is Dashing
+        // Return value of is Dashing
         if (isDashing)
         {
             return;
@@ -98,8 +103,8 @@ public class PlayerMain : MonoBehaviour
         Falling();
         AttackCheak();
         horizontal = Input.GetAxisRaw("Horizontal");
-        //Flip sprite 
-
+        
+        // Sprite doesn't flip while charging or dead on movment
         if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim)){
             createChargeParticles();
             if (facingRight) {
@@ -113,15 +118,17 @@ public class PlayerMain : MonoBehaviour
         }
         else
         {
+            // Flip sprite 
             Flip();
         }
 
-        //Jumping
+        // Jumping
         Jumping();
        
-
+        // cheking method if player is old
         Old();
         
+        // states cheks for dashing
         if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older &&
            !((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
@@ -134,17 +141,17 @@ public class PlayerMain : MonoBehaviour
             StartCoroutine(Dash());
         }
         //Physics2D.IgnoreLayerCollision(7,8);
-        //Interact();
     }
 
     private void FixedUpdate()
     {
+        // cheack for dash
         if (isDashing)
         {
             return;
         }
 
-        //regular playermovment
+        // regular playermovment
         if (!kbd && !pkbd && !charging)
         {
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
@@ -155,14 +162,14 @@ public class PlayerMain : MonoBehaviour
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
 
-        //old playermovment
+        // old playermovment
         if(!kbd && !pkbd && older){
             RB.velocity = new Vector2(horizontal * walk/2, RB.velocity.y);
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
 
-        //No movement stats
+        // No movement on specific states
         if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
         {
             //createChargeParticles();
@@ -171,20 +178,8 @@ public class PlayerMain : MonoBehaviour
 
         
     }
-    /**public void Interact()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            interact = true;
-            //Debug.Log("Tryed to Interact");
-        }
-        else if (Input.GetKeyUp(KeyCode.E))
-        {
-            interact = false;
-        }
-    }
-    **/
-    
+
+    // collieder onGround check 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         onGround = true;
@@ -194,7 +189,7 @@ public class PlayerMain : MonoBehaviour
         animator.SetBool("Hurt", false);
         
         
-
+        // dead state if health is under 0 and player is on gorund
         if (onGround && isFinished)
         {
             animator.SetBool("GameOver", true);
@@ -208,13 +203,14 @@ public class PlayerMain : MonoBehaviour
 
         }
     }
+    // Jumping method
     void Jumping()
     {
         if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !stayOnGround)
         {
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
             onGround = false;
-            //animator.SetBool("Grounded", onGround);
+            // animator.SetBool("Grounded", onGround);
             animator.SetBool("IsJumping", !onGround);
         }
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
@@ -222,6 +218,7 @@ public class PlayerMain : MonoBehaviour
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
         }
     }
+    // slowdown player on attacking state
     void AttackCheak()
     {
         if ((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
@@ -241,8 +238,8 @@ public class PlayerMain : MonoBehaviour
             stayOnGround = false;
         }
     }
-    
 
+    // Flip method
     void Flip() 
     {
         if(facingRight && horizontal < 0f || !facingRight && horizontal > 0f)
@@ -254,7 +251,7 @@ public class PlayerMain : MonoBehaviour
         }
     }
 
-    
+    // Falling method
     void Falling()
     {
         if (RB.velocity.y < -1)
@@ -272,18 +269,18 @@ public class PlayerMain : MonoBehaviour
         }
     }
    
-
+    // Dash method
     public IEnumerator Dash()
     {
         canDash = false;
         isDashing = true;
-        //Debug.Log("DASHING");
+        // Debug.Log("DASHING");
         c.size = dashColliederSize;
         c.offset = dashColliederOffset;
         float defaultGravity = RB.gravityScale;
         RB.gravityScale = 0f;
         RB.velocity = new Vector2(transform.localScale.x * dashPower * (speed / 2), 0f);
-        //Debug.Log("Is Dash");
+        // Debug.Log("Is Dash");
         animator.SetBool("isDashing", isDashing);
 
         yield return new WaitForSeconds(dashDuration);
@@ -292,17 +289,17 @@ public class PlayerMain : MonoBehaviour
         animator.SetBool("isDashing", isDashing);
         c.size = defaultColliederSize;
         c.offset = defaultColliederOffset;
-        //Debug.Log("Stop Dashing");
+        // Debug.Log("Stop Dashing");
 
         yield return new WaitForSeconds(dashCooldown);
-        //Debug.Log("can Dash");
+        // Debug.Log("can Dash");
         canDash = true;
     }
-    
+    // Knockback method
     public void Knockback(Transform t)
     {
         var dir = center.position - t.position;
-        //Debug.Log(dir);
+        // Debug.Log(dir);
         kbd = true;
         pkbd = false;
         KBF_x = KnockbackForceX;
@@ -319,6 +316,7 @@ public class PlayerMain : MonoBehaviour
         }
         StartCoroutine(Unknockback(kbDuration));
     }
+    // Knockback method
     public void KnockbackP(Transform t)
     {
         var dir = center.position - t.position;
@@ -341,6 +339,7 @@ public class PlayerMain : MonoBehaviour
 
  
     }
+    // stop Knockback method
     private IEnumerator Unknockback(float kbDur)
     {
         yield return new WaitForSeconds(kbDur);
@@ -351,7 +350,7 @@ public class PlayerMain : MonoBehaviour
         sprite.color = defaultColor;
     }
 
-
+    // Old cheack method
     public void Old()
     {
         if (onGround)
@@ -395,12 +394,12 @@ public class PlayerMain : MonoBehaviour
         }
         
     }
-
+    //Particle methods
     private void createWalkParticles() {
         walkParticles.Play();
     }
 
-    private void createChargeParticles() {
+    public void createChargeParticles() {
         chargeParticles.Play();
     }
     

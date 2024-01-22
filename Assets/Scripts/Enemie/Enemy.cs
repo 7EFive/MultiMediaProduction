@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     public float canFlip;
 
     [Header("Knockback")]
+    //bool for knockback
     public bool kbd = false;
     public float kbForceX;
     public float kbForceY;
@@ -46,6 +47,7 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        //cheack if time has stoped by ultimate
         if (!stop.timeFrezze)
         {
             
@@ -56,8 +58,10 @@ public class Enemy : MonoBehaviour
         
         
     }
+    //movment method
     void Movment()
     {
+        //cheack if player is in chasing distance
         Vector3 scale = transform.localScale;
         if (isChasing && !kbd)
         {
@@ -100,7 +104,7 @@ public class Enemy : MonoBehaviour
                 {
                     if (!isDashing && !kbd && canDash)
                     {
-
+                        
                         StartCoroutine(Dash());
                     }
                     //rb.velocity = new Vector2(0, 0);
@@ -124,6 +128,7 @@ public class Enemy : MonoBehaviour
 
         }
     }
+    //knockback method
     public void Knockback(Transform t)
     {
         if (!stop.timeFrezze)
@@ -145,12 +150,14 @@ public class Enemy : MonoBehaviour
             StartCoroutine(Unknockback());
         }
     }
+    //end of knockback
     private IEnumerator Unknockback()
     {
         yield return new WaitForSeconds(kbDuration);
         kbd = false;
         //animator.SetBool("Hit", false);
     }
+    //Dash to damage player
     private IEnumerator Dash()
     {
         isDashing = true;

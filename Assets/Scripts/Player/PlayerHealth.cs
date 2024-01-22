@@ -1,47 +1,66 @@
 using JetBrains.Annotations;
 using System.Collections;
+using System.Security.Cryptography;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
 public class PlayerHealth : MonoBehaviour
 {
+    // bool for tutorial
     public bool tutorial;
+    // Reference values
     [SerializeField] ParticleSystem chargeParticles;
     public Animator animator;
     public LayerMask enemy;
+    // health
     public int maxHealth;
     public int currentHealth;
     public int halfHealth;
+    // cooldown double
     double regDamage;
+    // parry values
     public float parry;
     public bool canParry=true;
     public bool isParrying=false;
     public float parryDuration;
     public float parryCoolDown;
     public bool ulti_start = false;
+    // no Particle bool
     bool noParticle = false;
 
+    //chargeing values
     [HideInInspector]
+    // start charging value 0
     public float charge = 0f;
+    // charging speed
     float speedCharging= 10f;
+    // max charge capacity
     public float maxCharg;
     [HideInInspector]
+    // constant charging amount meter
     public float chargeLimit;
+    // max charging amount meter
     public float chargeLimitMax;
+    // damage on going reaching max charging amount meter
     public int punishment;
+    // cooldown on charge usage
     public float punishmentTime;
     [HideInInspector]
+    //punishmend state check
     public bool punished = false;
+    // bool for ult animation
     public bool coolDown_Ult = false;
     public bool coolDown_ult_first_anim = false;
     public bool coolDown_ult_last_anim=false;
+    // bool on time Stop
     public bool timeFrezze = false;
 
     //Rigidbody2D rb;
+    // reference values
     public DealDamage swing;
     public PlayerMain player;
     public static PlayerHealth instance;
-
     public GameObject watch;
 
 
@@ -64,19 +83,21 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        // value on half health cheack for tutorial
         halfHealth = maxHealth / 2;
+        // player tutorial mode
         if (tutorial)
         {
             //Physics2D.IgnoreLayerCollision(7,8);
             currentHealth = halfHealth;
         }
-
+        // particle color change
         var main = chargeParticles.main;
         float removeOther = chargeLimit * chargeLimit * 0.00035f;
         main.startColor = new Color(1.0f, 1.0f - removeOther, 1.0f - removeOther, 1f);
         
 
-        //Parrying
+        // Parrying state
         if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)
         {
             canParry = false;
@@ -85,7 +106,7 @@ public class PlayerHealth : MonoBehaviour
             StartCoroutine(Parry());
             Debug.Log("tryed to parry...");
         }
-
+        //cheking players state
         Age();
         //Chargeing funstion young and old
         chargingFunctionOlder();
@@ -97,11 +118,12 @@ public class PlayerHealth : MonoBehaviour
     }
 
     
-
+    // taking damage method
     public void TakeDamage(int damage)
     {
         if (Time.time > regDamage)
         {
+            // no damage on successful parry
             if (isParrying)
             {
                 charge += parry;
@@ -109,6 +131,7 @@ public class PlayerHealth : MonoBehaviour
                 player.KnockbackP(transform);
                 regDamage = Time.time + 0.5;
             }
+            // damage registered only above 0.5
             else if (damage > 0.5f)
             {
                 
@@ -130,6 +153,7 @@ public class PlayerHealth : MonoBehaviour
             currentHealth = 0;
         }
     }
+    // Parry method
     private IEnumerator Parry()
     {
         canParry = false;
@@ -144,6 +168,7 @@ public class PlayerHealth : MonoBehaviour
         canParry = true;
         noParticle = false;
     }
+    // Players form change method
     public void Age()
     {
         if (halfHealth >= currentHealth)
@@ -159,6 +184,7 @@ public class PlayerHealth : MonoBehaviour
             player.Old();
         }
     }
+
     public void ChargeReg(float x) 
     {
         if (Time.time > regDamage)
@@ -169,7 +195,7 @@ public class PlayerHealth : MonoBehaviour
 
 
     }
-    //Charging in Old form
+    // Charging in Old form
     public void chargingFunctionOlder()
     {
         //Main charging function, charge and chargeLimit rises
@@ -180,7 +206,7 @@ public class PlayerHealth : MonoBehaviour
             chargeLimit += Time.deltaTime * speedCharging * 2;
             if (!noParticle)
             {
-                createChargeParticles();
+                //createChargeParticles();
                 Debug.Log("createChargeParticles();");
             }
             
@@ -228,6 +254,7 @@ public class PlayerHealth : MonoBehaviour
         
        
     }
+    // fill charging meter in young form
     void chargingFunctionYounger()
     {
         //ultimate button press on 100 or more charge
@@ -281,7 +308,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-
+    // Dead state of Player method
     void Die()
     {
         GetComponent<DealDamage>().enabled = false;
@@ -289,7 +316,7 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Game Over");
     }
 
-    private void createChargeParticles() {
-        chargeParticles.Play();
-    }
+    //private void createChargeParticles() {
+    //    chargeParticles.Play();
+    //}
 }

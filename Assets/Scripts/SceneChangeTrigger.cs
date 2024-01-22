@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.U2D;
 
 public class SceneChangeTrigger : MonoBehaviour
 {
@@ -16,7 +11,7 @@ public class SceneChangeTrigger : MonoBehaviour
     {
         fade = canvas.GetComponent<LevelLoader>();
     }
-
+    // triggers LevelLoder Script and Fade
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") && !other.isTrigger)

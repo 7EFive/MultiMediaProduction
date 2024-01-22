@@ -26,6 +26,7 @@ public class EnemieHealth : MonoBehaviour
     }
     void Update()
     {
+        //enemy dies after time unfrezzes if  current Health is or lower then 0
         if (currentHealth <= 0 && !dead && !time.timeFrezze)
         {
             dead = true;
@@ -34,6 +35,7 @@ public class EnemieHealth : MonoBehaviour
     }
     // Update is called once per frame
 
+    // method for takingDamage
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
@@ -42,7 +44,7 @@ public class EnemieHealth : MonoBehaviour
         animator.SetTrigger("Hurt"); 
     }
 
-
+    // Dead status of enemy
     void Die()
     {
         //Debug.Log("Abomination commited die!");
