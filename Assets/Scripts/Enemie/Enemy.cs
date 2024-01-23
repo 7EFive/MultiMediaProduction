@@ -139,7 +139,7 @@ public class Enemy : MonoBehaviour
             }
             kbd = true;
 
-            if (player.transform.position.x - maxDistance >= transform.position.x)
+            if (player.transform.position.x >= transform.position.x)
             {
                 rb.velocity = new Vector2(-kbForceX, kbForceY);
             }

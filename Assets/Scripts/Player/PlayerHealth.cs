@@ -1,9 +1,5 @@
-using JetBrains.Annotations;
 using System.Collections;
-using System.Security.Cryptography;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.U2D;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -309,7 +305,7 @@ public class PlayerHealth : MonoBehaviour
     }
 
     // Dead state of Player method
-    void Die()
+    public void Die()
     {
         GetComponent<DealDamage>().enabled = false;
         GetComponent<PlayerMain>().isFinished = true;
