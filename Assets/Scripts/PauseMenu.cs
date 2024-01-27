@@ -39,12 +39,11 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void goToMainMenu() {
+        PlayerMain.isGamePaused = false;
+        isPaused = false;
         Time.timeScale = 1f;
         fade.BackToMenu();
+        
         //SceneManager.LoadScene("Main Menu");
-    }
-
-    public void test() {
-        Debug.Log("Clicked");
     }
 }
