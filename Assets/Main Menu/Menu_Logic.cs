@@ -1,9 +1,9 @@
 //using System.Collections;
 //using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 
-public class Buttons_Logic : MonoBehaviour
+public class Menu_Logic : MonoBehaviour
 {
     public GameObject canvas;
     LevelLoader fade;
@@ -18,10 +18,5 @@ public class Buttons_Logic : MonoBehaviour
     }
     public void QuitGame() {
         Application.Quit();
-    }
-
-    [SerializeField] GameObject obj;
-    public void ChangeActiveState() {
-        obj.SetActive(!obj.activeSelf);
     }
 }

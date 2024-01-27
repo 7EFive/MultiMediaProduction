@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerMain : MonoBehaviour
 {
+    [HideInInspector] public static bool isGamePaused = false;
     // particles
     [SerializeField] ParticleSystem walkParticles;
     [SerializeField] ParticleSystem chargeParticles;
@@ -95,6 +96,9 @@ public class PlayerMain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isGamePaused) {
+            return;
+        }
         // Return value of is Dashing
         if (isDashing)
         {
@@ -145,6 +149,9 @@ public class PlayerMain : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isGamePaused) {
+            return;
+        }
         // cheack for dash
         if (isDashing)
         {
@@ -182,6 +189,9 @@ public class PlayerMain : MonoBehaviour
     // collieder onGround check 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (isGamePaused) {
+            return;
+        }
         onGround = true;
         fall = false;
         animator.SetBool("Fall", fall);
@@ -206,6 +216,9 @@ public class PlayerMain : MonoBehaviour
     // Jumping method
     void Jumping()
     {
+        if (isGamePaused) {
+            return;
+        }
         if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !stayOnGround)
         {
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
@@ -221,6 +234,9 @@ public class PlayerMain : MonoBehaviour
     // slowdown player on attacking state
     void AttackCheak()
     {
+        if (isGamePaused) {
+            return;
+        }
         if ((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
@@ -242,6 +258,10 @@ public class PlayerMain : MonoBehaviour
     // Flip method
     void Flip() 
     {
+        if (isGamePaused) {
+            return;
+        }
+
         if(facingRight && horizontal < 0f || !facingRight && horizontal > 0f)
         {
             facingRight = !facingRight;
@@ -254,6 +274,10 @@ public class PlayerMain : MonoBehaviour
     // Falling method
     void Falling()
     {
+        if (isGamePaused) {
+            return;
+        }
+
         if (RB.velocity.y < -1)
         {
             //Debug.Log("Falling");
@@ -298,6 +322,9 @@ public class PlayerMain : MonoBehaviour
     // Knockback method
     public void Knockback(Transform t)
     {
+        if (isGamePaused) {
+            return;
+        }
         var dir = center.position - t.position;
         // Debug.Log(dir);
         kbd = true;
@@ -319,6 +346,9 @@ public class PlayerMain : MonoBehaviour
     // Knockback method
     public void KnockbackP(Transform t)
     {
+        if (isGamePaused) {
+            return;
+        }
         var dir = center.position - t.position;
         //Debug.Log(dir);
 
@@ -353,6 +383,9 @@ public class PlayerMain : MonoBehaviour
     // Old cheack method
     public void Old()
     {
+        if (isGamePaused) {
+            return;
+        }
         if (onGround)
         {
             Charging();
@@ -375,6 +408,9 @@ public class PlayerMain : MonoBehaviour
     //Charging Health, Time Stop or slow down
     public void Charging()
     {
+        if (isGamePaused) {
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.V) && older && !health.punished)
         {
             charging = true;

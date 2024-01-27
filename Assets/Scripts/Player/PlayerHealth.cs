@@ -51,6 +51,7 @@ public class PlayerHealth : MonoBehaviour
     public bool coolDown_ult_last_anim=false;
     // bool on time Stop
     public bool timeFrezze = false;
+    [HideInInspector] public static bool timeFrezzeStatic = false;
 
     //Rigidbody2D rb;
     // reference values
@@ -58,6 +59,9 @@ public class PlayerHealth : MonoBehaviour
     public PlayerMain player;
     public static PlayerHealth instance;
     public GameObject watch;
+    //---
+    public float parryRange;
+    public Transform parryPoint;
 
 
     private void Awake()
@@ -79,6 +83,9 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (PlayerMain.isGamePaused) {
+            return;
+        }
         // value on half health cheack for tutorial
         halfHealth = maxHealth / 2;
         // player tutorial mode
@@ -117,11 +124,23 @@ public class PlayerHealth : MonoBehaviour
     // taking damage method
     public void TakeDamage(int damage)
     {
+        if (PlayerMain.isGamePaused) {
+            return;
+        }
         if (Time.time > regDamage)
         {
             // no damage on successful parry
             if (isParrying)
             {
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(parryPoint.position, parryRange, enemy);
+                
+                foreach (Collider2D enemy in hitEnemies){
+
+                    if(enemy.GetComponent<Enemy>() != null) {
+                        enemy.GetComponent<Enemy>().Knockback(transform);
+                    }
+
+                }
                 charge += parry;
                 Debug.Log("Succsesfull Parry");
                 player.KnockbackP(transform);
@@ -285,11 +304,13 @@ public class PlayerHealth : MonoBehaviour
         if (coolDown_Ult && !coolDown_ult_first_anim && !coolDown_ult_last_anim)
         {
             timeFrezze = true;
+            timeFrezzeStatic = true;
         }
         //charge droping after cloack spawn animation is done
         if (timeFrezze && charge != 0 && !player.older)
         {
             timeFrezze = true;
+            timeFrezzeStatic = true;
             charge -= Time.deltaTime * speedCharging;
         }
         //end of ultimate ability at charge 0
@@ -301,6 +322,7 @@ public class PlayerHealth : MonoBehaviour
             charge = 0;
             chargeLimit = 0;
             timeFrezze = false;
+            timeFrezzeStatic = false;
         }
     }
 

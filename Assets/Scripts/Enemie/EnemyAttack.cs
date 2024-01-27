@@ -56,15 +56,17 @@ public class EnemyAttack : MonoBehaviour
         {
             foreach (Collider2D player in hitEnemies)
             {
-
-                player.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
-                Debug.Log("Enemy is collieding with player");
-                //if (playerKB != null)
-                //{
-                //    playerKB.Knockback(transform);
-                //}
-                //playerKB.Knockback(transform);
-                attackSpeed = Time.time + attackCooldown;
+                if(PlayerHealth.timeFrezzeStatic == false)   {
+                    player.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
+                    Debug.Log("Enemy is collieding with player");
+                    //if (playerKB != null)
+                    //{
+                    //    playerKB.Knockback(transform);
+                    //}
+                    //playerKB.Knockback(transform);
+                    attackSpeed = Time.time + attackCooldown;
+                }
+                
             }
             //attackSpeed = Time.time + attackCooldown;
         }
