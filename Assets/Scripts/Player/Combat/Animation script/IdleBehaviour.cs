@@ -15,6 +15,7 @@ public class IdleBehaviour : StateMachineBehaviour
     {
         if (DealDamage.instance.isAttacking)
         {
+            DealDamage.instance.firstPunch();
             DealDamage.instance.animator.Play("Attack_1");
         }
         if (PlayerHealth.instance.coolDown_ult_first_anim)

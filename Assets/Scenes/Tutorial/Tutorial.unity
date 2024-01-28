@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.00065256364, g: 0.0005303656, b: 0.013509971, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6980,8 +6980,13 @@ MonoBehaviour:
   kb: {fileID: 514881067}
   charge: {fileID: 514881068}
   AudioClip:
-  - {fileID: 8300000, guid: 58bde2c5b0df6a3418d4f73b783f80aa, type: 3}
-  - {fileID: 8300000, guid: 4fcb218f164ed8a4bab8c1b2851ff418, type: 3}
+  - {fileID: 8300000, guid: da4cd659b99a4cc49ad5767ef0d0efa2, type: 3}
+  - {fileID: 8300000, guid: 6d5a8c4c497cf004f8a730cf309b43e7, type: 3}
+  - {fileID: 8300000, guid: 459987e628fe9b94ab65e813c1865b5f, type: 3}
+  - {fileID: 8300000, guid: 68aad76cd9a21e94c8df1bfbe8b0e50a, type: 3}
+  - {fileID: 8300000, guid: 97f0e1fda6dd30244812e55b8ac2eb17, type: 3}
+  - {fileID: 8300000, guid: dd3c3897473ef5d478ab2efa9b151da9, type: 3}
+  - {fileID: 8300000, guid: e9a7328f8fd1c6c40b7882b7c8994ce0, type: 3}
   audioSource: {fileID: 186816449}
 --- !u!61 &514881070
 BoxCollider2D:
@@ -7308,7 +7313,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7333,7 +7338,7 @@ Transform:
   m_GameObject: {fileID: 576183039}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -37.1, y: -3.2999356, z: -9.956985}
+  m_LocalPosition: {x: 62.399994, y: -1.4544249, z: -9.956985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8210,7 +8215,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 203, y: 59.99994}
+  m_AnchoredPosition: {x: 203, y: 59.999878}
   m_SizeDelta: {x: 2101.6963, y: 524.8364}
   m_Pivot: {x: 0.07265608, y: 0.69014347}
 --- !u!1 &1025796155
@@ -24708,9 +24713,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 7383537523706068377, guid: d75d40ef15401d1419d0e1b7d62fc145, type: 2}
-  m_audioClip: {fileID: 8300000, guid: cd61628e97cafe549b4ffd288e00e7d0, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 92c29c23657980d4a93da5a13ac058b4, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -25346,5 +25351,5 @@ SceneRoots:
   - {fileID: 5290369525748622873}
   - {fileID: 1074024614}
   - {fileID: 1684445050}
-  - {fileID: 244733062}
   - {fileID: 604065836}
+  - {fileID: 244733062}

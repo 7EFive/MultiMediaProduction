@@ -221,6 +221,7 @@ public class PlayerMain : MonoBehaviour
         }
         if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !stayOnGround)
         {
+            DealDamage.instance.jumpSound();
             RB.velocity = new Vector2(RB.velocity.x, jumpHight);
             onGround = false;
             // animator.SetBool("Grounded", onGround);
@@ -296,6 +297,7 @@ public class PlayerMain : MonoBehaviour
     // Dash method
     public IEnumerator Dash()
     {
+        DealDamage.instance.dashSound();
         canDash = false;
         isDashing = true;
         // Debug.Log("DASHING");
@@ -415,11 +417,13 @@ public class PlayerMain : MonoBehaviour
         {
             charging = true;
             //createChargeParticles();
+            DealDamage.instance.chargeSound();
             animator.SetBool("Charge", true);
-
+            
         }
         if (Input.GetKeyUp(KeyCode.V) && older)
         {
+            DealDamage.instance.SoundStop();
             charging = false;
             animator.SetBool("Charge", false);
         }

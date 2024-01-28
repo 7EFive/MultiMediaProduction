@@ -65,7 +65,6 @@ public class DealDamage : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.X) && kb.onGround)
             {
                 doDamage();
-                playFirst();
                 isAttacking = true;
                 //initialize cooldown of attacking
                 nextAttackTime = Time.time + attackRate * 1.05f;
@@ -75,12 +74,14 @@ public class DealDamage : MonoBehaviour
             //MidAir Combat
             else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
             {
+                jumpAttack();
                 enterMidAirAttack = true;
                 animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
                 canAttackingInAir = false;
             }
             if (!canAttackingInAir && !isAttackingInAir && enterMidAirAttack)
             {
+                jumpAttack();
                 isAttackingInAir = true;
                 animator.SetBool("MidAirSlash", isAttackingInAir);
                 enterMidAirAttack = false;
@@ -170,9 +171,44 @@ public class DealDamage : MonoBehaviour
             return;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
-    public void playFirst()
+    public void firstPunch()
     {
         audioSource.clip = AudioClip[0];
         audioSource.PlayOneShot(audioSource.clip);  
+    }
+    public void secondPunch()
+    {
+        audioSource.clip = AudioClip[1];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+    public void thirdPunch()
+    {
+        audioSource.clip = AudioClip[2];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+    public void chargeSound()
+    {
+        audioSource.clip = AudioClip[3];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+    public void dashSound()
+    {
+        audioSource.clip = AudioClip[4];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+    public void jumpSound()
+    {
+        audioSource.clip = AudioClip[5];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+    public void jumpAttack()
+    {
+        audioSource.clip = AudioClip[6];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+    public void SoundStop()
+    {
+        //audioSource.clip = AudioClip[3];
+        audioSource.Stop();
     }
 }

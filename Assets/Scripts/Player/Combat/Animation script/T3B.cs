@@ -15,7 +15,9 @@ public class T3B : StateMachineBehaviour
     {
         if (DealDamage.instance.isAttacking)
         {
+            DealDamage.instance.thirdPunch();
             DealDamage.instance.animator.Play("Attack_3");
+            
         }
     }
 

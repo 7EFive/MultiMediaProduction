@@ -15,13 +15,16 @@ public class Charge_start : StateMachineBehaviour
     {
         if (PlayerHealth.instance.coolDown_ult_last_anim)
         {
+            
             PlayerHealth.instance.animator.Play("charging_main");
+            
         }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+       // DealDamage.instance.chargeSoundStop();
         PlayerHealth.instance.coolDown_ult_last_anim = true;
     }
 
