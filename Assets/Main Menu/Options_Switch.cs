@@ -6,4 +6,5 @@ public class Options_Canvas : MonoBehaviour
     public void ChangeActiveState() {
         optionsCanvas.SetActive(!optionsCanvas.activeSelf);
     }
+    
 }

@@ -28,7 +28,11 @@ public class DealDamage : MonoBehaviour
     //References values for knockback and charge
     public PlayerMain kb;
     public PlayerHealth charge;
-    
+
+    //Tryin to do some musik
+    public AudioClip[] AudioClip;
+    public AudioSource audioSource;
+
 
     private void Start()
     {
@@ -61,6 +65,7 @@ public class DealDamage : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.X) && kb.onGround)
             {
                 doDamage();
+                playFirst();
                 isAttacking = true;
                 //initialize cooldown of attacking
                 nextAttackTime = Time.time + attackRate * 1.05f;
@@ -164,5 +169,10 @@ public class DealDamage : MonoBehaviour
         if (attackPoint == null)
             return;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
+    public void playFirst()
+    {
+        audioSource.clip = AudioClip[0];
+        audioSource.PlayOneShot(audioSource.clip);  
     }
 }
