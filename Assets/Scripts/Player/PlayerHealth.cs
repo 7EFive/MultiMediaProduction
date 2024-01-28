@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
     public bool tutorial;
     // Reference values
     [SerializeField] ParticleSystem chargeParticles;
+    [SerializeField] ParticleSystem currentChargeParticles;
     public Animator animator;
     public LayerMask enemy;
     // health
@@ -98,7 +99,11 @@ public class PlayerHealth : MonoBehaviour
         var main = chargeParticles.main;
         float removeOther = chargeLimit * chargeLimit * 0.00035f;
         main.startColor = new Color(1.0f, 1.0f - removeOther, 1.0f - removeOther, 1f);
-        
+
+        //currentChargeParticles
+        var currentCharge = currentChargeParticles.main;
+        removeOther = charge * charge * 0.00025f;
+        currentCharge.startColor = new Color(0f , 1.0f - removeOther, 0.9f, 1f);
 
         // Parrying state
         if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)
@@ -331,6 +336,7 @@ public class PlayerHealth : MonoBehaviour
     {
         GetComponent<DealDamage>().enabled = false;
         GetComponent<PlayerMain>().isFinished = true;
+        animator.SetBool("MidAirSlash", false);
         Debug.Log("Game Over");
     }
 
