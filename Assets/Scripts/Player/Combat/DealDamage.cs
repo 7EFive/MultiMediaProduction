@@ -74,14 +74,14 @@ public class DealDamage : MonoBehaviour
             //MidAir Combat
             else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
             {
-                jumpAttack();
+                jumpAttackSound();
                 enterMidAirAttack = true;
                 animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
                 canAttackingInAir = false;
             }
             if (!canAttackingInAir && !isAttackingInAir && enterMidAirAttack)
             {
-                jumpAttack();
+                jumpAttackSound();
                 isAttackingInAir = true;
                 animator.SetBool("MidAirSlash", isAttackingInAir);
                 enterMidAirAttack = false;
@@ -107,6 +107,7 @@ public class DealDamage : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             if(enemy.GetComponent<EnemieHealth>() != null) {
+                hitSound();
                 enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
             }
         
@@ -133,6 +134,7 @@ public class DealDamage : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             if(enemy.GetComponent<EnemieHealth>() != null){
+                hitSound();
                 enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage/2);
             }
 
@@ -171,6 +173,8 @@ public class DealDamage : MonoBehaviour
             return;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
+
+    //Sounds Collection Array
     public void firstPunch()
     {
         audioSource.clip = AudioClip[0];
@@ -201,14 +205,37 @@ public class DealDamage : MonoBehaviour
         audioSource.clip = AudioClip[5];
         audioSource.PlayOneShot(audioSource.clip);
     }
-    public void jumpAttack()
+    public void jumpAttackSound()
     {
         audioSource.clip = AudioClip[6];
         audioSource.PlayOneShot(audioSource.clip);
     }
+    public bool runSound()
+    {
+        audioSource.clip = AudioClip[7];
+        audioSource.Play();
+        //audioSource.PlayOneShot(audioSource.clip);
+        if (audioSource.isPlaying)
+        {
+            return true;
+        }
+        return false;
+    }
+    public void hitSound()
+    {
+        audioSource.clip = AudioClip[8];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+
+    public void parrySound()
+    {
+        audioSource.clip = AudioClip[9];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+
     public void SoundStop()
     {
-        //audioSource.clip = AudioClip[3];
         audioSource.Stop();
+        
     }
 }

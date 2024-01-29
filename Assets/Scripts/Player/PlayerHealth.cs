@@ -102,7 +102,7 @@ public class PlayerHealth : MonoBehaviour
 
         //currentChargeParticles
         var currentCharge = currentChargeParticles.main;
-        removeOther = charge * charge * 0.00025f;
+        removeOther = charge * charge * 0.00007f;
         currentCharge.startColor = new Color(0f, 1.0f - removeOther, 0.9f, 1f);
 
 
@@ -180,11 +180,11 @@ public class PlayerHealth : MonoBehaviour
         canParry = false;
         isParrying = true;
         animator.SetBool("Parry", isParrying);
-        
+        DealDamage.instance.parrySound();
         yield return new WaitForSeconds(parryDuration);
         isParrying = false;
         animator.SetBool("Parry", isParrying);
-
+        
         yield return new WaitForSeconds(parryCoolDown);
         canParry = true;
         noParticle = false;

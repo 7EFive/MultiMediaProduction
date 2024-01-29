@@ -75,7 +75,7 @@ public class PlayerMain : MonoBehaviour
     public float dashPower;
     public float dashDuration;
     public float dashCooldown;
-
+    public AudioSource moveSound;
     private void Awake()
     {
         instance = this;
@@ -164,6 +164,12 @@ public class PlayerMain : MonoBehaviour
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
             if(RB.velocity[1] != 0 && onGround) {
                 createWalkParticles();
+                if (moveSound.isPlaying) return;
+                moveSound.Play();
+            }
+            else
+            {
+                moveSound.Stop();
             }
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
