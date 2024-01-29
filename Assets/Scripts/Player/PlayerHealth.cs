@@ -103,7 +103,8 @@ public class PlayerHealth : MonoBehaviour
         //currentChargeParticles
         var currentCharge = currentChargeParticles.main;
         removeOther = charge * charge * 0.00025f;
-        currentCharge.startColor = new Color(0f , 1.0f - removeOther, 0.9f, 1f);
+        currentCharge.startColor = new Color(0f, 1.0f - removeOther, 0.9f, 1f);
+
 
         // Parrying state
         if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)

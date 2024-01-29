@@ -13,7 +13,7 @@ public class Charge_start : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (PlayerHealth.instance.coolDown_ult_last_anim)
+        if (PlayerHealth.instance.coolDown_ult_first_anim && PlayerHealth.instance.coolDown_ult_last_anim)
         {
             
             PlayerHealth.instance.animator.Play("charging_main");
@@ -25,7 +25,7 @@ public class Charge_start : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
        // DealDamage.instance.chargeSoundStop();
-        PlayerHealth.instance.coolDown_ult_last_anim = true;
+       // PlayerHealth.instance.coolDown_ult_last_anim = true;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

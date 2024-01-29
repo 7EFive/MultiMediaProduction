@@ -110,7 +110,7 @@ public class PlayerMain : MonoBehaviour
         
         // Sprite doesn't flip while charging or dead on movment
         if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim)){
-            createChargeParticles();
+            //createChargeParticles();
             if (facingRight) {
                 facingRight = true;
                 
@@ -443,4 +443,5 @@ public class PlayerMain : MonoBehaviour
         chargeParticles.Play();
     }
     
+
 }

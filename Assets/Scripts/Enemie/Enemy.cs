@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     private float walk = 8f;
     public float maxDistance;
     public float canFlip;
+    public bool attack= false;
 
     [Header("Knockback")]
     //bool for knockback
@@ -69,7 +70,7 @@ public class Enemy : MonoBehaviour
             if (player.transform.position.x > transform.position.x)
             {
                 //Debug.Log("Player ditected on right side");
-                scale.x = Mathf.Abs(scale.x);
+                scale.x = Mathf.Abs(scale.x) * -1;
                 if (player.transform.position.x - maxDistance >= transform.position.x)
                 {
                     //Debug.Log("Moving to the right side");
@@ -81,6 +82,7 @@ public class Enemy : MonoBehaviour
                     if (!isDashing && !kbd && canDash)
                     {
                         StartCoroutine(Dash());
+
                     }
 
                     //rb.velocity = new Vector2(0, 0);
@@ -93,7 +95,7 @@ public class Enemy : MonoBehaviour
             else if (player.transform.position.x < transform.position.x)
             {
                 //Debug.Log("Player ditected on left side");
-                scale.x = Mathf.Abs(scale.x) * -1;
+                scale.x = Mathf.Abs(scale.x) ;
                 if (player.transform.position.x + maxDistance <= transform.position.x)
                 {
                     //Debug.Log("Moving to the left side");
@@ -164,15 +166,19 @@ public class Enemy : MonoBehaviour
         //Debug.Log("DASHING");
         //float defaultGravity = rb.gravityScale;
         //rb.gravityScale = 0f;
+        attack = true;
+        animator.SetBool("Attack", attack);
         rb.velocity = new Vector2(transform.localScale.x * dashPower, 0f);
         //animator.SetBool("isDashing", isDashing);
 
         yield return new WaitForSeconds(dashDuration);
         //rb.gravityScale = defaultGravity;
         //animator.SetBool("isDashing", isDashing);
+        attack = false;
 
         yield return new WaitForSeconds(dashCooldown);
         isDashing = false;
+        animator.SetBool("Attack", attack);
     }
 
 
