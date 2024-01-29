@@ -164,8 +164,10 @@ public class PlayerMain : MonoBehaviour
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
             if(RB.velocity[1] != 0 && onGround) {
                 createWalkParticles();
-                if (moveSound.isPlaying) return;
-                moveSound.Play();
+                if (!moveSound.isPlaying)
+                {
+                    moveSound.Play();
+                }
             }
             else
             {

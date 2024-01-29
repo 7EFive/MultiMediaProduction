@@ -6922,7 +6922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cf3ca80f2aca24fa5d27c3e7560181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorial: 1
+  tutorial: 0
   chargeParticles: {fileID: 1541184423}
   currentChargeParticles: {fileID: 1200284155}
   animator: {fileID: 514881071}
@@ -7414,7 +7414,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7439,7 +7439,7 @@ Transform:
   m_GameObject: {fileID: 576183039}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -37.1, y: -3.2999356, z: -9.956985}
+  m_LocalPosition: {x: -37.1, y: 12.700071, z: -9.956985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
