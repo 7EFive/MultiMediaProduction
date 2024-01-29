@@ -168,17 +168,18 @@ public class Enemy : MonoBehaviour
         //rb.gravityScale = 0f;
         attack = true;
         animator.SetBool("Attack", attack);
-        rb.velocity = new Vector2(transform.localScale.x * dashPower, 0f);
+        rb.velocity = new Vector2(transform.localScale.x * -dashPower, 0f);
         //animator.SetBool("isDashing", isDashing);
 
         yield return new WaitForSeconds(dashDuration);
         //rb.gravityScale = defaultGravity;
         //animator.SetBool("isDashing", isDashing);
         attack = false;
+        animator.SetBool("Attack", attack);
 
         yield return new WaitForSeconds(dashCooldown);
         isDashing = false;
-        animator.SetBool("Attack", attack);
+        
     }
 
 
