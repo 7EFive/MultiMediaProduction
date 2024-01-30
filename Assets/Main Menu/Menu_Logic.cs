@@ -16,7 +16,7 @@ public class Menu_Logic : MonoBehaviour
     public void startGame() {
         if (SceneManager.GetActiveScene().buildIndex == 4)
         {
-            SceneManager.LoadScene("Tutorial");
+            SceneManager.LoadScene("Main Menu");
         }
         else
         {
