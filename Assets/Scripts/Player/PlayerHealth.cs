@@ -31,7 +31,7 @@ public class PlayerHealth : MonoBehaviour
     // start charging value 0
     public float charge = 0f;
     // charging speed
-    float speedCharging= 10f;
+    public float speedCharging= 10f;
     // max charge capacity
     public float maxCharg;
     [HideInInspector]
@@ -101,9 +101,15 @@ public class PlayerHealth : MonoBehaviour
         main.startColor = new Color(1.0f, 1.0f - removeOther, 1.0f - removeOther, 1f);
 
         //currentChargeParticles
+        
         var currentCharge = currentChargeParticles.main;
         removeOther = charge * charge * 0.00007f;
         currentCharge.startColor = new Color(0f, 1.0f - removeOther, 0.9f, 1f);
+        if (charge == 0)
+        {
+            currentCharge.startColor = new Color(0f, 0f, 0f, 0f);
+
+        }
 
 
         // Parrying state
@@ -149,7 +155,7 @@ public class PlayerHealth : MonoBehaviour
                 }
                 charge += parry;
                 Debug.Log("Succsesfull Parry");
-                player.KnockbackP(transform);
+                //player.KnockbackP(transform);
                 regDamage = Time.time + 0.5;
             }
             // damage registered only above 0.5
@@ -337,6 +343,7 @@ public class PlayerHealth : MonoBehaviour
     {
         GetComponent<DealDamage>().enabled = false;
         GetComponent<PlayerMain>().isFinished = true;
+        animator.SetBool("Old", false);
         animator.SetBool("MidAirSlash", false);
         Debug.Log("Game Over");
     }

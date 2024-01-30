@@ -36,7 +36,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 700366255642553318}
-    m_Position: {x: 310, y: -120, z: 0}
+    m_Position: {x: 320, y: -130, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2284533556404012181}
     m_Position: {x: 100, y: -30, z: 0}
@@ -45,7 +45,7 @@ AnimatorStateMachine:
     m_Position: {x: -90, y: -130, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4593693824502783562}
-    m_Position: {x: 300, y: -230, z: 0}
+    m_Position: {x: 320, y: -230, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -7440630906652950008}
@@ -65,7 +65,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: attack
-  m_Speed: 0.5
+  m_Speed: 0.35
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 2791620207957190581}
@@ -126,19 +126,19 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: isDead
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Attack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -160,7 +160,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ilde_abom
-  m_Speed: 1
+  m_Speed: 0.35
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 5512506090832671559}
