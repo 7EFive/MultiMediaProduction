@@ -161,18 +161,25 @@ public class PlayerMain : MonoBehaviour
         // regular playermovment
         if (!kbd && !pkbd && !charging)
         {
+            
             RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
             if(RB.velocity[1] != 0 && onGround) {
                 createWalkParticles();
+                //Debug.Log("Grounded?"+onGround);
+                //Debug.Log("RB.velocity[1] != 0 ?" + RB.velocity[1]);
                 if (!moveSound.isPlaying)
                 {
                     moveSound.Play();
                 }
+               
+
             }
             else
             {
                 moveSound.Stop();
             }
+
+
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
         }
@@ -182,10 +189,13 @@ public class PlayerMain : MonoBehaviour
             RB.velocity = new Vector2(horizontal * walk/2, RB.velocity.y);
             animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
             animator.SetFloat("yVelocity", RB.velocity.y);
+            
+
         }
 
+
         // No movement on specific states
-        if((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
+        if ((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
         {
             //createChargeParticles();
             RB.velocity = new Vector2(0, 0);

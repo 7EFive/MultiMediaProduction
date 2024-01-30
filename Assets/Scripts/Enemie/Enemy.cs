@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -37,6 +38,11 @@ public class Enemy : MonoBehaviour
     PlayerHealth stop;
     public Animator animator;
 
+    public AudioClip[] AudioClip;
+    public AudioSource audioSource;
+    public AudioSource aliveSound;
+    private int counterD = 0;
+    public static Enemy instance;
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -51,10 +57,29 @@ public class Enemy : MonoBehaviour
         //cheack if time has stoped by ultimate
         if (!stop.timeFrezze)
         {
-            
-            //Movment
-            Movment();
-            
+            try
+            {
+                //sound
+                if (!dead && !aliveSound.isPlaying)
+                {
+                    aliveSound.Play();
+                }
+                if (dead && counterD == 0)
+                {
+                    aliveSound.Stop();
+                    deadSound();
+                    counterD++;
+                }
+                //Movment
+                Movment();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+
+
         }
         
         
@@ -180,6 +205,17 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(dashCooldown);
         isDashing = false;
         
+    }
+    public void deadSound()
+    {
+        audioSource.clip = AudioClip[0];
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+
+    public void SoundStop()
+    {
+        audioSource.Stop();
+
     }
 
 

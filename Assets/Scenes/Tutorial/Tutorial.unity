@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0007035985, g: 0.0005272665, b: 0.0135468505, a: 1}
+  m_IndirectSpecularColor: {r: 0.0007035981, g: 0.0005272663, b: 0.013546791, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7248,6 +7248,7 @@ MonoBehaviour:
   charge: 0
   speedCharging: 10
   maxCharg: 100
+  overloadCharge: 0
   chargeLimit: 0
   chargeLimitMax: 50
   punishment: 10
@@ -25919,6 +25920,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 514881065}
+    - target: {fileID: 7365256508025176614, guid: 0e29696e83cf83146b19e86c68e748e5, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 186816449}
+    - target: {fileID: 7365256508025176614, guid: 0e29696e83cf83146b19e86c68e748e5, type: 3}
+      propertyPath: AudioClip.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7365256508025176614, guid: 0e29696e83cf83146b19e86c68e748e5, type: 3}
+      propertyPath: AudioClip.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 80651036b7cb5fb49a1efe89f6d92dc1, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -57,7 +57,7 @@ public class EnemieHealth : MonoBehaviour
         this.en.isChasing = false;
 
         Debug.Log("ENEMY DIED");
-
+        //Enemy.instance.deadSound();
         //this.enabled = false;
 
     }

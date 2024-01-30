@@ -1357,6 +1357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1188949971}
   - component: {fileID: 1188949972}
+  - component: {fileID: 1188949973}
   m_Layer: 0
   m_Name: ButtoClick
   m_TagString: Untagged
@@ -1475,6 +1476,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!168 &1188949973
+AudioEchoFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188949970}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Delay: 500
+  m_DecayRatio: 0.5
+  m_WetMix: 1
+  m_DryMix: 1
 --- !u!1 &1232549896
 GameObject:
   m_ObjectHideFlags: 0
