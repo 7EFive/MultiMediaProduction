@@ -89,6 +89,7 @@ public class DealDamage : MonoBehaviour
             if (isAttackingInAir && !enterMidAirAttack)
             {
 
+                
                 isAttackingInAir = false;
                 Debug.Log("TOOK A SWING MID AIR");
                 doDamageB();

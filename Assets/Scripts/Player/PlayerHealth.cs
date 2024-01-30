@@ -34,11 +34,15 @@ public class PlayerHealth : MonoBehaviour
     public float speedCharging= 10f;
     // max charge capacity
     public float maxCharg;
+    // max charge overload limit
+    public float overloadCharge;
     [HideInInspector]
     // constant charging amount meter
     public float chargeLimit;
     // max charging amount meter
     public float chargeLimitMax;
+    // overload cap boolean
+    bool chargeCapMax=false;
     // damage on going reaching max charging amount meter
     public int punishment;
     // cooldown on charge usage
@@ -284,6 +288,13 @@ public class PlayerHealth : MonoBehaviour
     // fill charging meter in young form
     void chargingFunctionYounger()
     {
+        if (player.kbd)
+        {
+            coolDown_ult_first_anim = false;
+            coolDown_ult_last_anim = false;
+            coolDown_Ult = false;
+            watch.SetActive(false);
+        }
         //ultimate button press on 100 or more charge
         if (player.ult_press && player.onGround)
         {
@@ -304,12 +315,18 @@ public class PlayerHealth : MonoBehaviour
         //charge overloading with max 125 charge value droping to 100
         if (charge > maxCharg && !player.older)
         {
-            charge -= Time.deltaTime * speedCharging / 2;
+            chargeCapMax = true;
+            charge -= Time.deltaTime * speedCharging / 3;
 
-            if (charge > (maxCharg * 1.25f))
+            if (chargeCapMax && charge >= overloadCharge)
             {
-                charge = maxCharg * 1.25f;
+                charge = overloadCharge;
             }
+            if(chargeCapMax && charge < maxCharg)
+            {
+                charge = maxCharg;
+            }
+            
         }
 
         // timeFrezze value for timeFrezze old
@@ -323,6 +340,7 @@ public class PlayerHealth : MonoBehaviour
         {
             timeFrezze = true;
             timeFrezzeStatic = true;
+            chargeCapMax = false;
             charge -= Time.deltaTime * speedCharging;
         }
         //end of ultimate ability at charge 0
