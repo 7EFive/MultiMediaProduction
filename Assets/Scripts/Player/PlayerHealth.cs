@@ -115,25 +115,29 @@ public class PlayerHealth : MonoBehaviour
 
         }
 
-
-        // Parrying state
-        if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging && !player.kbd)
+        if(!player.kbd)
         {
-            canParry = false;
-            noParticle = true;
-            //IEnumarator to Parry
-            StartCoroutine(Parry());
-            Debug.Log("tryed to parry...");
+            // Parrying state
+            if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging)
+            {
+                canParry = false;
+                noParticle = true;
+                //IEnumarator to Parry
+                StartCoroutine(Parry());
+                Debug.Log("tryed to parry...");
+            }
+            //cheking players state
+            Age();
+            //Chargeing funstion young and old
+            chargingFunctionOlder();
+            chargingFunctionYounger();
+            if (charge < 0)
+            {
+                charge = 0;
+            }
         }
-        //cheking players state
-        Age();
-        //Chargeing funstion young and old
-        chargingFunctionOlder();
-        chargingFunctionYounger();
-        if (charge < 0)
-        {
-            charge = 0;
-        }
+        
+        
     }
 
     
@@ -355,6 +359,7 @@ public class PlayerHealth : MonoBehaviour
             timeFrezzeStatic = false;
         }
     }
+
 
     // Dead state of Player method
     public void Die()

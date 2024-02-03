@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.InteropServices;
 //using Unity.VisualScripting;
 using UnityEngine;
 
@@ -60,8 +61,6 @@ public class PlayerMain : MonoBehaviour
     public Transform center;
     public float KnockbackForceX;
     public float KnockbackForceY;
-    //bool for parry knockback
-    public bool pkbd = false;
     //bool for regular knockback;
     public bool kbd= false;
     public float kbDuration;
@@ -109,7 +108,7 @@ public class PlayerMain : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         
         // Sprite doesn't flip while charging or dead on movment
-        if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim)){
+        if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim) || kbd){
             //createChargeParticles();
             if (facingRight) {
                 facingRight = true;
@@ -124,6 +123,15 @@ public class PlayerMain : MonoBehaviour
         {
             // Flip sprite 
             Flip();
+        }
+        if (kbd)
+        {
+            health.coolDown_ult_first_anim = false;
+            health.coolDown_ult_last_anim=false;
+            health.watch.SetActive(false);
+            ult_press = false;
+            health.coolDown_Ult = false;
+            health.timeFrezze = false;
         }
 
         // Jumping
@@ -157,49 +165,54 @@ public class PlayerMain : MonoBehaviour
         {
             return;
         }
-
-        // regular playermovment
-        if (!kbd && !pkbd && !charging)
+        if (!kbd)
         {
-            
-            RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
-            if(RB.velocity[1] != 0 && onGround) {
-                createWalkParticles();
-                //Debug.Log("Grounded?"+onGround);
-                //Debug.Log("RB.velocity[1] != 0 ?" + RB.velocity[1]);
-                if (!moveSound.isPlaying)
-                {
-                    moveSound.Play();
-                }
-               
-
-            }
-            else
+            if (!charging)
             {
-                moveSound.Stop();
+
+                RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
+                if (RB.velocity[1] != 0 && onGround)
+                {
+                    createWalkParticles();
+                    //Debug.Log("Grounded?"+onGround);
+                    //Debug.Log("RB.velocity[1] != 0 ?" + RB.velocity[1]);
+                    if (!moveSound.isPlaying)
+                    {
+                        moveSound.Play();
+                    }
+
+
+                }
+                else
+                {
+                    moveSound.Stop();
+                }
+
+
+                animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
+                animator.SetFloat("yVelocity", RB.velocity.y);
+            }
+
+            // old playermovment
+            if (older)
+            {
+                RB.velocity = new Vector2(horizontal * walk / 2, RB.velocity.y);
+                animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
+                animator.SetFloat("yVelocity", RB.velocity.y);
+
+
             }
 
 
-            animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
-            animator.SetFloat("yVelocity", RB.velocity.y);
+            // No movement on specific states
+            if ((charging || health.isParrying) || health.coolDown_ult_first_anim)
+            {
+                //createChargeParticles();
+                RB.velocity = new Vector2(0, 0);
+            }
         }
-
-        // old playermovment
-        if(!kbd && !pkbd && older){
-            RB.velocity = new Vector2(horizontal * walk/2, RB.velocity.y);
-            animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
-            animator.SetFloat("yVelocity", RB.velocity.y);
-            
-
-        }
-
-
-        // No movement on specific states
-        if ((charging && (!pkbd || !kbd)) || (health.isParrying && (!kbd || !pkbd)) || (health.coolDown_ult_first_anim && (!kbd || !pkbd)))
-        {
-            //createChargeParticles();
-            RB.velocity = new Vector2(0, 0);
-        }
+        // regular playermovment
+       
 
         
     }
@@ -213,10 +226,11 @@ public class PlayerMain : MonoBehaviour
         onGround = true;
         fall = false;
         animator.SetBool("Fall", fall);
-        animator.SetBool("IsJumping", !onGround);
+        animator.SetBool("IsJumping", !onGround); 
         animator.SetBool("Hurt", false);
-        
-        
+        //animator.SetBool("Hurt", false);
+
+
         // dead state if health is under 0 and player is on gorund
         if (onGround && isFinished)
         {
@@ -348,7 +362,6 @@ public class PlayerMain : MonoBehaviour
         var dir = center.position - t.position;
         // Debug.Log(dir);
         kbd = true;
-        pkbd = false;
         KBF_x = KnockbackForceX;
         KBF_y = KnockbackForceX;
         sprite.color = kb_color;
@@ -363,32 +376,7 @@ public class PlayerMain : MonoBehaviour
         }
         StartCoroutine(Unknockback(kbDuration));
     }
-    // Knockback method
-    public void KnockbackP(Transform t)
-    {
-        if (isGamePaused) {
-            return;
-        }
-        var dir = center.position - t.position;
-        //Debug.Log(dir);
-
-        kbd = false;
-        pkbd = true;
-        KBF_y = 0;
-        sprite.color = defaultColor;
-        Debug.Log("gets parry KB");
-        if (dir.x > 0)
-        {
-            RB.velocity = new Vector2(KBF_x, KBF_y);
-        }
-        else
-        {
-            RB.velocity = new Vector2(-KBF_x, KBF_y);
-        }
-        StartCoroutine(Unknockback(kbDuration));
-
  
-    }
     // stop Knockback method
     private IEnumerator Unknockback(float kbDur)
     {
@@ -396,7 +384,7 @@ public class PlayerMain : MonoBehaviour
         kbd = false;
         health.isParrying = false;
         health.canParry = true;
-        pkbd = false;
+        animator.SetBool("Hurt", kbd);
         sprite.color = defaultColor;
     }
 
