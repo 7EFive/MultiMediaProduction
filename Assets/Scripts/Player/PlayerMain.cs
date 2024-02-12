@@ -51,6 +51,7 @@ public class PlayerMain : MonoBehaviour
     public Animator animator;
     Rigidbody2D RB;
     public BoxCollider2D c;
+    [SerializeField] CapsuleCollider2D cc;
     public LayerMask groundMask;
     private SpriteRenderer sprite;
     public DealDamage swing;
@@ -218,16 +219,25 @@ public class PlayerMain : MonoBehaviour
     }
 
     // collieder onGround check 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if (isGamePaused) {
             return;
         }
-        onGround = true;
-        fall = false;
-        animator.SetBool("Fall", fall);
-        animator.SetBool("IsJumping", !onGround); 
-        animator.SetBool("Hurt", false);
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            onGround = true;
+            fall = false;
+            animator.SetBool("Fall", fall);
+            animator.SetBool("IsJumping", !onGround);
+            animator.SetBool("Hurt", false);
+            //Debug.Log("Player is colliding with ground");
+        }
+        //onGround = true;
+        //fall = false;
+        //animator.SetBool("Fall", fall);
+        //animator.SetBool("IsJumping", !onGround); 
+        //animator.SetBool("Hurt", false);
         //animator.SetBool("Hurt", false);
 
 
@@ -238,7 +248,7 @@ public class PlayerMain : MonoBehaviour
             charging = false;
             c.enabled = false;
             GetComponent<PlayerHealth>().enabled = false;
-            Debug.Log("The player Collieder should be off");
+            //Debug.Log("The player Collieder should be off");
             RB.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
             int notPlayable = LayerMask.NameToLayer("GameOver");
             gameObject.layer = notPlayable;
@@ -263,6 +273,7 @@ public class PlayerMain : MonoBehaviour
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
         }
+
     }
     // slowdown player on attacking state
     void AttackCheak()
@@ -360,7 +371,7 @@ public class PlayerMain : MonoBehaviour
             return;
         }
         var dir = center.position - t.position;
-        // Debug.Log(dir);
+        //Debug.Log(dir);
         kbd = true;
         KBF_x = KnockbackForceX;
         KBF_y = KnockbackForceX;

@@ -14,24 +14,28 @@ public class PauseMenu : MonoBehaviour
     void Start()
     {
         fade = canvas.GetComponent<LevelLoader>();
+        Cursor.visible = false;
         
     }
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape) && !isPaused) {
             pauseGame();
+            Cursor.visible = true;
         } else if (Input.GetKeyDown(KeyCode.Escape) && isPaused) {
             resumeGame();
+            Cursor.visible = false;
         }
     }
 
     void pauseGame() {
+        
         isPaused = true;
         PlayerMain.isGamePaused = true;
         menuPause.SetActive(true);
         Time.timeScale = 0f;
     }
 
-    void resumeGame() {
+    public void resumeGame() {
         isPaused = false;
         PlayerMain.isGamePaused = false;
         menuPause.SetActive(false);

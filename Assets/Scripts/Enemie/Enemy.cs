@@ -12,7 +12,10 @@ public class Enemy : MonoBehaviour
     private float walk = 8f;
     public float maxDistance;
     public float canFlip;
+    public bool attack_start=false;
     public bool attack= false;
+    //[SerializeField] GameObject AttackPoint;
+    //[SerializeField] EnemyAttack AttPoi_damage;
 
     [Header("Knockback")]
     //bool for knockback
@@ -43,20 +46,31 @@ public class Enemy : MonoBehaviour
     public AudioSource aliveSound;
     private int counterD = 0;
     public static Enemy instance;
+    float defaultAnimatorSpeed;
     private void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         stop = player.GetComponent<PlayerHealth>();
-
+        //AttPoi_damage = AttackPoint.GetComponent<EnemyAttack>();
+        //AttPoi_damage.attackDamage = 0;
+        attack_start = false;
+        attack = false;
+        defaultAnimatorSpeed = animator.speed;
+    }
+    private void Awake()
+    {
+        instance = this;
     }
 
-
+   
     void Update()
     {
+        Debug.Log(animator.speed);
         //cheack if time has stoped by ultimate
         if (!stop.timeFrezze)
         {
+            animator.speed=defaultAnimatorSpeed;
             try
             {
                 //sound
@@ -80,6 +94,10 @@ public class Enemy : MonoBehaviour
 
 
 
+        }
+        else
+        {
+            animator.speed=0;
         }
         
         
@@ -188,22 +206,25 @@ public class Enemy : MonoBehaviour
     private IEnumerator Dash()
     {
         isDashing = true;
+        canDash = false;
         //Debug.Log("DASHING");
         //float defaultGravity = rb.gravityScale;
         //rb.gravityScale = 0f;
-        attack = true;
-        animator.SetBool("Attack", attack);
+        attack_start = true;
+        Debug.Log("attack_start is true");
+        //AttPoi_damage.attackDamage = 25;
         rb.velocity = new Vector2(transform.localScale.x * -dashPower, 0f);
         //animator.SetBool("isDashing", isDashing);
-
         yield return new WaitForSeconds(dashDuration);
         //rb.gravityScale = defaultGravity;
         //animator.SetBool("isDashing", isDashing);
-        attack = false;
-        animator.SetBool("Attack", attack);
-
+        //attack = false;
+        //animator.SetBool("Attack", attack);
+        //AttPoi_damage.attackDamage = 0;
         yield return new WaitForSeconds(dashCooldown);
+        Debug.Log("canDash is true");
         isDashing = false;
+        canDash = true;
         
     }
     public void deadSound()

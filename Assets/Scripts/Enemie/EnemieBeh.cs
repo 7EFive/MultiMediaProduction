@@ -39,7 +39,7 @@ public class EnemieHealth : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log("STRIKED ENEMY");
+        //Debug.Log("STRIKED ENEMY");
 
         animator.SetTrigger("Hurt"); 
     }
@@ -53,6 +53,7 @@ public class EnemieHealth : MonoBehaviour
         this.en.dead = true;
         transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         GetComponent<BoxCollider2D>().enabled = false;
+        GetComponent<EnemyAttack>().enabled = false;
         this.en.chaseDistance = 0;
         this.en.isChasing = false;
 

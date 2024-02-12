@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -8,6 +9,8 @@ public class PlayerHealth : MonoBehaviour
     // Reference values
     [SerializeField] ParticleSystem chargeParticles;
     [SerializeField] ParticleSystem currentChargeParticles;
+    [SerializeField] Camera camera;
+    PostProcess ps;
     public Animator animator;
     public LayerMask enemy;
     // health
@@ -16,6 +19,7 @@ public class PlayerHealth : MonoBehaviour
     public int halfHealth;
     // cooldown double
     double regDamage;
+    public double takeDamageCooldown;
     // parry values
     public float parry;
     public bool canParry=true;
@@ -79,15 +83,19 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
+        ps = camera.GetComponent<PostProcess>();
         currentHealth = maxHealth;
         player = GetComponent<PlayerMain>();
         swing = GetComponent<DealDamage>();
         watch.SetActive(false);
+        ps.GetComponent<PostProcess>().enabled = false;
+
     }
 
     // Update is called once per frame
     private void Update()
     {
+
         if (PlayerMain.isGamePaused) {
             return;
         }
@@ -124,7 +132,7 @@ public class PlayerHealth : MonoBehaviour
                 noParticle = true;
                 //IEnumarator to Parry
                 StartCoroutine(Parry());
-                Debug.Log("tryed to parry...");
+                //Debug.Log("tryed to parry...");
             }
             //cheking players state
             Age();
@@ -139,10 +147,51 @@ public class PlayerHealth : MonoBehaviour
         
         
     }
-
-    
-    // taking damage method
+    //taking Damage method
     public void TakeDamage(int damage)
+    {
+        if (PlayerMain.isGamePaused)
+        {
+            return;
+        }
+        if (Time.time > regDamage)
+        {
+            // no damage on successful parry
+            if (isParrying)
+            {
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(parryPoint.position, parryRange, enemy);
+
+                foreach (Collider2D enemy in hitEnemies)
+                {
+
+                    if (enemy.GetComponent<Enemy>() != null)
+                    {
+                        enemy.GetComponent<Enemy>().Knockback(transform);
+                    }
+
+                }
+                charge += parry;
+                DealDamage.instance.parrySound();
+                Debug.Log("Succsesfull Parry");
+                //player.KnockbackP(transform);
+                regDamage = Time.time + takeDamageCooldown;
+            }
+            // damage registered only above 0.5
+
+
+        }
+
+
+
+        if (currentHealth <= 0)
+        {
+            Die();
+            currentHealth = 0;
+        }
+    }
+
+    //taking damage overload method
+    public void TakeDamage(int damage, Transform t)
     {
         if (PlayerMain.isGamePaused) {
             return;
@@ -162,9 +211,10 @@ public class PlayerHealth : MonoBehaviour
 
                 }
                 charge += parry;
+                DealDamage.instance.parrySound();
                 Debug.Log("Succsesfull Parry");
                 //player.KnockbackP(transform);
-                regDamage = Time.time + 0.5;
+                regDamage = Time.time + 0.25;
             }
             // damage registered only above 0.5
             else if (damage > 0.5f)
@@ -174,12 +224,13 @@ public class PlayerHealth : MonoBehaviour
                 animator.SetBool("Hurt", true);
                 if (player != null)
                 {
-                    player.Knockback(transform);
+                    player.Knockback(t);
                 }
-                regDamage = Time.time + 0.5;
+                regDamage = Time.time + takeDamageCooldown;
             }
             
         }
+
         
 
         if (currentHealth <= 0)
@@ -188,13 +239,14 @@ public class PlayerHealth : MonoBehaviour
             currentHealth = 0;
         }
     }
+   
     // Parry method
     private IEnumerator Parry()
     {
         canParry = false;
         isParrying = true;
         animator.SetBool("Parry", isParrying);
-        DealDamage.instance.parrySound();
+        
         yield return new WaitForSeconds(parryDuration);
         isParrying = false;
         animator.SetBool("Parry", isParrying);
@@ -242,7 +294,7 @@ public class PlayerHealth : MonoBehaviour
             if (!noParticle)
             {
                 //createChargeParticles();
-                Debug.Log("createChargeParticles();");
+                //Debug.Log("createChargeParticles();");
             }
             
         }
@@ -272,7 +324,7 @@ public class PlayerHealth : MonoBehaviour
         //transform back to young
         if (charge >= maxCharg && player.older)
         {
-            Debug.Log("isFully charged");
+            //Debug.Log("isFully charged");
             charge = 0;
             tutorial = false;
             currentHealth = maxHealth;
@@ -285,9 +337,6 @@ public class PlayerHealth : MonoBehaviour
             Age();
             swing.nextAttackTime = Time.time + swing.attackRate;
         }
-        
-        
-       
     }
     // fill charging meter in young form
     void chargingFunctionYounger()
@@ -336,6 +385,7 @@ public class PlayerHealth : MonoBehaviour
         // timeFrezze value for timeFrezze old
         if (coolDown_Ult && !coolDown_ult_first_anim && !coolDown_ult_last_anim)
         {
+            ps.GetComponent<PostProcess>().enabled=true;
             timeFrezze = true;
             timeFrezzeStatic = true;
         }
@@ -350,6 +400,7 @@ public class PlayerHealth : MonoBehaviour
         //end of ultimate ability at charge 0
         else if (timeFrezze && charge == 0 && !player.older)
         {
+            ps.GetComponent<PostProcess>().enabled = false;
             watch.SetActive(false);
             player.ult_press = false;
             coolDown_Ult = false;

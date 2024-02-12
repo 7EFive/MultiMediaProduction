@@ -60,12 +60,12 @@ public class Spawn_watch : MonoBehaviour
             {
                 //Debug.Log("Player ditected on right side");
                 transform.localScale = new Vector3(0.25f, transform.localScale.y, transform.localScale.z);
-                Debug.Log("Should face left");
+                //Debug.Log("Should face left");
             }
             else if (!flip.facingRight)
             {
                 transform.localScale = new Vector3(-0.25f, transform.localScale.y, transform.localScale.z);
-                Debug.Log("Should face right");
+                //Debug.Log("Should face right");
             }
         }
         
