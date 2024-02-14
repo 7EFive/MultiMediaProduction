@@ -93,6 +93,7 @@ public class DealDamage : MonoBehaviour
                 isAttackingInAir = false;
                 Debug.Log("TOOK A SWING MID AIR");
                 doDamageB();
+                
             }
 
         }
@@ -107,9 +108,9 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            if(enemy.GetComponent<EnemieHealth>() != null) {
+            if(enemy.GetComponent<EnemyHealth>() != null) {
                 hitSound();
-                enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage);
+                enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage);
             }
         
             if(enemy.GetComponent<Enemy>() != null) {
@@ -134,9 +135,9 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            if(enemy.GetComponent<EnemieHealth>() != null){
+            if(enemy.GetComponent<EnemyHealth>() != null){
                 hitSound();
-                enemy.GetComponent<EnemieHealth>().TakeDamage(attackDamage/2);
+                enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage/2);
             }
 
             if(enemy.GetComponent<Enemy>() != null){

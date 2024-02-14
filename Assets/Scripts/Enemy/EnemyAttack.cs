@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
@@ -6,6 +7,7 @@ public class EnemyAttack : MonoBehaviour
     public LayerMask playerLayers;
     public Transform attackPoint;
     public Transform bodyPoint;
+    public static EnemyAttack instance;
     //public Enemy e;
 
     public float attackRange;
@@ -23,6 +25,10 @@ public class EnemyAttack : MonoBehaviour
     {
         attackOn = true;
         GetComponent<Enemy>();
+    }
+    private void Awake()
+    {
+        instance = this;
     }
 
     // Update is called once per frame

@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -177,7 +176,17 @@ public class PlayerHealth : MonoBehaviour
                 regDamage = Time.time + takeDamageCooldown;
             }
             // damage registered only above 0.5
+            else if (damage > 0.5f && !punished)
+            {
 
+                currentHealth -= damage;
+                animator.SetBool("Hurt", true);
+                if (player != null)
+                {
+                    player.Knockback(transform);
+                    regDamage = Time.time + takeDamageCooldown;
+                }
+            }
 
         }
 

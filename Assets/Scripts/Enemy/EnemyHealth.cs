@@ -1,28 +1,26 @@
 using UnityEngine;
 
-public class EnemieHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour
 {
     public Animator animator;
-
     public Enemy en;
 
-    public GameObject player;
+    [SerializeField] GameObject player;
     PlayerHealth time;
     bool dead = false;
+    public bool isEnemy;
 
 
     public int maxHealth=100;
     int currentHealth;
 
-
-
+    
 
     // Start is called before the first frame update
     void Start()
     {
         currentHealth = maxHealth;
         time = player.GetComponent<PlayerHealth>();
-
     }
     void Update()
     {
@@ -32,6 +30,7 @@ public class EnemieHealth : MonoBehaviour
             dead = true;
             Die();
         }
+        
     }
     // Update is called once per frame
 
@@ -53,10 +52,14 @@ public class EnemieHealth : MonoBehaviour
         this.en.dead = true;
         transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         GetComponent<BoxCollider2D>().enabled = false;
-        GetComponent<EnemyAttack>().enabled = false;
+        
         this.en.chaseDistance = 0;
         this.en.isChasing = false;
-
+        if (isEnemy)
+        {
+            GetComponent<EnemyAttack>().enabled = false;
+        }
+        
         Debug.Log("ENEMY DIED");
         //Enemy.instance.deadSound();
         //this.enabled = false;

@@ -104,9 +104,11 @@ public class PlayerMain : MonoBehaviour
         {
             return;
         }
+
         Falling();
         AttackCheak();
         horizontal = Input.GetAxisRaw("Horizontal");
+
         
         // Sprite doesn't flip while charging or dead on movment
         if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim) || kbd){
@@ -261,18 +263,23 @@ public class PlayerMain : MonoBehaviour
         if (isGamePaused) {
             return;
         }
-        if ((Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround) && !older && !stayOnGround)
+        if (Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround)
         {
-            DealDamage.instance.jumpSound();
-            RB.velocity = new Vector2(RB.velocity.x, jumpHight);
-            onGround = false;
-            // animator.SetBool("Grounded", onGround);
-            animator.SetBool("IsJumping", !onGround);
+            if(!older && !stayOnGround)
+            {
+                DealDamage.instance.jumpSound();
+                RB.velocity = new Vector2(RB.velocity.x, jumpHight);
+                onGround = false;
+                // animator.SetBool("Grounded", onGround);
+                animator.SetBool("IsJumping", !onGround);
+            }
+
         }
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
         }
+        
 
     }
     // slowdown player on attacking state

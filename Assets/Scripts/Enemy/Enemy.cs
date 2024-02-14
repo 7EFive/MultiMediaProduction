@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
    
     void Update()
     {
-        Debug.Log(animator.speed);
+        //Debug.Log(animator.speed);
         //cheack if time has stoped by ultimate
         if (!stop.timeFrezze)
         {
