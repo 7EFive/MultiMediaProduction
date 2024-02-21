@@ -48,10 +48,10 @@ public class EnemyAttack : MonoBehaviour
 
     //   Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
 
-    //  foreach (Collider2D player in hitEnemies)
+    //  foreach (Collider2D mainPlayer in hitEnemies)
     //  {
 
-    //     player.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
+    //     mainPlayer.GetComponent<PlayerHealth>().TakeDamage(attackDamage);
     //      Debug.Log("Enemy landed a hit");
     //  }
     //}
@@ -76,10 +76,10 @@ public class EnemyAttack : MonoBehaviour
                 if (PlayerHealth.timeFrezzeStatic == false)
                 {
                     player.GetComponent<PlayerHealth>().TakeDamage(attackDamage, transform);
-                    Debug.Log("Enemy is collieding with player");
-                    //if (player != null)
+                    Debug.Log("Enemy is collieding with mainPlayer");
+                    //if (mainPlayer != null)
                     //{
-                    //    player.GetComponent<PlayerMain>().Knockback(transform);
+                    //    mainPlayer.GetComponent<PlayerMain>().Knockback(transform);
                     //}
                     //playerKB.Knockback(transform);
                     //Debug.Log("damage front activated");
@@ -108,7 +108,7 @@ public class EnemyAttack : MonoBehaviour
 
                 if(PlayerHealth.timeFrezzeStatic == false)   {
                     player.GetComponent<PlayerHealth>().TakeDamage(attackDamageBody, transform);
-                    //Debug.Log("Enemy is collieding with player");
+                    //Debug.Log("Enemy is collieding with mainPlayer");
                     //if (playerKB != null)
                     //{
                     //    playerKB.Knockback(transform);
@@ -134,12 +134,12 @@ public class EnemyAttack : MonoBehaviour
     //
     //    if (Time.time > attackSpeed)
     //    {
-    //        foreach (Collider2D player in hitEnemies)
+    //        foreach (Collider2D mainPlayer in hitEnemies)
     //        {
     //
     //            if (PlayerHealth.timeFrezzeStatic == false)
     //            {
-    //                player.GetComponent<PlayerHealth>().TakeDamage(attackDamageBody);
+    //                mainPlayer.GetComponent<PlayerHealth>().TakeDamage(attackDamageBody);
                     
      //               attackSpeed = Time.time + attackCooldown;
      //           }

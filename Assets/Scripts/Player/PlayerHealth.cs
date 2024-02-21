@@ -35,9 +35,9 @@ public class PlayerHealth : MonoBehaviour
     public float charge = 0f;
     // charging speed
     public float speedCharging= 10f;
-    // max charge capacity
+    // max healthPlayer capacity
     public float maxCharg;
-    // max charge overload limit
+    // max healthPlayer overload limit
     public float overloadCharge;
     [HideInInspector]
     // constant charging amount meter
@@ -48,7 +48,7 @@ public class PlayerHealth : MonoBehaviour
     bool chargeCapMax=false;
     // damage on going reaching max charging amount meter
     public int punishment;
-    // cooldown on charge usage
+    // cooldown on healthPlayer usage
     public float punishmentTime;
     [HideInInspector]
     //punishmend state check
@@ -64,7 +64,7 @@ public class PlayerHealth : MonoBehaviour
     //Rigidbody2D rb;
     // reference values
     public DealDamage swing;
-    public PlayerMain player;
+    public PlayerMain mainPlayer;
     public static PlayerHealth instance;
     public GameObject watch;
     //---
@@ -84,7 +84,7 @@ public class PlayerHealth : MonoBehaviour
     {
         ps = camera.GetComponent<PostProcess>();
         currentHealth = maxHealth;
-        player = GetComponent<PlayerMain>();
+        mainPlayer = GetComponent<PlayerMain>();
         swing = GetComponent<DealDamage>();
         watch.SetActive(false);
         ps.GetComponent<PostProcess>().enabled = false;
@@ -100,7 +100,7 @@ public class PlayerHealth : MonoBehaviour
         }
         // value on half health cheack for tutorial
         halfHealth = maxHealth / 2;
-        // player tutorial mode
+        // mainPlayer tutorial mode
         if (tutorial)
         {
             //Physics2D.IgnoreLayerCollision(7,8);
@@ -122,26 +122,31 @@ public class PlayerHealth : MonoBehaviour
 
         }
 
-        if(!player.kbd)
+        if(!mainPlayer.kbd)
         {
             // Parrying state
-            if (player.older && Input.GetKeyDown(KeyCode.X) && canParry && !player.charging)
+            if (!mainPlayer.interactionStun)
             {
-                canParry = false;
-                noParticle = true;
-                //IEnumarator to Parry
-                StartCoroutine(Parry());
-                //Debug.Log("tryed to parry...");
+                if (mainPlayer.older && Input.GetKeyDown(KeyCode.X) && canParry && !mainPlayer.charging)
+                {
+                    canParry = false;
+                    noParticle = true;
+                    //IEnumarator to Parry
+                    StartCoroutine(Parry());
+                    //Debug.Log("tryed to parry...");
+                }
+                //cheking players state
+
+                //Chargeing funstion young and old
+                chargingFunctionOlder();
+                chargingFunctionYounger();
             }
-            //cheking players state
-            Age();
-            //Chargeing funstion young and old
-            chargingFunctionOlder();
-            chargingFunctionYounger();
+           
             if (charge < 0)
             {
                 charge = 0;
             }
+            Age();
         }
         
         
@@ -172,7 +177,7 @@ public class PlayerHealth : MonoBehaviour
                 charge += parry;
                 DealDamage.instance.parrySound();
                 Debug.Log("Succsesfull Parry");
-                //player.KnockbackP(transform);
+                //mainPlayer.KnockbackP(transform);
                 regDamage = Time.time + takeDamageCooldown;
             }
             // damage registered only above 0.5
@@ -181,9 +186,9 @@ public class PlayerHealth : MonoBehaviour
 
                 currentHealth -= damage;
                 animator.SetBool("Hurt", true);
-                if (player != null)
+                if (mainPlayer != null)
                 {
-                    player.Knockback(transform);
+                    mainPlayer.Knockback(transform);
                     regDamage = Time.time + takeDamageCooldown;
                 }
             }
@@ -222,7 +227,7 @@ public class PlayerHealth : MonoBehaviour
                 charge += parry;
                 DealDamage.instance.parrySound();
                 Debug.Log("Succsesfull Parry");
-                //player.KnockbackP(transform);
+                //mainPlayer.KnockbackP(transform);
                 regDamage = Time.time + 0.25;
             }
             // damage registered only above 0.5
@@ -231,9 +236,9 @@ public class PlayerHealth : MonoBehaviour
                 
                 currentHealth -= damage;
                 animator.SetBool("Hurt", true);
-                if (player != null)
+                if (mainPlayer != null)
                 {
-                    player.Knockback(t);
+                    mainPlayer.Knockback(t);
                 }
                 regDamage = Time.time + takeDamageCooldown;
             }
@@ -269,15 +274,15 @@ public class PlayerHealth : MonoBehaviour
     {
         if (halfHealth >= currentHealth)
         {
-            player.older = true;
-            player.Old();
+            mainPlayer.older = true;
+            mainPlayer.Old();
             //Debug.Log("should turn old");
         }
         else
         {
             
-            player.older = false;
-            player.Old();
+            mainPlayer.older = false;
+            mainPlayer.Old();
         }
     }
 
@@ -294,8 +299,8 @@ public class PlayerHealth : MonoBehaviour
     // Charging in Old form
     public void chargingFunctionOlder()
     {
-        //Main charging function, charge and chargeLimit rises
-        if (player.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && player.older)
+        //Main charging function, healthPlayer and chargeLimit rises
+        if (mainPlayer.charging && (charge < maxCharg) && (chargeLimit < chargeLimitMax) && !punished && mainPlayer.older)
         {
             
             charge += Time.deltaTime * speedCharging * 3;
@@ -309,40 +314,40 @@ public class PlayerHealth : MonoBehaviour
         }
 
         //if Player stops charging, charging limit drops
-        if (!player.charging && chargeLimit > 0)
+        if (!mainPlayer.charging && chargeLimit > 0)
         {
             chargeLimit -= Time.deltaTime * speedCharging / 3;
         }
-        //charge limit at max punishes the player
+        //healthPlayer limit at max punishes the mainPlayer
         if (chargeLimit > chargeLimitMax)
         {
-            player.charging = false;
-            animator.SetBool("Charge", player.charging);
+            mainPlayer.charging = false;
+            animator.SetBool("Charge", mainPlayer.charging);
             TakeDamage(punishment);
             punished = true;
         }
         //active on bool punished true
         if (punished)
         {
-            if (chargeLimit < 1 && player.older)
+            if (chargeLimit < 1 && mainPlayer.older)
             {
                 punished = false;
                 //Debug.Log("UNPUNISHED");
             }
         }
         //transform back to young
-        if (charge >= maxCharg && player.older)
+        if (charge >= maxCharg && mainPlayer.older)
         {
             //Debug.Log("isFully charged");
             charge = 0;
             tutorial = false;
             currentHealth = maxHealth;
-            player.charging = false;
-            player.older = false;
+            mainPlayer.charging = false;
+            mainPlayer.older = false;
             isParrying = false;
-            animator.SetBool("Old", player.older);
+            animator.SetBool("Old", mainPlayer.older);
             animator.SetBool("Parry", isParrying);
-            animator.SetBool("Charge", player.charging);
+            animator.SetBool("Charge", mainPlayer.charging);
             Age();
             swing.nextAttackTime = Time.time + swing.attackRate;
         }
@@ -350,32 +355,32 @@ public class PlayerHealth : MonoBehaviour
     // fill charging meter in young form
     void chargingFunctionYounger()
     {
-        if (player.kbd)
+        if (mainPlayer.kbd)
         {
             coolDown_ult_first_anim = false;
             coolDown_ult_last_anim = false;
             coolDown_Ult = false;
             watch.SetActive(false);
         }
-        //ultimate button press on 100 or more charge
-        if (player.ult_press && player.onGround)
+        //ultimate button press on 100 or more healthPlayer
+        if (mainPlayer.ult_press && mainPlayer.onGround)
         {
-            if ((charge >= maxCharg) && !player.older && !coolDown_Ult)
+            if ((charge >= maxCharg) && !mainPlayer.older && !coolDown_Ult)
             {
                 watch.transform.position = new Vector2(transform.position.x, transform.position.y);
                 coolDown_Ult = true;
                 coolDown_ult_first_anim = true;
-                player.charging = false;
+                mainPlayer.charging = false;
                 watch.SetActive(true);
             }
             else
             {
-                player.ult_press = false;
+                mainPlayer.ult_press = false;
             }
 
         }
-        //charge overloading with max 125 charge value droping to 100
-        if (charge > maxCharg && !player.older)
+        //healthPlayer overloading with max 125 healthPlayer value droping to 100
+        if (charge > maxCharg && !mainPlayer.older)
         {
             chargeCapMax = true;
             charge -= Time.deltaTime * speedCharging / 3;
@@ -398,20 +403,20 @@ public class PlayerHealth : MonoBehaviour
             timeFrezze = true;
             timeFrezzeStatic = true;
         }
-        //charge droping after cloack spawn animation is done
-        if (timeFrezze && charge != 0 && !player.older)
+        //healthPlayer droping after cloack spawn animation is done
+        if (timeFrezze && charge != 0 && !mainPlayer.older)
         {
             timeFrezze = true;
             timeFrezzeStatic = true;
             chargeCapMax = false;
             charge -= Time.deltaTime * speedCharging;
         }
-        //end of ultimate ability at charge 0
-        else if (timeFrezze && charge == 0 && !player.older)
+        //end of ultimate ability at healthPlayer 0
+        else if (timeFrezze && charge == 0 && !mainPlayer.older)
         {
             ps.GetComponent<PostProcess>().enabled = false;
             watch.SetActive(false);
-            player.ult_press = false;
+            mainPlayer.ult_press = false;
             coolDown_Ult = false;
             charge = 0;
             chargeLimit = 0;

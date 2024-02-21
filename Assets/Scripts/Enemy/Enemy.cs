@@ -105,7 +105,7 @@ public class Enemy : MonoBehaviour
     //movment method
     void Movment()
     {
-        //cheack if player is in chasing distance
+        //cheack if mainPlayer is in chasing distance
         Vector3 scale = transform.localScale;
         if (isChasing && !kbd)
         {
@@ -202,7 +202,7 @@ public class Enemy : MonoBehaviour
         kbd = false;
         //animator.SetBool("Hit", false);
     }
-    //Dash to damage player
+    //Dash to damage mainPlayer
     private IEnumerator Dash()
     {
         isDashing = true;

@@ -5,7 +5,7 @@ public class CameraFocus : MonoBehaviour
 {
     //camaer for zoom in zoom out
     [SerializeField]public CinemachineVirtualCamera vCamera;
-    // stats of the player gets checked
+    // stats of the mainPlayer gets checked
     public PlayerMain action;
     // zoom in and out minimal and maximal values
     [SerializeField] public float minZoom;
@@ -20,9 +20,9 @@ public class CameraFocus : MonoBehaviour
     // Zoom in that are triggered by the players actions and/or states
     void Update()
     {
-        // doubled speed in zoom value on player dead state 
+        // doubled speed in zoom value on mainPlayer dead state 
         float zoomGO = zoomIn * 2;
-        // cheking if player is charging or dead
+        // cheking if mainPlayer is charging or dead
         if (action.charging || action.isFinished) 
         {
             // zoom in until min Zoom has reached

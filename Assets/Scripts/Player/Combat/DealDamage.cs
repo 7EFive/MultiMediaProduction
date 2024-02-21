@@ -18,16 +18,16 @@ public class DealDamage : MonoBehaviour
     public bool isAttackingInAir = false;
     public bool enterMidAirAttack = false;
     
-    //initger for damage dealt by player
+    //initger for damage dealt by mainPlayer
     public int attackDamage;
     //cooldown after attacking
     public float attackRate;
     //value that time.Delt or time.Time is supposed to pass for ending the cooldown
     public float nextAttackTime;
 
-    //References values for knockback and charge
-    public PlayerMain kb;
-    public PlayerHealth charge;
+    //References values for knockback and healthPlayer
+    public PlayerMain mainPlayer;
+    public PlayerHealth healthPlayer;
 
     //Tryin to do some musik
     public AudioClip[] AudioClip;
@@ -36,8 +36,8 @@ public class DealDamage : MonoBehaviour
 
     private void Start()
     {
-        kb=GetComponent<PlayerMain>();
-        charge = GetComponent<PlayerHealth>();
+        mainPlayer=GetComponent<PlayerMain>();
+        healthPlayer = GetComponent<PlayerHealth>();
     }
     // for animator script
     private void Awake()
@@ -48,7 +48,11 @@ public class DealDamage : MonoBehaviour
     void Update()
     {
         //Attack
-        Attack();
+        if (!mainPlayer.interactionStun)
+        {
+            Attack();
+        }
+        
 
         //animationReset
         animationReset();
@@ -59,10 +63,10 @@ public class DealDamage : MonoBehaviour
     void Attack()
     {
         //cheack if cooldown is still, if the players is knockbacked and if the palyer is Not attacking already
-        if (Time.time >= nextAttackTime && !kb.kbd && !isAttacking)
+        if (Time.time >= nextAttackTime && !mainPlayer.kbd && !isAttacking)
         {
             //OnGround Combat
-            if (Input.GetKeyDown(KeyCode.X) && kb.onGround)
+            if (Input.GetKeyDown(KeyCode.X) && mainPlayer.onGround)
             {
                 doDamage();
                 isAttacking = true;
@@ -72,7 +76,7 @@ public class DealDamage : MonoBehaviour
 
             }
             //MidAir Combat
-            else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !kb.onGround && canAttackingInAir && !isAttackingInAir)
+            else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !mainPlayer.onGround && canAttackingInAir && !isAttackingInAir)
             {
                 jumpAttackSound();
                 enterMidAirAttack = true;
@@ -118,9 +122,9 @@ public class DealDamage : MonoBehaviour
             }
             
 
-            if (!charge.timeFrezze)
+            if (!healthPlayer.timeFrezze)
             {
-                charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
+                healthPlayer.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
             }
             //Debug.Log(enemy.name + " was damaged by you.");
         }
@@ -144,9 +148,9 @@ public class DealDamage : MonoBehaviour
                 enemy.GetComponent<Enemy>().Knockback(transform);
             }
             
-            if (!charge.timeFrezze)
+            if (!healthPlayer.timeFrezze)
             {
-                charge.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);
+                healthPlayer.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);
             }
             //Debug.Log(enemy.name + " was damaged by you.");
         }
@@ -155,11 +159,11 @@ public class DealDamage : MonoBehaviour
     //animation reset of MidAir Combat after landing
     void animationReset()
     {
-        // if (!kb.onGround)
+        // if (!mainPlayer.onGround)
         //{
         //    isAttacking = false;
         //}
-        if (kb.onGround)
+        if (mainPlayer.onGround)
         {
             enterMidAirAttack = false;
             isAttackingInAir = false;

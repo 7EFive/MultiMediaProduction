@@ -8,6 +8,7 @@ public class Interact : MonoBehaviour
     [SerializeField] GameObject main;
     public GameObject interactable;
     TutorialGameLogic tgl;
+
     void Start()
     {
         tgl = main.GetComponent<TutorialGameLogic>();

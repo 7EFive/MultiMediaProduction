@@ -8,9 +8,10 @@ public class SceneChangeTrigger : MonoBehaviour
     bool canInteract=false;
     public bool automaticTrigger;
     public GameObject button;
+    public GameObject interactor;
     
 
-    //public GameObject player;
+    //public GameObject mainPlayer; asda
 
     private void Start()
     {
@@ -26,6 +27,11 @@ public class SceneChangeTrigger : MonoBehaviour
             button.SetActive(false);
             Debug.Log("Level Change");
             fade.LoadNextLevel();
+            if (!automaticTrigger)
+            {
+                interactor.GetComponent<PlayerMain>().interactionStun = true;
+            }
+            
             //SceneManager.LoadScene(sceneToLoad, LoadSceneMode.Single);
         }
 
@@ -38,6 +44,7 @@ public class SceneChangeTrigger : MonoBehaviour
             canInteract=true;
             if (!automaticTrigger)
             {
+                
                 button.SetActive(true);
             }
         }

@@ -23,7 +23,7 @@ public class Spawn_watch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Flip the cloak to the direction of the player
+        //Flip the cloak to the direction of the mainPlayer
         Flip();
 
         if (stats.coolDown_Ult)

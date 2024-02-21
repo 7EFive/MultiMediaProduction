@@ -76,6 +76,7 @@ public class PlayerMain : MonoBehaviour
     public float dashDuration;
     public float dashCooldown;
     public AudioSource moveSound;
+    public bool interactionStun ;
     private void Awake()
     {
         instance = this;
@@ -104,57 +105,63 @@ public class PlayerMain : MonoBehaviour
         {
             return;
         }
+        if (!interactionStun)
+        {
+            Falling();
+            AttackCheak();
+            horizontal = Input.GetAxisRaw("Horizontal");
 
-        Falling();
-        AttackCheak();
-        horizontal = Input.GetAxisRaw("Horizontal");
 
-        
-        // Sprite doesn't flip while charging or dead on movment
-        if(charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim) || kbd){
-            //createChargeParticles();
-            if (facingRight) {
-                facingRight = true;
-                
-            } 
-            else {
-                facingRight = false;
+            // Sprite doesn't flip while charging or dead on movment
+            if (charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim) || kbd)
+            {
+                //createChargeParticles();
+                if (facingRight)
+                {
+                    facingRight = true;
+
+                }
+                else
+                {
+                    facingRight = false;
+                }
+
             }
-                
-        }
-        else
-        {
-            // Flip sprite 
-            Flip();
-        }
-        if (kbd)
-        {
-            health.coolDown_ult_first_anim = false;
-            health.coolDown_ult_last_anim=false;
-            health.watch.SetActive(false);
-            ult_press = false;
-            health.coolDown_Ult = false;
-            health.timeFrezze = false;
-        }
+            else
+            {
+                // Flip sprite 
+                Flip();
+            }
+            if (kbd)
+            {
+                health.coolDown_ult_first_anim = false;
+                health.coolDown_ult_last_anim = false;
+                health.watch.SetActive(false);
+                ult_press = false;
+                health.coolDown_Ult = false;
+                health.timeFrezze = false;
+            }
 
-        // Jumping
-        Jumping();
-       
-        // cheking method if player is old
-        Old();
-        
-        // states cheks for dashing
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older &&
-           !((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3")) ||
-           swing.isAttacking))
-        {
-            StartCoroutine(Dash());
+            // Jumping
+            Jumping();
+
+            // cheking method if mainPlayer is old
+            Old();
+
+            // states cheks for dashing
+            if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older &&
+               !((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
+               animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
+               animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
+               animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end") ||
+               animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2") ||
+               animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3")) ||
+               swing.isAttacking))
+            {
+                StartCoroutine(Dash());
+            }
         }
+       
         //Physics2D.IgnoreLayerCollision(7,8);
     }
 
@@ -168,7 +175,7 @@ public class PlayerMain : MonoBehaviour
         {
             return;
         }
-        if (!kbd)
+        if (!kbd )
         {
             if (!charging)
             {
@@ -243,14 +250,14 @@ public class PlayerMain : MonoBehaviour
         //animator.SetBool("Hurt", false);
 
 
-        // dead state if health is under 0 and player is on gorund
+        // dead state if health is under 0 and mainPlayer is on gorund
         if (onGround && isFinished)
         {
             animator.SetBool("GameOver", true);
             charging = false;
             c.enabled = false;
             GetComponent<PlayerHealth>().enabled = false;
-            //Debug.Log("The player Collieder should be off");
+            //Debug.Log("The mainPlayer Collieder should be off");
             RB.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
             int notPlayable = LayerMask.NameToLayer("GameOver");
             gameObject.layer = notPlayable;
@@ -282,7 +289,7 @@ public class PlayerMain : MonoBehaviour
         
 
     }
-    // slowdown player on attacking state
+    // slowdown mainPlayer on attacking state
     void AttackCheak()
     {
         if (isGamePaused) {
@@ -412,7 +419,7 @@ public class PlayerMain : MonoBehaviour
         if (isGamePaused) {
             return;
         }
-        if (onGround)
+        if (onGround && !interactionStun)
         {
             Charging();
         }
@@ -453,7 +460,7 @@ public class PlayerMain : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.V) && !older && !isDashing)
         {
-            Debug.Log("Should try to charge");
+            Debug.Log("Should try to healthPlayer");
             ult_press = true;
         }
         

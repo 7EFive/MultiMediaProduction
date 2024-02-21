@@ -9,16 +9,19 @@ public class EnemyHealth : MonoBehaviour
     PlayerHealth time;
     bool dead = false;
     public bool isEnemy;
+    
 
 
     public int maxHealth=100;
-    int currentHealth;
+    public int currentHealth;
+    
 
     
 
     // Start is called before the first frame update
     void Start()
     {
+        
         currentHealth = maxHealth;
         time = player.GetComponent<PlayerHealth>();
     }
@@ -47,7 +50,7 @@ public class EnemyHealth : MonoBehaviour
     void Die()
     {
         //Debug.Log("Abomination commited die!");
-        
+       
         animator.SetBool("isDead", true);
         this.en.dead = true;
         transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
