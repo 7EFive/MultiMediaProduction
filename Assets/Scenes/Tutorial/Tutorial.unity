@@ -12550,7 +12550,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 514881065}
   obj: {fileID: 920946079}
-  regenOn: 1
+  regen: 0
+  isDead: 0
+  sceneInfo: {fileID: 11400000, guid: 4c9c510ff872dbd49889e8ad39131479, type: 2}
 --- !u!1 &927487723
 GameObject:
   m_ObjectHideFlags: 0
@@ -12699,12 +12701,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Congratulations! Now, you''re young and in your prime again!
+  m_text: 'Congratulations! You restored your health to max and regained your more
+    agile state!
 
-    Try
-    unlocking the door. You may need to use some brute force.
+    Try unlocking the door. You may need to use some brute force.
 
-    Press "X" to attack.'
+    Press
+    "X" to attack.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13056,7 +13059,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: Filling the charge meter turns you immediately back into your main form,
-    when being in the older form, while in your main form it is used for your ultimate
+    when being in the elder form, while in your main form it is used for your ultimate
     time-stop ability. [2/2]
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13159,7 +13162,7 @@ Transform:
   m_GameObject: {fileID: 1012029395}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.2, y: -0.55826545, z: -0.048462197}
+  m_LocalPosition: {x: -1.2, y: 1.97, z: -0.048462197}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30288,6 +30291,7 @@ MonoBehaviour:
   COLLIDER_Walk: {fileID: 927487723}
   COLLIDER_Ult: {fileID: 1046640160}
   COLLIDER_endOfTheTutorial: {fileID: 1324162742}
+  sceneInfo: {fileID: 11400000, guid: 4c9c510ff872dbd49889e8ad39131479, type: 2}
 --- !u!61 &1684445053
 BoxCollider2D:
   m_ObjectHideFlags: 0

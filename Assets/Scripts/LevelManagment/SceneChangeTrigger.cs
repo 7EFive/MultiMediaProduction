@@ -21,7 +21,6 @@ public class SceneChangeTrigger : MonoBehaviour
     }
     void Update()
     {
-        
         if ((Input.GetKeyDown(KeyCode.E) && canInteract) || (canInteract && automaticTrigger))
         {
             button.SetActive(false);
@@ -34,7 +33,6 @@ public class SceneChangeTrigger : MonoBehaviour
             
             //SceneManager.LoadScene(sceneToLoad, LoadSceneMode.Single);
         }
-
     }
     // triggers LevelLoder Script and Fade
     private void OnTriggerEnter2D(Collider2D other)

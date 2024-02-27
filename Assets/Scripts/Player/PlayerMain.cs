@@ -107,7 +107,11 @@ public class PlayerMain : MonoBehaviour
         }
         if (!interactionStun)
         {
-            Falling();
+            if (!isDashing)
+            {
+                Falling();
+                Jumping();
+            }
             AttackCheak();
             horizontal = Input.GetAxisRaw("Horizontal");
 
@@ -143,7 +147,7 @@ public class PlayerMain : MonoBehaviour
             }
 
             // Jumping
-            Jumping();
+            
 
             // cheking method if mainPlayer is old
             Old();
@@ -215,8 +219,9 @@ public class PlayerMain : MonoBehaviour
 
 
             // No movement on specific states
-            if ((charging || health.isParrying) || health.coolDown_ult_first_anim)
+            if ((charging || health.isParrying) || health.coolDown_ult_first_anim|| interactionStun)
             {
+                animator.SetFloat("xVelocity", 0);
                 //createChargeParticles();
                 RB.velocity = new Vector2(0, 0);
             }

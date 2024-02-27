@@ -30,7 +30,7 @@ public class PlayerHealth : MonoBehaviour
     bool noParticle = false;
 
     //chargeing values
-    [HideInInspector]
+    //[HideInInspector]
     // start charging value 0
     public float charge = 0f;
     // charging speed
@@ -59,6 +59,7 @@ public class PlayerHealth : MonoBehaviour
     public bool coolDown_ult_last_anim=false;
     // bool on time Stop
     public bool timeFrezze = false;
+    int chargeRemoverCount = 0;
     [HideInInspector] public static bool timeFrezzeStatic = false;
 
     //Rigidbody2D rb;
@@ -272,8 +273,14 @@ public class PlayerHealth : MonoBehaviour
     // Players form change method
     public void Age()
     {
-        if (halfHealth >= currentHealth)
+        if (halfHealth >= currentHealth )
         {
+            if(chargeRemoverCount == 0)
+            {
+                chargeRemoverCount++;
+                charge = 0;
+            }
+            
             mainPlayer.older = true;
             mainPlayer.Old();
             //Debug.Log("should turn old");
@@ -349,6 +356,7 @@ public class PlayerHealth : MonoBehaviour
             animator.SetBool("Parry", isParrying);
             animator.SetBool("Charge", mainPlayer.charging);
             Age();
+            chargeRemoverCount = 0;
             swing.nextAttackTime = Time.time + swing.attackRate;
         }
     }

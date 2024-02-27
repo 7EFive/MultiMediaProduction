@@ -9,6 +9,7 @@ public class PauseMenu : MonoBehaviour
     LevelLoader fade;
 
     [SerializeField] GameObject menuPause;
+    [SerializeField] GameObject dialog;
     private static bool isPaused = false;
 
     void Start()
@@ -18,6 +19,14 @@ public class PauseMenu : MonoBehaviour
         
     }
     void Update() {
+        if (isPaused)
+        {
+            dialog.SetActive(false);
+        }
+        else
+        {
+            dialog.SetActive(true);
+        }
         if (Input.GetKeyDown(KeyCode.Escape) && !isPaused) {
             pauseGame();
             Cursor.visible = true;

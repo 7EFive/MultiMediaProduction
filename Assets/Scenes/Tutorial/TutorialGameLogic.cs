@@ -41,10 +41,12 @@ public class TutorialGameLogic : MonoBehaviour
     [SerializeField] GameObject COLLIDER_Walk;
     [SerializeField] GameObject COLLIDER_Ult;
     [SerializeField] GameObject COLLIDER_endOfTheTutorial;
+    [SerializeField] SceneInfo sceneInfo;
 
     void Start(){
         player.GetComponent<PlayerMain>().older = true;
         i = 0;
+        sceneInfo.wasDestroyed = false;
         player.GetComponent<PlayerMain>().interactionStun = true;
         COLLIDER_Walk.SetActive(false);
 
@@ -167,16 +169,12 @@ public class TutorialGameLogic : MonoBehaviour
         if(i > 6 && i < 9)
         {
             canInteract=true;
-            if ((player.GetComponent<PlayerHealth>().charge >= player.GetComponent<PlayerHealth>().maxCharg) && (player.GetComponent<PlayerHealth>().charge <= player.GetComponent<PlayerHealth>().overloadCharge))
+            if ((player.GetComponent<PlayerHealth>().charge >= player.GetComponent<PlayerHealth>().maxCharg) && (player.GetComponent<PlayerHealth>().charge <= player.GetComponent<PlayerHealth>().overloadCharge) && i == 7)
             {
                 bV.SetActive(true);
                 bX1.SetActive(false);
             }
-            else
-            {
-                bV.SetActive(false);
-                bX1.SetActive(true);
-            }
+           
         }
         else
         {
@@ -195,6 +193,8 @@ public class TutorialGameLogic : MonoBehaviour
         {
             TEXT_ult2.SetActive(false);
             TEXT_ult3.SetActive(true);
+            bX1.SetActive(true);
+
             player.GetComponent<PlayerMain>().interactionStun = false;
             //bV.SetActive(true);
             ++i;
@@ -202,12 +202,15 @@ public class TutorialGameLogic : MonoBehaviour
         if (player.GetComponent<PlayerHealth>().timeFrezze)
         {
             TEXT_ult3.SetActive(false);
-            TEXT_ult4.SetActive(true);
             if (i == 7)
             {
+                bV.SetActive(false);
                 ++i;
             }
-            
+            if(i== 8)
+            {
+                TEXT_ult4.SetActive(true);
+            }
         }
         if (!player.GetComponent<PlayerHealth>().timeFrezze && i == 8)
         {
