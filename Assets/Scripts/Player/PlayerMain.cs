@@ -363,8 +363,8 @@ public class PlayerMain : MonoBehaviour
         canDash = false;
         isDashing = true;
         // Debug.Log("DASHING");
-        c.size = dashColliederSize;
-        c.offset = dashColliederOffset;
+        //c.size = dashColliederSize;
+        //c.offset = dashColliederOffset;
         float defaultGravity = RB.gravityScale;
         RB.gravityScale = 0f;
         RB.velocity = new Vector2(transform.localScale.x * dashPower * (speed / 2), 0f);
@@ -375,8 +375,8 @@ public class PlayerMain : MonoBehaviour
         RB.gravityScale = defaultGravity;
         isDashing = false;
         animator.SetBool("isDashing", isDashing);
-        c.size = defaultColliederSize;
-        c.offset = defaultColliederOffset;
+        //c.size = defaultColliederSize;
+        //c.offset = defaultColliederOffset;
         // Debug.Log("Stop Dashing");
 
         yield return new WaitForSeconds(dashCooldown);
@@ -465,7 +465,7 @@ public class PlayerMain : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.V) && !older && !isDashing)
         {
-            Debug.Log("Should try to healthPlayer");
+            //Debug.Log("Should try to ult");
             ult_press = true;
         }
         

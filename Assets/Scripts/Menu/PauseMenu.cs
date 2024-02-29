@@ -7,33 +7,55 @@ public class PauseMenu : MonoBehaviour
 {
     public GameObject canvas;
     LevelLoader fade;
-
+    [SerializeField] GameObject optionsCanvas;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject dialog;
     private static bool isPaused = false;
+    public bool isInDiffrentMenu;
+
 
     void Start()
     {
+        isInDiffrentMenu=false;
         fade = canvas.GetComponent<LevelLoader>();
         Cursor.visible = false;
         
     }
     void Update() {
+        if(dialog != null)
+        {
+            if (isPaused)
+            {
+                dialog.SetActive(false);
+            }
+            else
+            {
+                dialog.SetActive(true);
+            }
+        }
         if (isPaused)
         {
-            dialog.SetActive(false);
+            Cursor.visible = true;
         }
         else
         {
-            dialog.SetActive(true);
-        }
-        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused) {
-            pauseGame();
-            Cursor.visible = true;
-        } else if (Input.GetKeyDown(KeyCode.Escape) && isPaused) {
-            resumeGame();
             Cursor.visible = false;
         }
+        
+        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused) {
+            pauseGame();
+        } else if (isPaused)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && !isInDiffrentMenu)
+            {
+                resumeGame();
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape) && isInDiffrentMenu)
+            {
+                ChangeActiveState();
+            }
+        }
+        
     }
 
     void pauseGame() {
@@ -58,5 +80,11 @@ public class PauseMenu : MonoBehaviour
         fade.BackToMenu();
         
         //SceneManager.LoadScene("Main Menu");
+    }
+    public void ChangeActiveState()
+    {
+        isInDiffrentMenu = !isInDiffrentMenu;
+        optionsCanvas.SetActive(!optionsCanvas.activeSelf);
+        menuPause.SetActive(!menuPause.activeSelf);
     }
 }

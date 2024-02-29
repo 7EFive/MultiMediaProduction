@@ -42,10 +42,13 @@ public class TutorialGameLogic : MonoBehaviour
     [SerializeField] GameObject COLLIDER_Ult;
     [SerializeField] GameObject COLLIDER_endOfTheTutorial;
     [SerializeField] SceneInfo sceneInfo;
+    [SerializeField] GameObject darkness;
+    Animator animator;
 
     void Start(){
         player.GetComponent<PlayerMain>().older = true;
         i = 0;
+        animator = darkness.GetComponent<Animator>();
         sceneInfo.wasDestroyed = false;
         player.GetComponent<PlayerMain>().interactionStun = true;
         COLLIDER_Walk.SetActive(false);
@@ -219,6 +222,7 @@ public class TutorialGameLogic : MonoBehaviour
             bJump.SetActive(true);
             bX2.SetActive(true);
             dummyCollieder.SetActive(false);
+            animator.SetBool("FadeOut",true);
             ++i;
         }
     }

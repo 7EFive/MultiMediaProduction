@@ -66,6 +66,8 @@ public class Enemy : MonoBehaviour
    
     void Update()
     {
+        
+        
         //Debug.Log(animator.speed);
         //cheack if time has stoped by ultimate
         if (!stop.timeFrezze)
@@ -225,7 +227,8 @@ public class Enemy : MonoBehaviour
         Debug.Log("canDash is true");
         isDashing = false;
         canDash = true;
-        
+        attack_start = false;
+
     }
     public void deadSound()
     {
@@ -236,7 +239,7 @@ public class Enemy : MonoBehaviour
     public void SoundStop()
     {
         audioSource.Stop();
-
+        animator.SetBool("AttackStart", attack_start);
     }
 
 
