@@ -4,14 +4,16 @@ using UnityEngine;
 public class EnemyAttack : MonoBehaviour
 {
     //public Animator animator;
-    public LayerMask playerLayers;
+    //public LayerMask playerLayers;
     public Transform attackPoint;
-    public Transform bodyPoint;
     public static EnemyAttack instance;
+    [SerializeField] GameObject player;
+    PlayerHealth health;
+    //BoxCollider2D hitBox;
     //public Enemy e;
 
-    public float attackRange;
-    public float bodyAttackRange;
+    //public float attackRange;
+    //public float bodyAttackRange;
     //public bool isAttacking = false;
 
     public int attackDamage;
@@ -23,6 +25,8 @@ public class EnemyAttack : MonoBehaviour
 
     void Start()
     {
+        health = player.GetComponent<PlayerHealth>();
+        //hitBox= attackPoint.GetComponent<BoxCollider2D>();
         attackOn = true;
         GetComponent<Enemy>();
     }
@@ -31,15 +35,7 @@ public class EnemyAttack : MonoBehaviour
         instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (GetComponent<Enemy>().attack && attackOn == true)
-        {
-            attackFront();
-            //Debug.Log("attack in front is happaning");
-        }
-    }
+   
 
 
     //}
@@ -55,40 +51,31 @@ public class EnemyAttack : MonoBehaviour
     //      Debug.Log("Enemy landed a hit");
     //  }
     //}
-    void OnDrawGizmosSelected()
-    {
-        if (attackPoint == null)
-            return;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-        Gizmos.DrawWireSphere(bodyPoint.position, bodyAttackRange);
-    }
+    //void OnDrawGizmosSelected()
+    //{
+    //    if (attackPoint == null)
+    //        return;
+    //    Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    //}
 
-    void attackFront()
+    private void OnTriggerEnter2D(Collider2D hitBox)
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
-        //var playerKB = other.collider.GetComponent<PlayerMain>();
-
-        if (Time.time > attackSpeed)
+        if (hitBox.CompareTag("Player"))
         {
-            foreach (Collider2D player in hitEnemies)
-            {
-
-                if (PlayerHealth.timeFrezzeStatic == false)
-                {
-                    player.GetComponent<PlayerHealth>().TakeDamage(attackDamage, transform);
-                    Debug.Log("Enemy is collieding with mainPlayer");
-                    //if (mainPlayer != null)
-                    //{
-                    //    mainPlayer.GetComponent<PlayerMain>().Knockback(transform);
-                    //}
-                    //playerKB.Knockback(transform);
-                    //Debug.Log("damage front activated");
-                    attackSpeed = Time.time + attackCooldown;
-                }
-
-            }
-            //attackSpeed = Time.time + attackCooldown;
+            attack();
         }
+    }
+    
+    void attack()
+    {
+        if(Time.time > attackSpeed && !health.timeFrezze)
+        {
+            health.TakeDamage(attackDamage, transform);
+            Debug.Log("Enemy is collieding with mainPlayer");
+
+            attackSpeed = Time.time + attackCooldown;
+        }
+                    
         //if (playerKB != null)
         //{
         //    playerKB.Knockback(transform);
@@ -96,37 +83,7 @@ public class EnemyAttack : MonoBehaviour
 
 
     }
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(bodyPoint.position, bodyAttackRange, playerLayers);
-        //var playerKB = other.collider.GetComponent<PlayerMain>();
-
-        if (Time.time > attackSpeed)
-        {
-            foreach (Collider2D player in hitEnemies)
-            {
-
-                if(PlayerHealth.timeFrezzeStatic == false)   {
-                    player.GetComponent<PlayerHealth>().TakeDamage(attackDamageBody, transform);
-                    //Debug.Log("Enemy is collieding with mainPlayer");
-                    //if (playerKB != null)
-                    //{
-                    //    playerKB.Knockback(transform);
-                    //}
-                    //playerKB.Knockback(transform);
-                    attackSpeed = Time.time + attackCooldown;
-                }
-                
-            }
-            //attackSpeed = Time.time + attackCooldown;
-        }
-        //if (playerKB != null)
-        //{
-        //    playerKB.Knockback(transform);
-        //}
-        
-
-    }
+  
     //private void OnCollisionEnter2D(Collision2D other)
     //{
     //    Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(bodyPoint.position, bodyAttackRange, playerLayers);

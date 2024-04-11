@@ -13,7 +13,7 @@ public class IdleBehaviour : StateMachineBehaviour
     // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (DealDamage.instance.isAttacking)
+        if (DealDamage.instance.isAttacking && !DealDamage.instance.canAttack)
         {
             DealDamage.instance.firstPunch();
             DealDamage.instance.animator.Play("Attack_1");

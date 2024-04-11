@@ -11,6 +11,7 @@ public class TutorialGameLogic : MonoBehaviour
     [SerializeField] GameObject TEXT_ult2;
     [SerializeField] GameObject TEXT_ult3;
     [SerializeField] GameObject TEXT_ult4;
+    [SerializeField] GameObject TEXT_ult5;
     [SerializeField] GameObject TEXT_howToChargeAndParry;
     [SerializeField] GameObject TEXT_attackTheDoor;
     [SerializeField] GameObject TEXT_attackTheBox;
@@ -39,6 +40,7 @@ public class TutorialGameLogic : MonoBehaviour
     [SerializeField] GameObject dummyCollieder;
 
     [SerializeField] GameObject COLLIDER_Walk;
+    WalkBinds walk_count;
     [SerializeField] GameObject COLLIDER_Ult;
     [SerializeField] GameObject COLLIDER_endOfTheTutorial;
     [SerializeField] SceneInfo sceneInfo;
@@ -52,7 +54,7 @@ public class TutorialGameLogic : MonoBehaviour
         sceneInfo.wasDestroyed = false;
         player.GetComponent<PlayerMain>().interactionStun = true;
         COLLIDER_Walk.SetActive(false);
-
+        walk_count = COLLIDER_Walk.GetComponent<WalkBinds>();
     } 
     void Update(){
         if(i==0)
@@ -71,7 +73,10 @@ public class TutorialGameLogic : MonoBehaviour
         //Check if the mainPlayer has already charged and is now young.
         if (!player.GetComponent<PlayerMain>().older) {
             TEXT_howToChargeAndParry.SetActive(false);
-            bWalk.SetActive(false);
+            if (COLLIDER_Walk.activeInHierarchy)
+            {
+                COLLIDER_Walk.SetActive(false);
+            }
             bVHold.SetActive(false);
             bX.SetActive(false);
             TEXT_attackTheDoor.SetActive(true);
@@ -110,6 +115,7 @@ public class TutorialGameLogic : MonoBehaviour
         {
             player.GetComponent<PlayerMain>().interactionStun = true;
             TEXT_ult1.SetActive(true);
+            player.GetComponent<NoUlt>().enabled=false;
             Debug.Log("started ult tutorial");
             canInteract = false;
             ++i;
@@ -155,29 +161,32 @@ public class TutorialGameLogic : MonoBehaviour
             player.GetComponent<PlayerMain>().interactionStun = false;
             interaction.SetActive(false);
             TEXT_Interact3.SetActive(false);
-            TEXT_howToChargeAndParry.SetActive(true);
+            
             ++i;
             canInteract = false;
             gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            bWalk.SetActive(true);
+            COLLIDER_Walk.SetActive(true);
+        }
+        if (walk_count.i == 1)
+        {
+            COLLIDER_Walk.SetActive(false);
             bVHold.SetActive(true);
             bX.SetActive(true);
-            COLLIDER_Walk.SetActive(true);
+            TEXT_howToChargeAndParry.SetActive(true);
         }
     }
     
     void ultCheack()
     {
         
-        if(i > 6 && i < 9)
+        if(i > 6 && i < 10)
         {
             canInteract=true;
-            if ((player.GetComponent<PlayerHealth>().charge >= player.GetComponent<PlayerHealth>().maxCharg) && (player.GetComponent<PlayerHealth>().charge <= player.GetComponent<PlayerHealth>().overloadCharge) && i == 7)
+            if ((player.GetComponent<PlayerHealth>().charge >= player.GetComponent<PlayerHealth>().maxCharg) && (player.GetComponent<PlayerHealth>().charge <= player.GetComponent<PlayerHealth>().overloadCharge) && i == 8)
             {
                 bV.SetActive(true);
                 bX1.SetActive(false);
             }
-           
         }
         else
         {
@@ -196,6 +205,13 @@ public class TutorialGameLogic : MonoBehaviour
         {
             TEXT_ult2.SetActive(false);
             TEXT_ult3.SetActive(true);
+            ++i;
+            canInteract = false;
+        }
+        if (Input.GetKeyDown(KeyCode.E) && canInteract && i == 7)
+        {
+            TEXT_ult3.SetActive(false);
+            TEXT_ult4.SetActive(true);
             bX1.SetActive(true);
 
             player.GetComponent<PlayerMain>().interactionStun = false;
@@ -204,20 +220,20 @@ public class TutorialGameLogic : MonoBehaviour
         }
         if (player.GetComponent<PlayerHealth>().timeFrezze)
         {
-            TEXT_ult3.SetActive(false);
-            if (i == 7)
+            TEXT_ult4.SetActive(false);
+            if (i == 8)
             {
                 bV.SetActive(false);
                 ++i;
             }
-            if(i== 8)
+            if(i== 9)
             {
-                TEXT_ult4.SetActive(true);
+                TEXT_ult5.SetActive(true);
             }
         }
-        if (!player.GetComponent<PlayerHealth>().timeFrezze && i == 8)
+        if (!player.GetComponent<PlayerHealth>().timeFrezze && i == 9)
         {
-            TEXT_ult4.SetActive(false);
+            TEXT_ult5.SetActive(false);
             TEXT_attackTheBox.SetActive(true);
             bJump.SetActive(true);
             bX2.SetActive(true);

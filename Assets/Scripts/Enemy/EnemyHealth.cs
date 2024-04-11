@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -9,21 +10,27 @@ public class EnemyHealth : MonoBehaviour
     PlayerHealth time;
     bool dead = false;
     public bool isEnemy;
-    
-
-
-    public int maxHealth=100;
+    public int maxHealth;
     public int currentHealth;
-    
+    [SerializeField] GameObject healthBarObject;
+    HealthBar healthBar;
+    CanvasGroup showBar;
 
-    
 
     // Start is called before the first frame update
     void Start()
     {
         
+        gameObject.GetComponent<RegenObject>();
         currentHealth = maxHealth;
-        time = player.GetComponent<PlayerHealth>();
+        if (healthBarObject!=null)
+        {
+            healthBar = healthBarObject.GetComponent<HealthBar>();
+            healthBar.UpdateHealthBar(currentHealth, maxHealth);
+            showBar = healthBarObject.GetComponent<CanvasGroup>();
+            showBar.alpha = 0f;
+        }
+            time = player.GetComponent<PlayerHealth>();
     }
     void Update()
     {
@@ -33,14 +40,47 @@ public class EnemyHealth : MonoBehaviour
             dead = true;
             Die();
         }
-        
     }
+    void Awake()
+    {
+        if (healthBar != null)
+        {
+            healthBar = GetComponentInChildren<HealthBar>();
+        }
+    }
+
     // Update is called once per frame
 
     // method for takingDamage
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage;
+        if (healthBarObject != null)
+        {
+            healthBar.UpdateHealthBar(currentHealth, maxHealth);
+            //Debug.Log("ShowHealthBar");
+            if (showBar.alpha==0f)
+                showBar.alpha = 1f;
+            healthBar.UpdateHealthBar(currentHealth, maxHealth);
+        }
+        if (gameObject.GetComponent<RegenObject>()!=null)
+        {
+            if (time.timeFrezze)
+            {
+                if (healthBarObject != null)
+                {
+                    healthBar.UpdateHealthBar(currentHealth, maxHealth);
+                }
+                currentHealth -= damage;
+            }
+        }
+        else
+        {
+            if (healthBarObject != null)
+            {
+                healthBar.UpdateHealthBar(currentHealth, maxHealth);
+            }
+            currentHealth -= damage;
+        }
         //Debug.Log("STRIKED ENEMY");
 
         animator.SetTrigger("Hurt"); 
@@ -50,20 +90,24 @@ public class EnemyHealth : MonoBehaviour
     void Die()
     {
         //Debug.Log("Abomination commited die!");
-       
         animator.SetBool("isDead", true);
         this.en.dead = true;
         transform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         GetComponent<BoxCollider2D>().enabled = false;
-        
+        if (healthBarObject != null)
+        {
+            showBar.alpha = 0f;
+        }
         this.en.chaseDistance = 0;
         this.en.isChasing = false;
         if (isEnemy)
         {
+            GetComponent<EnemyAttack>().attackDamage = 0;
+            Debug.Log("turend off Attack Script");
             GetComponent<EnemyAttack>().enabled = false;
         }
         
-        Debug.Log("ENEMY DIED");
+        //Debug.Log("ENEMY DIED");
         //Enemy.instance.deadSound();
         //this.enabled = false;
 

@@ -35,7 +35,6 @@ public class CameraFocus : MonoBehaviour
                 else
                 {
                     vCamera.m_Lens.OrthographicSize -= Time.deltaTime * zoomIn;
-                    action.createChargeParticles();
                 }
             }
             else if(vCamera.m_Lens.OrthographicSize <= minZoom)

@@ -27,7 +27,7 @@ public class PlayerHealth : MonoBehaviour
     public float parryCoolDown;
     public bool ulti_start = false;
     // no Particle bool
-    bool noParticle = false;
+    //bool noParticle = false;
 
     //chargeing values
     //[HideInInspector]
@@ -60,6 +60,8 @@ public class PlayerHealth : MonoBehaviour
     // bool on time Stop
     public bool timeFrezze = false;
     int chargeRemoverCount = 0;
+    [SerializeField] GameObject groundCheckObject;
+    GroundCheck groundCheck;
     [HideInInspector] public static bool timeFrezzeStatic = false;
 
     //Rigidbody2D rb;
@@ -89,7 +91,7 @@ public class PlayerHealth : MonoBehaviour
         swing = GetComponent<DealDamage>();
         watch.SetActive(false);
         ps.GetComponent<PostProcess>().enabled = false;
-
+        groundCheck = groundCheckObject.GetComponent<GroundCheck>();
     }
 
     // Update is called once per frame
@@ -131,7 +133,7 @@ public class PlayerHealth : MonoBehaviour
                 if (mainPlayer.older && Input.GetKeyDown(KeyCode.X) && canParry && !mainPlayer.charging)
                 {
                     canParry = false;
-                    noParticle = true;
+                    //noParticle = true;
                     //IEnumarator to Parry
                     StartCoroutine(Parry());
                     //Debug.Log("tryed to parry...");
@@ -182,7 +184,7 @@ public class PlayerHealth : MonoBehaviour
                 regDamage = Time.time + takeDamageCooldown;
             }
             // damage registered only above 0.5
-            else if (damage > 0.5f && !punished)
+            else if (damage > 0.5f && !punished && currentHealth != 0)
             {
 
                 currentHealth -= damage;
@@ -268,7 +270,7 @@ public class PlayerHealth : MonoBehaviour
         
         yield return new WaitForSeconds(parryCoolDown);
         canParry = true;
-        noParticle = false;
+        //noParticle = false;
     }
     // Players form change method
     public void Age()
@@ -312,8 +314,9 @@ public class PlayerHealth : MonoBehaviour
             
             charge += Time.deltaTime * speedCharging * 3;
             chargeLimit += Time.deltaTime * speedCharging * 2;
-            if (!noParticle)
+            if (!chargeParticles.isPlaying)
             {
+                chargeParticles.Play();
                 //createChargeParticles();
                 //Debug.Log("createChargeParticles();");
             }
@@ -371,7 +374,7 @@ public class PlayerHealth : MonoBehaviour
             watch.SetActive(false);
         }
         //ultimate button press on 100 or more healthPlayer
-        if (mainPlayer.ult_press && mainPlayer.onGround)
+        if (mainPlayer.ult_press && groundCheck.onGround)
         {
             if ((charge >= maxCharg) && !mainPlayer.older && !coolDown_Ult)
             {
@@ -385,7 +388,6 @@ public class PlayerHealth : MonoBehaviour
             {
                 mainPlayer.ult_press = false;
             }
-
         }
         //healthPlayer overloading with max 125 healthPlayer value droping to 100
         if (charge > maxCharg && !mainPlayer.older)
@@ -409,13 +411,13 @@ public class PlayerHealth : MonoBehaviour
         {
             ps.GetComponent<PostProcess>().enabled=true;
             timeFrezze = true;
-            timeFrezzeStatic = true;
+            //timeFrezzeStatic = true;
         }
         //healthPlayer droping after cloack spawn animation is done
         if (timeFrezze && charge != 0 && !mainPlayer.older)
         {
-            timeFrezze = true;
-            timeFrezzeStatic = true;
+            //timeFrezze = true;
+            //timeFrezzeStatic = true;
             chargeCapMax = false;
             charge -= Time.deltaTime * speedCharging;
         }
@@ -429,7 +431,7 @@ public class PlayerHealth : MonoBehaviour
             charge = 0;
             chargeLimit = 0;
             timeFrezze = false;
-            timeFrezzeStatic = false;
+            //timeFrezzeStatic = false;
         }
     }
 

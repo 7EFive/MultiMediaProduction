@@ -12,6 +12,7 @@ public class DealDamage : MonoBehaviour
     // initializing DealDamage as instance for animator scripts
     public static DealDamage instance;
     //bool for attacking
+    public bool canAttack=true;
     public bool isAttacking = false;
     //bool for attacking in Air and related to it
     public bool canAttackingInAir = true;
@@ -28,6 +29,9 @@ public class DealDamage : MonoBehaviour
     //References values for knockback and healthPlayer
     public PlayerMain mainPlayer;
     public PlayerHealth healthPlayer;
+    [SerializeField] GameObject groundCheckObject;
+    GroundCheck groundCheck;
+
 
     //Tryin to do some musik
     public AudioClip[] AudioClip;
@@ -36,7 +40,8 @@ public class DealDamage : MonoBehaviour
 
     private void Start()
     {
-        mainPlayer=GetComponent<PlayerMain>();
+        groundCheck = groundCheckObject.GetComponent<GroundCheck>();
+        mainPlayer =GetComponent<PlayerMain>();
         healthPlayer = GetComponent<PlayerHealth>();
     }
     // for animator script
@@ -65,18 +70,20 @@ public class DealDamage : MonoBehaviour
         //cheack if cooldown is still, if the players is knockbacked and if the palyer is Not attacking already
         if (Time.time >= nextAttackTime && !mainPlayer.kbd && !isAttacking)
         {
+            canAttack = true;
             //OnGround Combat
-            if (Input.GetKeyDown(KeyCode.X) && mainPlayer.onGround)
+            if (Input.GetKeyDown(KeyCode.X) && groundCheck.onGround && canAttack)
             {
                 doDamage();
+                canAttack = false;
                 isAttacking = true;
                 //initialize cooldown of attacking
-                nextAttackTime = Time.time + attackRate * 1.05f;
+                nextAttackTime = Time.time + attackRate;
 
 
             }
             //MidAir Combat
-            else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !mainPlayer.onGround && canAttackingInAir && !isAttackingInAir)
+            else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !groundCheck.onGround && canAttackingInAir && !isAttackingInAir)
             {
                 jumpAttackSound();
                 enterMidAirAttack = true;
@@ -104,7 +111,7 @@ public class DealDamage : MonoBehaviour
     }
    
     //OnGround damage area
-    void doDamage()
+    public void doDamage()
     {
         
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
@@ -112,26 +119,26 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            if(enemy.GetComponent<EnemyHealth>() != null) {
+            if (enemy.GetComponent<EnemyHealth>() != null)
+            {
                 hitSound();
                 enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage);
+                if (!healthPlayer.timeFrezze)
+                {
+                   
+                    healthPlayer.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
+                }
             }
-        
-            if(enemy.GetComponent<Enemy>() != null) {
-                enemy.GetComponent<Enemy>().Knockback(transform);
-            }
-            
-
-            if (!healthPlayer.timeFrezze)
+            if (enemy.GetComponent<Enemy>() != null)
             {
-                healthPlayer.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 2);
+                enemy.GetComponent<Enemy>().Knockback(transform);
             }
             //Debug.Log(enemy.name + " was damaged by you.");
         }
-        
     }
+
     //MidAir damage area
-    void doDamageB()
+    public void doDamageB()
     {
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange*1.6f, enemyLayers);
@@ -139,31 +146,27 @@ public class DealDamage : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            if(enemy.GetComponent<EnemyHealth>() != null){
-                hitSound();
-                enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage/2);
-            }
-
-            if(enemy.GetComponent<Enemy>() != null){
-                enemy.GetComponent<Enemy>().Knockback(transform);
-            }
-            
-            if (!healthPlayer.timeFrezze)
+            if (enemy.GetComponent<EnemyHealth>() != null)
             {
-                healthPlayer.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);
+                hitSound();
+                enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage / 2);
+                if (!healthPlayer.timeFrezze)
+                {
+                    
+                    healthPlayer.GetComponent<PlayerHealth>().ChargeReg(attackDamage / 4);
+                }
+            }
+            if (enemy.GetComponent<Enemy>() != null)
+            {
+                enemy.GetComponent<Enemy>().Knockback(transform);
             }
             //Debug.Log(enemy.name + " was damaged by you.");
         }
-
     }
     //animation reset of MidAir Combat after landing
     void animationReset()
     {
-        // if (!mainPlayer.onGround)
-        //{
-        //    isAttacking = false;
-        //}
-        if (mainPlayer.onGround)
+        if (groundCheck.onGround)
         {
             enterMidAirAttack = false;
             isAttackingInAir = false;
@@ -172,6 +175,7 @@ public class DealDamage : MonoBehaviour
             animator.SetBool("MidAirSlash", isAttackingInAir);
         }
     }
+
     // drawing sphere at attack position in size of value attackRange
     void OnDrawGizmosSelected()
     {

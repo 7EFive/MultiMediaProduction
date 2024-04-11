@@ -14,9 +14,6 @@ public class SystemInformation : MonoBehaviour
     {
         hp = GetComponent<PlayerHealth>();
         QualitySettings.vSyncCount = 0;
-        // Limit the framerate to 60
-        Application.targetFrameRate = 60;
-
     }
 
     void Update()

@@ -8,8 +8,5 @@ public class CursorOn : MonoBehaviour
     void Start()
     {
         Cursor.visible = true;
-    }
-
-    // Update is called once per frame
-    
+    }    
 }

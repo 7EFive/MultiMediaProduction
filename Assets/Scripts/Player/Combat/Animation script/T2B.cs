@@ -17,8 +17,6 @@ public class T2B : StateMachineBehaviour
         {
             DealDamage.instance.secondPunch();
             DealDamage.instance.animator.Play("Attack_2");
-            
-
         }
     }
 

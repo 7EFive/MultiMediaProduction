@@ -10,19 +10,32 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject optionsCanvas;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject dialog;
+    [SerializeField] GameObject ItemShow;
     private static bool isPaused = false;
+    [SerializeField] GameObject death_screen_obj;
+    LISTENER_Death_Screen death_screen_can;
     public bool isInDiffrentMenu;
+    public int FPScount=60;
+
 
 
     void Start()
     {
-        isInDiffrentMenu=false;
+        if (ItemShow != null)
+        {
+            //dialog.SetActive(false);
+            ItemShow.SetActive(true);
+        }
+        isInDiffrentMenu = false;
         fade = canvas.GetComponent<LevelLoader>();
         Cursor.visible = false;
-        
+        death_screen_can = death_screen_obj.GetComponent<LISTENER_Death_Screen>();
     }
     void Update() {
-        if(dialog != null)
+        // Limit the framerate to 60
+        Application.targetFrameRate = FPScount;
+
+        if (dialog != null)
         {
             if (isPaused)
             {
@@ -33,7 +46,7 @@ public class PauseMenu : MonoBehaviour
                 dialog.SetActive(true);
             }
         }
-        if (isPaused)
+        if (isPaused || death_screen_can.deathScreanMenu)
         {
             Cursor.visible = true;
         }
@@ -42,7 +55,7 @@ public class PauseMenu : MonoBehaviour
             Cursor.visible = false;
         }
         
-        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused) {
+        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused && !death_screen_can.deathScreanMenu) {
             pauseGame();
         } else if (isPaused)
         {

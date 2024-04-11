@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class SceneChangeTrigger : MonoBehaviour
@@ -7,52 +8,80 @@ public class SceneChangeTrigger : MonoBehaviour
     LevelLoader fade;
     bool canInteract=false;
     public bool automaticTrigger;
-    public GameObject button;
+    //public GameObject button;
     public GameObject interactor;
+    Animator animator;
+    public bool conditionsMade;
+    public bool needsAKey;
+
     
 
     //public GameObject mainPlayer; asda
 
     private void Start()
     {
-        canInteract = false;
+        animator= gameObject.GetComponent<Animator>();
         fade = canvas.GetComponent<LevelLoader>();
-        button.SetActive(false);
+        //button.SetActive(false);
     }
     void Update()
     {
+        if (needsAKey)
+        {
+            if ((Input.GetKeyDown(KeyCode.E) && canInteract))
+            {
+                animator.SetBool("Open", conditionsMade);
+                needsAKey = false;
+            }
+        }
+        else
+        {
+            ChangeScene();
+        }
+
+        
+      }
+    public void ChangeScene()
+    {
         if ((Input.GetKeyDown(KeyCode.E) && canInteract) || (canInteract && automaticTrigger))
         {
-            button.SetActive(false);
+            //button.SetActive(false);
             Debug.Log("Level Change");
             fade.LoadNextLevel();
             if (!automaticTrigger)
             {
                 interactor.GetComponent<PlayerMain>().interactionStun = true;
             }
-            
+
             //SceneManager.LoadScene(sceneToLoad, LoadSceneMode.Single);
         }
     }
     // triggers LevelLoder Script and Fade
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && conditionsMade)
         { 
             canInteract=true;
-            if (!automaticTrigger)
-            {
-                
-                button.SetActive(true);
-            }
+            //if (!automaticTrigger)
+            //{
+            //    
+            //    button.SetActive(true);
+            //}
         }
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !conditionsMade)
         {
             canInteract = false;
-            button.SetActive(false);
+            //button.SetActive(false);
+        }
+    }
+    public void ButtonUp()
+    {
+        if(Input.GetKeyUp(KeyCode.E) && !canInteract && conditionsMade)
+        {
+            canInteract = true;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using Unity.VisualScripting;
 //using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,7 +15,9 @@ public class PlayerMain : MonoBehaviour
     public float jumpHight;
     public float speed;
     private float walk;
-    //public bool interact;
+    public bool airUp;
+
+    public float floatForce;
 
     //horizontal movment values
     private float horizontal;
@@ -23,7 +26,7 @@ public class PlayerMain : MonoBehaviour
     public Color gameOver;
     public bool stayOnGround;
     public bool fall = false;
-    public bool onGround = true;
+    //public bool onGround = true;
     // bool for chargin and ultimate press button
     public bool charging = false;
     public bool ult_press = false;
@@ -37,11 +40,11 @@ public class PlayerMain : MonoBehaviour
     public Vector2 oldFormColliederOffset;
     public Vector2 oldFormColliederSize;
 
-    [Header("Colliders settings| Dash")]
-    public Vector2 dashColliederOffset;
-    public Vector2 dashColliederSize;
+    //[Header("Colliders settings| Dash")]
+    //public Vector2 dashColliederOffset;
+    //public Vector2 dashColliederSize;
 
-    [HideInInspector]
+    //[HideInInspector]
     // bool for dead state
     public bool isFinished=false;
     // bool for weeker state
@@ -51,7 +54,8 @@ public class PlayerMain : MonoBehaviour
     public Animator animator;
     Rigidbody2D RB;
     public BoxCollider2D c;
-    [SerializeField] CapsuleCollider2D cc;
+    [SerializeField] GameObject groundCheckObject;
+    GroundCheck groundCheck;
     public LayerMask groundMask;
     private SpriteRenderer sprite;
     public DealDamage swing;
@@ -76,7 +80,7 @@ public class PlayerMain : MonoBehaviour
     public float dashDuration;
     public float dashCooldown;
     public AudioSource moveSound;
-    public bool interactionStun ;
+    public bool interactionStun;
     private void Awake()
     {
         instance = this;
@@ -90,6 +94,7 @@ public class PlayerMain : MonoBehaviour
         swing = GetComponent<DealDamage>();
         c.size = defaultColliederSize;
         c.offset = defaultColliederOffset;
+        groundCheck = groundCheckObject.GetComponent<GroundCheck>();
     }
   
 
@@ -105,19 +110,27 @@ public class PlayerMain : MonoBehaviour
         {
             return;
         }
-        if (!interactionStun)
-        {
+        /**if (!interactionStun)
+            if (DialogueManager.Instance.isDialogueActive)
+            {
+                interactionStun = true;
+            }
+        **/
+        if(!interactionStun){
             if (!isDashing)
             {
                 Falling();
-                Jumping();
+                if (!airUp)
+                {
+                    Jumping();
+                }
             }
             AttackCheak();
             horizontal = Input.GetAxisRaw("Horizontal");
 
 
             // Sprite doesn't flip while charging or dead on movment
-            if (charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim) || kbd)
+            if (charging || isFinished || (health.coolDown_ult_first_anim || health.coolDown_ult_last_anim) || kbd || interactionStun)
             {
                 //createChargeParticles();
                 if (facingRight)
@@ -153,7 +166,7 @@ public class PlayerMain : MonoBehaviour
             Old();
 
             // states cheks for dashing
-            if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !older &&
+            if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !health.coolDown_Ult && !older &&
                !((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
                animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
                animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
@@ -165,27 +178,30 @@ public class PlayerMain : MonoBehaviour
                 StartCoroutine(Dash());
             }
         }
-       
+        OnGround();
+
         //Physics2D.IgnoreLayerCollision(7,8);
     }
 
     private void FixedUpdate()
     {
+
         if (isGamePaused) {
             return;
         }
+
         // cheack for dash
         if (isDashing)
         {
             return;
         }
+
         if (!kbd )
         {
             if (!charging)
             {
-
                 RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
-                if (RB.velocity[1] != 0 && onGround)
+                if (RB.velocity.x != 0 && groundCheck.onGround)
                 {
                     createWalkParticles();
                     //Debug.Log("Grounded?"+onGround);
@@ -194,15 +210,11 @@ public class PlayerMain : MonoBehaviour
                     {
                         moveSound.Play();
                     }
-
-
                 }
                 else
                 {
                     moveSound.Stop();
                 }
-
-
                 animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
                 animator.SetFloat("yVelocity", RB.velocity.y);
             }
@@ -213,13 +225,20 @@ public class PlayerMain : MonoBehaviour
                 RB.velocity = new Vector2(horizontal * walk / 2, RB.velocity.y);
                 animator.SetFloat("xVelocity", Math.Abs(RB.velocity.x));
                 animator.SetFloat("yVelocity", RB.velocity.y);
-
-
             }
 
-
+            if (airUp)
+            {
+                animator.SetBool("Fall", true);
+                RB.velocity = new Vector2(0, floatForce);
+            }
+            else if(!airUp && !groundCheck.onGround)
+            {
+                animator.SetBool("Fall", true);
+            }
+ 
             // No movement on specific states
-            if ((charging || health.isParrying) || health.coolDown_ult_first_anim|| interactionStun)
+            if ((charging || health.isParrying) || health.coolDown_ult_first_anim || interactionStun && !airUp)
             {
                 animator.SetFloat("xVelocity", 0);
                 //createChargeParticles();
@@ -233,18 +252,20 @@ public class PlayerMain : MonoBehaviour
     }
 
     // collieder onGround check 
-    void OnTriggerEnter2D(Collider2D collision)
+    public void OnGround()
     {
         if (isGamePaused) {
             return;
         }
-        if (collision.gameObject.CompareTag("Ground"))
+        if (groundCheck.onGround)
         {
-            onGround = true;
             fall = false;
             animator.SetBool("Fall", fall);
-            animator.SetBool("IsJumping", !onGround);
-            animator.SetBool("Hurt", false);
+            animator.SetBool("IsJumping", !groundCheck.onGround);
+            if (!kbd)
+            {
+                animator.SetBool("Hurt", false);
+            }
             //Debug.Log("Player is colliding with ground");
         }
         //onGround = true;
@@ -256,7 +277,7 @@ public class PlayerMain : MonoBehaviour
 
 
         // dead state if health is under 0 and mainPlayer is on gorund
-        if (onGround && isFinished)
+        if (groundCheck.onGround && isFinished)
         {
             animator.SetBool("GameOver", true);
             charging = false;
@@ -266,7 +287,6 @@ public class PlayerMain : MonoBehaviour
             RB.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
             int notPlayable = LayerMask.NameToLayer("GameOver");
             gameObject.layer = notPlayable;
-
         }
     }
     // Jumping method
@@ -275,24 +295,24 @@ public class PlayerMain : MonoBehaviour
         if (isGamePaused) {
             return;
         }
-        if (Input.GetButtonDown("Jump") && onGround || Input.GetKeyDown(KeyCode.UpArrow) && onGround)
+        if(RB.velocity.y > 0f)
+        {
+            animator.SetBool("IsJumping", !groundCheck.onGround);
+        }
+        if (Input.GetButtonDown("Jump") && groundCheck.onGround || Input.GetKeyDown(KeyCode.UpArrow) && groundCheck.onGround )
         {
             if(!older && !stayOnGround)
             {
                 DealDamage.instance.jumpSound();
                 RB.velocity = new Vector2(RB.velocity.x, jumpHight);
-                onGround = false;
+                groundCheck.onGround = false;
                 // animator.SetBool("Grounded", onGround);
-                animator.SetBool("IsJumping", !onGround);
             }
-
         }
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
         }
-        
-
     }
     // slowdown mainPlayer on attacking state
     void AttackCheak()
@@ -306,7 +326,7 @@ public class PlayerMain : MonoBehaviour
            animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3"))|| 
-           swing.isAttacking && onGround)
+           swing.isAttacking && groundCheck.onGround)
         {
             walk = speed / 50f;
             stayOnGround = true;
@@ -340,7 +360,6 @@ public class PlayerMain : MonoBehaviour
         if (isGamePaused) {
             return;
         }
-
         if (RB.velocity.y < -1)
         {
             //Debug.Log("Falling");
@@ -394,8 +413,12 @@ public class PlayerMain : MonoBehaviour
         kbd = true;
         KBF_x = KnockbackForceX;
         KBF_y = KnockbackForceX;
-        sprite.color = kb_color;
-
+        if (!isFinished)
+        {
+            sprite.color = kb_color;
+        }
+        
+        
         if (dir.x > 0)
         {
             RB.velocity = new Vector2(KBF_x, KBF_y);
@@ -410,6 +433,7 @@ public class PlayerMain : MonoBehaviour
     // stop Knockback method
     private IEnumerator Unknockback(float kbDur)
     {
+        animator.SetBool("Hurt", kbd);
         yield return new WaitForSeconds(kbDur);
         kbd = false;
         health.isParrying = false;
@@ -424,7 +448,7 @@ public class PlayerMain : MonoBehaviour
         if (isGamePaused) {
             return;
         }
-        if (onGround && !interactionStun)
+        if (groundCheck.onGround && !interactionStun)
         {
             Charging();
         }
@@ -452,13 +476,20 @@ public class PlayerMain : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V) && older && !health.punished)
         {
             charging = true;
-            //createChargeParticles();
+            if (!chargeParticles.isPlaying)
+            {
+                createChargeParticles();
+            }
             DealDamage.instance.chargeSound();
             animator.SetBool("Charge", true);
             
         }
         if (Input.GetKeyUp(KeyCode.V) && older)
         {
+            if (chargeParticles.isPlaying)
+            {
+                chargeParticles.Stop();
+            }
             DealDamage.instance.SoundStop();
             charging = false;
             animator.SetBool("Charge", false);
