@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
@@ -71,7 +70,7 @@ public class EnemyAttack : MonoBehaviour
         if(Time.time > attackSpeed && !health.timeFrezze)
         {
             health.TakeDamage(attackDamage, transform);
-            Debug.Log("Enemy is collieding with mainPlayer");
+            //Debug.Log("Enemy is collieding with mainPlayer");
 
             attackSpeed = Time.time + attackCooldown;
         }

@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class SceneChangeTrigger : MonoBehaviour
@@ -28,7 +27,7 @@ public class SceneChangeTrigger : MonoBehaviour
     {
         if (needsAKey)
         {
-            if ((Input.GetKeyDown(KeyCode.E) && canInteract))
+            if ((Input.GetButtonDown("Interact") && canInteract))
             {
                 animator.SetBool("Open", conditionsMade);
                 needsAKey = false;
@@ -43,7 +42,7 @@ public class SceneChangeTrigger : MonoBehaviour
       }
     public void ChangeScene()
     {
-        if ((Input.GetKeyDown(KeyCode.E) && canInteract) || (canInteract && automaticTrigger))
+        if ((Input.GetButtonDown("Interact") && canInteract) || (canInteract && automaticTrigger))
         {
             //button.SetActive(false);
             Debug.Log("Level Change");
@@ -79,7 +78,7 @@ public class SceneChangeTrigger : MonoBehaviour
     }
     public void ButtonUp()
     {
-        if(Input.GetKeyUp(KeyCode.E) && !canInteract && conditionsMade)
+        if(Input.GetButtonDown("Interact") && !canInteract && conditionsMade)
         {
             canInteract = true;
         }

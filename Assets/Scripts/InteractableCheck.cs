@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InteractableCheck : MonoBehaviour
@@ -15,7 +13,7 @@ public class InteractableCheck : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Interactable" && !player.interactionStun)
+        if (collision.CompareTag("Interactable")  && !player.interactionStun)
         {
             Debug.Log("Can Interract");
             interactable.SetActive(true);
@@ -23,7 +21,7 @@ public class InteractableCheck : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "Interactable")
+        if (collision.CompareTag("Interactable"))
         {
             interactable.SetActive(false);
         }

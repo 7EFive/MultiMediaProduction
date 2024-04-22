@@ -11,12 +11,15 @@ public class RegenObject : MonoBehaviour
     public SceneInfo sceneInfo;
     [SerializeField] ParticleSystem pFlame;
     [SerializeField] GameObject healthFillArea;
+    [SerializeField] PatrollingBeh patroll;
     Image hbc;
-    public Color defSpellColor;
+    Color colorP;
+    //public Color defSpellColor;
     void Start()
     {
         hbc = healthFillArea.GetComponentInChildren<Image>();
-        hbc.color = defSpellColor;
+        ColorUtility.TryParseHtmlString("#6C00C3", out colorP);
+        hbc.GetComponent<Image>().color=colorP;
         timeStop = player.GetComponent<PlayerHealth>();
         dummy = gameObject.GetComponent<EnemyHealth>();
         dummy.currentHealth = dummy.maxHealth;
@@ -29,7 +32,10 @@ public class RegenObject : MonoBehaviour
             {
                 timeStopPartlc();
             }
-            
+            if (!patroll.enabled)
+            {
+                patroll.enabled = true;
+            }
         }
         else
         {
@@ -37,7 +43,10 @@ public class RegenObject : MonoBehaviour
             {
                 TSPhalt();
             }
-            
+            if (patroll.enabled)
+            {
+                patroll.enabled = false;
+            }
         }
     }
 
@@ -45,12 +54,6 @@ public class RegenObject : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //if (!timeStop.timeFrezze && !sceneInfo.wasDestroyed )
-        //{
-        //    dummy.currentHealth = dummy.maxHealth;
-        //    //Debug.Log("Particles should be displayed");
-        //}
-        
         if (!dummy.isEnemy && dummy.en.dead)
         {
             sceneInfo.wasDestroyed = dummy.en.dead;

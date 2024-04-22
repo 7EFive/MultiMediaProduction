@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AirUp : MonoBehaviour
@@ -13,8 +11,6 @@ public class AirUp : MonoBehaviour
     int i = 0;
     string groundLayerName = "Ground";
     string playerLayerName = "Player";
-    string removeTag= "Untagged";
-    string defaultTag = "Interactable";
     int groundLayer;
     int playerLayer;
 
@@ -34,10 +30,9 @@ public class AirUp : MonoBehaviour
             interactionSymbl.SetActive(true);
         }
         **/
-        if (i >= 1 && !extraEndCollider.GetComponent<AirUpEnd>().collidingEnd)
+        if (i == 1 && !extraEndCollider.GetComponent<AirUpEnd>().collidingEnd)
         {
-            gameObject.tag = removeTag;
-            groundChk.mainTag = "Object";
+            groundChk.mainTag = "Untagged";
             //Debug.Log("Collision off");
             extraEndCollider.SetActive(true);
             Physics2D.IgnoreLayerCollision(groundLayer,playerLayer, true);
@@ -53,7 +48,6 @@ public class AirUp : MonoBehaviour
                 extraEndCollider.SetActive(false);
                 player.GetComponent<PlayerMain>().interactionStun = false;
                 i = 0;
-                gameObject.tag = defaultTag;
                 groundChk.mainTag = "Ground";
             }
         }
@@ -78,7 +72,7 @@ public class AirUp : MonoBehaviour
     }
     void playerConfirm()
     {
-        if (colliding && Input.GetKeyDown(KeyCode.E) && groundChk.onGround && i==0)
+        if (colliding && Input.GetButtonDown("Interact") && groundChk.onGround && i==0)
         {
             ++i;
             //interactionSymbl.SetActive(false);

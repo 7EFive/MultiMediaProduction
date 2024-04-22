@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -15,6 +14,8 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] GameObject healthBarObject;
     HealthBar healthBar;
     CanvasGroup showBar;
+    //[SerializeField] GameObject attackCollider;
+    [SerializeField] GameObject detectionCollider;
 
 
     // Start is called before the first frame update
@@ -98,14 +99,18 @@ public class EnemyHealth : MonoBehaviour
         {
             showBar.alpha = 0f;
         }
-        this.en.chaseDistance = 0;
         this.en.isChasing = false;
         if (isEnemy)
         {
-            GetComponent<EnemyAttack>().attackDamage = 0;
+            en.attackPoint.SetActive(false);
+            detectionCollider.SetActive(false);
+            /**
+             GetComponent<EnemyAttack>().attackDamage = 0;
             Debug.Log("turend off Attack Script");
             GetComponent<EnemyAttack>().enabled = false;
+            **/
         }
+        
         
         //Debug.Log("ENEMY DIED");
         //Enemy.instance.deadSound();

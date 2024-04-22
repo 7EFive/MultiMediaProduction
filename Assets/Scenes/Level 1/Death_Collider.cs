@@ -7,7 +7,7 @@ public class Death_Collider : MonoBehaviour
             //other.gameObject.GetComponent<PlayerMain>().older = true;
             other.gameObject.GetComponent<PlayerMain>().isFinished = true;
             other.gameObject.GetComponent<PlayerHealth>().currentHealth = 0;
-            other.gameObject.GetComponent<PlayerHealth>().Die();
+            //other.gameObject.GetComponent<PlayerHealth>().Die();
         }
     }
 }

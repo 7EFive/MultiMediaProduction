@@ -57,8 +57,15 @@ public class DealDamage : MonoBehaviour
         {
             Attack();
         }
-        
 
+        if (groundCheck.onGround)
+        {
+            canAttackingInAir = false;
+        }
+        else
+        {
+            canAttackingInAir = true;
+        }
         //animationReset
         animationReset();
 
@@ -72,41 +79,33 @@ public class DealDamage : MonoBehaviour
         {
             canAttack = true;
             //OnGround Combat
-            if (Input.GetKeyDown(KeyCode.X) && groundCheck.onGround && canAttack)
+            if (Input.GetKeyDown(KeyCode.X))
             {
-                doDamage();
-                canAttack = false;
-                isAttacking = true;
-                //initialize cooldown of attacking
-                nextAttackTime = Time.time + attackRate;
-
-
+                if (groundCheck.onGround && canAttack)
+                {
+                    doDamage();
+                    canAttack = false;
+                    isAttacking = true;
+                    //initialize cooldown of attacking
+                    nextAttackTime = Time.time + attackRate;
+                }
+                else if (!enterMidAirAttack && canAttackingInAir)
+                {
+                    jumpAttackSound();
+                    enterMidAirAttack = true;
+                    isAttackingInAir = true;
+                    animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
+                    animator.SetBool("MidAirSlash", isAttackingInAir);
+                    canAttackingInAir = false;
+                }
+                if (isAttackingInAir && enterMidAirAttack)
+                {
+                    jumpAttackSound();
+                    isAttackingInAir = false;
+                    doDamageB();
+                    enterMidAirAttack = false;
+                }
             }
-            //MidAir Combat
-            else if (Input.GetKeyDown(KeyCode.X) && !enterMidAirAttack && !groundCheck.onGround && canAttackingInAir && !isAttackingInAir)
-            {
-                jumpAttackSound();
-                enterMidAirAttack = true;
-                animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
-                canAttackingInAir = false;
-            }
-            if (!canAttackingInAir && !isAttackingInAir && enterMidAirAttack)
-            {
-                jumpAttackSound();
-                isAttackingInAir = true;
-                animator.SetBool("MidAirSlash", isAttackingInAir);
-                enterMidAirAttack = false;
-            }
-            if (isAttackingInAir && !enterMidAirAttack)
-            {
-
-                
-                isAttackingInAir = false;
-                Debug.Log("TOOK A SWING MID AIR");
-                doDamageB();
-                
-            }
-
         }
     }
    
@@ -170,7 +169,7 @@ public class DealDamage : MonoBehaviour
         {
             enterMidAirAttack = false;
             isAttackingInAir = false;
-            canAttackingInAir = true;
+            canAttackingInAir = false;
             animator.SetBool("MidAirSlash_enter", enterMidAirAttack);
             animator.SetBool("MidAirSlash", isAttackingInAir);
         }

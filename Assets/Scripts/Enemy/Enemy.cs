@@ -1,19 +1,18 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Enemy : MonoBehaviour
 {
     [Header("Basic Stats")]
-    public bool isChasing = false;
-    public float chaseDistance;
+    public bool isChasing;
     public float speed;
-    private float walk = 8f;
-    public float maxDistance;
+    //private float walk = 8f;
+    public float dashingRange;
     public bool attack_start=false;
     public bool attack= false;
     bool isCharging = false;
+    public bool looksToLeft = true;
     //[SerializeField] GameObject AttackPoint;
     //[SerializeField] EnemyAttack AttPoi_damage;
 
@@ -39,7 +38,7 @@ public class Enemy : MonoBehaviour
     public GameObject player;
     PlayerHealth stop;
     public Animator animator;
-    [SerializeField] GameObject attackPoint;
+    [SerializeField] public GameObject attackPoint;
 
     public AudioClip[] AudioClip;
     public AudioSource audioSource;
@@ -60,6 +59,7 @@ public class Enemy : MonoBehaviour
         //AttPoi_damage.attackDamage = 0;
         attack_start = false;
         attack = false;
+        isChasing = false;
         defaultAnimatorSpeed = animator.speed;
     }
     private void Awake()
@@ -98,6 +98,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
+            StopAllCoroutines();
             animator.speed=0;
         }
     }
@@ -105,8 +106,7 @@ public class Enemy : MonoBehaviour
     void Movment()
     {
         //cheack if mainPlayer is in chasing distance
-        Vector3 scale = transform.localScale;
-        if (isChasing && !kbd)
+        if (isChasing && !kbd && canDash)
         {
             //Player on right side
             if (player.transform.position.x > transform.position.x)
@@ -114,13 +114,15 @@ public class Enemy : MonoBehaviour
                 //Debug.Log("Player ditected on right side");
                 if (!isDashing)
                 {
-                    scale.x = Mathf.Abs(scale.x) * -1;
-
-                    if (player.transform.position.x - maxDistance >= transform.position.x && !canDash)
+                    if (looksToLeft)
                     {
+                        Flip();
+                    }
 
+                    if (player.transform.position.x - dashingRange > transform.position.x)
+                    {
                         //Debug.Log("Moving to the right side");
-                        rb.velocity = new Vector2(walk * speed, 0);
+                        rb.velocity = new Vector2(speed, 0);
                         //transform.Translate(walk * Time.deltaTime * speed, 0, 0);
                     }
                     else
@@ -143,14 +145,18 @@ public class Enemy : MonoBehaviour
             else if (player.transform.position.x < transform.position.x)
             {
                 //Debug.Log("Player ditected on left side");
-                if (!isDashing)
+                if (!isDashing )
                 {
-                    scale.x = Mathf.Abs(scale.x);
-                    if (player.transform.position.x + maxDistance <= transform.position.x && !canDash)
+                    if (!looksToLeft)
+                    {
+                        Flip();
+                    }
+                    if (player.transform.position.x + dashingRange < transform.position.x
+                        )
                     {
 
                         //Debug.Log("Moving to the left side");
-                        rb.velocity = new Vector2(walk * -speed, 0);
+                        rb.velocity = new Vector2( -speed, 0);
                         //transform.Translate(walk * Time.deltaTime * -1 * speed, 0, 0);
                     }
                     else
@@ -162,24 +168,15 @@ public class Enemy : MonoBehaviour
                         }
                     }
                 }
-                
             }
-            transform.localScale = scale;
         }
-        else
-        {
-            if (Vector2.Distance(transform.position, player.transform.position) < chaseDistance)
-            {
-                isChasing = true;
-                //animator.SetBool("seePlayer", isChasing);
-            }
-            else
-            {
-                isChasing = false;
-                //animator.SetBool("seePlayer", !isChasing);
-            }
-
-        }
+    }
+    public void Flip()
+    {
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
+        looksToLeft = !looksToLeft;
     }
     //knockback method
     public void Knockback(Transform t)
@@ -233,7 +230,7 @@ public class Enemy : MonoBehaviour
         animator.SetBool("attack", attack);
         yield return new WaitForSeconds(dashCooldown/2);
 
-        Debug.Log("canDash is true");
+        //Debug.Log("canDash is true");
         isDashing = false;
         yield return new WaitForSeconds(dashCooldown/2);
 

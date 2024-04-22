@@ -1,8 +1,5 @@
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
-//using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMain : MonoBehaviour
@@ -119,7 +116,10 @@ public class PlayerMain : MonoBehaviour
         if(!interactionStun){
             if (!isDashing)
             {
-                Falling();
+                if(!swing.enterMidAirAttack &&  swing.canAttackingInAir)
+                {
+                    Falling();
+                }
                 if (!airUp)
                 {
                     Jumping();
@@ -166,7 +166,7 @@ public class PlayerMain : MonoBehaviour
             Old();
 
             // states cheks for dashing
-            if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && canDash && !health.coolDown_Ult && !older &&
+            if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.DownArrow)) && !kbd && canDash && !health.coolDown_Ult && !older &&
                !((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
                animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
                animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
@@ -179,7 +179,6 @@ public class PlayerMain : MonoBehaviour
             }
         }
         OnGround();
-
         //Physics2D.IgnoreLayerCollision(7,8);
     }
 
@@ -198,7 +197,7 @@ public class PlayerMain : MonoBehaviour
 
         if (!kbd )
         {
-            if (!charging)
+            if (!charging || !interactionStun)
             {
                 RB.velocity = new Vector2(horizontal * walk, RB.velocity.y);
                 if (RB.velocity.x != 0 && groundCheck.onGround)
@@ -229,13 +228,14 @@ public class PlayerMain : MonoBehaviour
 
             if (airUp)
             {
-                animator.SetBool("Fall", true);
+                animator.SetBool("AirUp", airUp);
                 RB.velocity = new Vector2(0, floatForce);
             }
-            else if(!airUp && !groundCheck.onGround)
+            else
             {
-                animator.SetBool("Fall", true);
+                animator.SetBool("AirUp", airUp);
             }
+            
  
             // No movement on specific states
             if ((charging || health.isParrying) || health.coolDown_ult_first_anim || interactionStun && !airUp)
@@ -266,6 +266,20 @@ public class PlayerMain : MonoBehaviour
             {
                 animator.SetBool("Hurt", false);
             }
+            if (isFinished)
+            {
+                moveSound.Stop();
+                interactionStun = true;
+                //animator.SetBool("GameOver", true);
+                animator.Play("Game_Over");
+                charging = false;
+                c.enabled = false;
+                GetComponent<PlayerHealth>().enabled = false;
+                //Debug.Log("The mainPlayer Collieder should be off");
+                RB.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+                int notPlayable = LayerMask.NameToLayer("GameOver");
+                gameObject.layer = notPlayable;
+            }
             //Debug.Log("Player is colliding with ground");
         }
         //onGround = true;
@@ -277,43 +291,9 @@ public class PlayerMain : MonoBehaviour
 
 
         // dead state if health is under 0 and mainPlayer is on gorund
-        if (groundCheck.onGround && isFinished)
-        {
-            animator.SetBool("GameOver", true);
-            charging = false;
-            c.enabled = false;
-            GetComponent<PlayerHealth>().enabled = false;
-            //Debug.Log("The mainPlayer Collieder should be off");
-            RB.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
-            int notPlayable = LayerMask.NameToLayer("GameOver");
-            gameObject.layer = notPlayable;
-        }
+        
     }
-    // Jumping method
-    void Jumping()
-    {
-        if (isGamePaused) {
-            return;
-        }
-        if(RB.velocity.y > 0f)
-        {
-            animator.SetBool("IsJumping", !groundCheck.onGround);
-        }
-        if (Input.GetButtonDown("Jump") && groundCheck.onGround || Input.GetKeyDown(KeyCode.UpArrow) && groundCheck.onGround )
-        {
-            if(!older && !stayOnGround)
-            {
-                DealDamage.instance.jumpSound();
-                RB.velocity = new Vector2(RB.velocity.x, jumpHight);
-                groundCheck.onGround = false;
-                // animator.SetBool("Grounded", onGround);
-            }
-        }
-        if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
-        {
-            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
-        }
-    }
+   
     // slowdown mainPlayer on attacking state
     void AttackCheak()
     {
@@ -323,12 +303,17 @@ public class PlayerMain : MonoBehaviour
         if ((animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_1") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_2") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_3") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3"))|| 
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_2") )|| 
            swing.isAttacking && groundCheck.onGround)
         {
-            walk = speed / 50f;
+            walk = 0;
+            moveSound.Stop();
+            stayOnGround = true;
+        }else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_end") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("Transition_to_3"))
+        {
+            walk = speed/50;
+            moveSound.Stop();
             stayOnGround = true;
         }
         else
@@ -353,6 +338,33 @@ public class PlayerMain : MonoBehaviour
             transform.localScale = localScale;
         }
     }
+    // Jumping method
+    void Jumping()
+    {
+        if (isGamePaused)
+        {
+            return;
+        }
+        if (RB.velocity.y > 0f)
+        {
+            animator.SetBool("IsJumping", !groundCheck.onGround);
+            animator.SetBool("Fall", !groundCheck.onGround);
+        }
+        if (Input.GetButtonDown("Jump") && groundCheck.onGround || Input.GetKeyDown(KeyCode.UpArrow) && groundCheck.onGround)
+        {
+            if (!older && !stayOnGround)
+            {
+                DealDamage.instance.jumpSound();
+                RB.velocity = new Vector2(RB.velocity.x, jumpHight);
+                //groundCheck.onGround = false;
+                // animator.SetBool("Grounded", onGround);
+            }
+        }
+        if (Input.GetButtonUp("Jump") && RB.velocity.y > 0f)
+        {
+            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.5f);
+        }
+    }
 
     // Falling method
     void Falling()
@@ -360,19 +372,22 @@ public class PlayerMain : MonoBehaviour
         if (isGamePaused) {
             return;
         }
-        if (RB.velocity.y < -1)
+        if (RB.velocity.y < 0f && !groundCheck.onGround)
         {
-            //Debug.Log("Falling");
             fall = true;
+            animator.SetBool("IsJumping", fall);
+            //swing.canAttackingInAir = false;
+            animator.SetBool("Fall", fall);
+            /**
+            else
+            {
+                animator.SetBool("Fall", !fall);
+            }
+            **/
             //onGround = false;
-            animator.SetBool("Fall", fall);
+
         }
-        else
-        {
-            //onGround = true;
-            fall = false;
-            animator.SetBool("Fall", fall);
-        }
+        
     }
    
     // Dash method
